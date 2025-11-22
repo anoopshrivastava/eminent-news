@@ -11,7 +11,7 @@ const MainLayout = () => {
       <MobileHeader />
       {/* <div className="flex flex-1">
         <Sidebar /> */}
-        <main className="flex-grow mx-4 md:mx-20 mt-2">
+        <main className="flex-grow mt-12 md:mt-28">
           <Outlet />
         </main>
       <Footer />

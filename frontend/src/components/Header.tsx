@@ -1,50 +1,126 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { ProfileDropdown } from "./ProfileDropdown";
 import { Input } from "./ui/input";
-import { Search } from "lucide-react";
+import { Search, Menu } from "lucide-react";
+import SwipeButton from "./SwipeButton";
 
 const Header = () => {
-  return (
-    <div className="hidden md:flex w-full items-center justify-between border-b border-gray-200 bg-white px-20 py-4 select-none fixed top-0 shadow-md z-50">
-      
-      {/* Left Section → Logo + Search */}
-      <div className="flex items-center gap-6">
-        <Link to="/">
-          <img src={logo} alt="TEN Logo" className="h-9" />
-        </Link>
+  
+  const today = new Date().toLocaleDateString();
 
-        {/* Search Bar */}
-        <div className="relative w-64">
-          <Input
-            type="text"
-            placeholder="Search news..."
-            className="shadow-sm rounded-lg pl-4 pr-10 py-1.5 w-full transition"
-          />
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+  return (
+    <header className="w-full fixed top-0 z-50">
+      {/* Top big header row */}
+      <div className="hidden md:flex items-center justify-between border-b border-gray-200 bg-white px-16 py-1 select-none shadow">
+        {/* Left: Date + Logo */}
+          <span className="text-lg text-gray-600 font-semibold">Date: {today}</span>
+
+        <Link to="/" className="flex items-center">
+            <img src={logo} alt="TEN Logo" className="h-9" />
+          </Link>
+
+        {/* Center: Title */}
+        <div className="text-center">
+          <h1 className="text-red-500 text-xl md:text-3xl font-extrabold tracking-tight">
+            The Eminent News
+          </h1>
+          <div className="text-lg -mt-1 text-gray-500">Empowering wisdom</div>
+        </div>
+
+       <SwipeButton onSuccess={()=>console.log("swiped")}/>
+
+        <div className="flex gap-3">
+           {/* Right: Links (Login / Subscribe / Language) */}
+        <ul className="flex flex-col  list-disc">
+          <li>
+          <Link
+            to="/login"
+            className="text-gray-700 hover:text-red-500 transition font-medium flex items-center gap-2"
+          >
+             Login
+          </Link>
+          </li>
+          
+          <li>
+          <Link
+            to="/subscribe"
+            className="text-gray-700 hover:text-red-500 transition font-medium flex items-center gap-2"
+          >
+            Subscribe
+          </Link>
+          </li>
+          <li>
+          <button
+            aria-label="Change language"
+            className="flex items-center gap-2 text-gray-700 hover:text-red-500 transition font-medium"
+          >
+             Language
+          </button>
+          </li>
+        </ul>
+          {/* If logged in, show profile dropdown instead of Login */}
+        {/* <ProfileDropdown name="Unknown" /> */}
+        </div>
+
+       
+      </div>
+
+
+      {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
+      <div className="hidden md:block w-full bg-red-500 px-16 py-2 shadow-sm">
+        <div className="flex items-center mx-auto">
+          {/* left group */}
+          <div className="flex items-center gap-3">
+            <button
+              aria-label="Open menu"
+              className="pr-2 rounded hover:bg-gray-100 transition"
+            >
+              <Menu className="h-8 text-white" />
+            </button>
+
+            <button
+              aria-label="Search"
+              className="p-2 rounded bg-white hover:bg-gray-100 transition md:hidden"
+            >
+              <Search className="h-5 w-5 text-white" />
+            </button>
+
+            {/* On larger screens you might want a small inline search (optional) */}
+            <div className="hidden md:block">
+              <div className="relative w-64">
+                <Input
+                  type="text"
+                  placeholder="Search news..."
+                  className="rounded-lg pl-3 pr-10 py-1.5 w-full bg-white border-none"
+                />
+                <Search className="text-white absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 " />
+              </div>
+            </div>
+          </div>
+
+          {/* center / right of the second row (keeps space) */}
+          <div className="flex-1" />
         </div>
       </div>
 
-      {/* Right Section → Links + Profile */}
-      <div className="flex items-center gap-8">
-        <Link
-          to="/about-us"
-          className="text-gray-700 hover:text-red-500 hover:underline transition font-medium"
-        >
-          About Us
-        </Link>
+      {/* Mobile compact header (visible on small screens) */}
+      <div className="md:hidden bg-white px-4 py-2 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <button aria-label="Open menu" className="p-2 rounded hover:bg-gray-100">
+            <Menu className="h-6 w-6" />
+          </button>
 
-        <Link
-          to="/contact-us"
-          className="text-gray-700 hover:text-red-500 transition hover:underline font-medium"
-        >
-          Contact Us
-        </Link>
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logo} alt="TEN Logo" className="h-8" />
+            <span className="text-lg font-bold">The Eminent News</span>
+          </Link>
 
-        <ProfileDropdown name="Unknown" />
+          <button aria-label="Search" className="p-2 rounded hover:bg-gray-100">
+            <Search className="h-6 w-6" />
+          </button>
+        </div>
       </div>
-
-    </div>
+    </header>
   );
 };
 

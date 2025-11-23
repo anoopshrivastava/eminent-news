@@ -1,28 +1,42 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   Home,
-  Newspaper,
-  Globe,
-  BarChart3,
+  Clapperboard,
+  Plus,
+  UserRound,
+  NewspaperIcon,
 } from "lucide-react";
 
 const MobileHeader = () => {
   const location = useLocation();
-
+  
   const navItems = [
-    { label: "HOME", to: "/", icon: <Home className="h-6 w-6" /> },
-    { label: "National", to: "/national", icon: <Newspaper className="h-6 w-6 text-red-500" /> },
-    { label: "World News", to: "/world-news", icon: <Globe className="h-6 w-6 text-blue-500" /> },
-    { label: "Trending News", to: "/trending", icon: <BarChart3 className="h-6 w-6 text-orange-500" /> },
-    // {
-    //   label: "What's App",
-    //   to: "/whatsapp",
-    //   icon:<Home className="h-6 w-6" />,
-    // },
+    { label: "Home", to: "/", icon: <Home className="h-6 w-6" /> },
+
+    {
+      label: "News",
+      to: "/news",
+      icon: <NewspaperIcon className="h-6 w-6" />,
+    },
+    
+    {
+      label: "",
+      to: "/create-post",
+      icon: (
+        <div className="h-11 w-12 bg-gray-200 rounded-full flex items-center justify-center shadow">
+          <Plus className="h-7 w-7" />
+        </div>
+      ),
+    },
+
+    { label: "Shorts", to: "/shorts", icon: <Clapperboard className="h-6 w-6" /> },
+
+    { label: "Profile", to: "/my-profile", icon: <UserRound className="h-6 w-6" /> },
   ];
+  
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md py-2 flex justify-around md:hidden z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md pt-2 pb-2 flex justify-around md:hidden z-50">
       {navItems.map((item) => {
         const isActive = location.pathname === item.to;
 
@@ -30,18 +44,18 @@ const MobileHeader = () => {
           <Link
             key={item.to}
             to={item.to}
-            className="flex flex-col items-center gap-1"
+            className="flex flex-col items-center"
           >
             <div
               className={`${
-                isActive ? "text-black" : "text-gray-500"
+                isActive ? "text-red-500" : "text-black"
               } transition`}
             >
               {item.icon}
             </div>
             <span
-              className={`text-[11px] font-medium ${
-                isActive ? "text-black" : "text-gray-600"
+              className={`text-[13px] font-medium ${
+                isActive ? "text-red-500" : "text-black"
               }`}
             >
               {item.label}

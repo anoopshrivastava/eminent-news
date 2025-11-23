@@ -10,6 +10,7 @@ import pgn from "@/assets/pgn.webp";
 import sport from "@/assets/sport2.webp";
 import HeroCarousel from "./components/HeroCarousel";
 import { Flag, Flame, Globe2, Trophy } from "lucide-react";
+import FAQ from "@/components/FAQ";
 
 // --- Data Types and Definitions (Unchanged) ---
 export type NewsPost = {
@@ -493,6 +494,8 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
+
+        <FAQ/>
       </div>
     </div>
   );

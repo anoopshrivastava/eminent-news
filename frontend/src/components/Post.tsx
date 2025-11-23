@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { NewsPost } from "@/pages/home/HomePage";
 import { Heart, Share2, UserPlus } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Post = ({ news }: { news: NewsPost }) => {
   const [liked, setLiked] = useState(false);
@@ -15,9 +16,9 @@ const Post = ({ news }: { news: NewsPost }) => {
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(news.url);
-      alert("Link copied to clipboard!");
+      toast.success("Link copied to clipboard!");
     } catch {
-      alert("Failed to copy link.");
+      toast.error("Failed to copy link.");
     }
   };
 
@@ -35,7 +36,7 @@ const Post = ({ news }: { news: NewsPost }) => {
       {/* Content */}
       <div className="px-3 pb-3 pt-1">
         {/* Title */}
-        <h2 className="text-lg font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-1.5">
+        <h2 className="text-lg font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-2 md:mb-1.5">
           {news.title}
         </h2>
 
@@ -43,7 +44,7 @@ const Post = ({ news }: { news: NewsPost }) => {
         <p className="text-gray-600 text-sm line-clamp-2 leading-[1.1]">{news.description}</p>
 
         {/* Author + Follow */}
-        <div className="flex items-center justify-between pt-1.5">
+        <div className="flex items-center justify-between pt-2 md:pt-1.5">
           <div className="text-xs text-gray-500">
             By{" "}
             <span className="font-medium text-gray-700">{news.author}</span>{" "}

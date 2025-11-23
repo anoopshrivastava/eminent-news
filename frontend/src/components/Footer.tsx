@@ -1,9 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Youtube, Linkedin, Rss } from "lucide-react";
-import { FaXTwitter, FaTelegram, FaWhatsapp } from "react-icons/fa6";
+import {  Rss } from "lucide-react";
 import logo from "../assets/logo2.png";
 import { categories } from "@/pages/home/HomePage";
+import {
+  FaXTwitter,
+  FaTelegram,
+  FaWhatsapp,
+  FaFacebook,
+  FaYoutube,
+} from "react-icons/fa6";
+
+import { FaLinkedin } from "react-icons/fa";
+import zoho from "@/assets/zoho.png"
 
 const Footer: React.FC = () => {
   const quickLinks = [
@@ -12,7 +21,7 @@ const Footer: React.FC = () => {
     { label: "Disclaimer", to: "/disclaimer" },
     { label: "Privacy Policy", to: "/privacy-policy" },
   ];
-
+  
   const socialLinks = [
     {
       icon: FaXTwitter,
@@ -22,7 +31,7 @@ const Footer: React.FC = () => {
     {
       icon: FaTelegram,
       href: "#",
-      bg: "bg-black",
+      bg: "bg-sky-500",
     },
     {
       icon: FaWhatsapp,
@@ -30,21 +39,27 @@ const Footer: React.FC = () => {
       bg: "bg-green-500",
     },
     {
-      icon: Linkedin,
-      href: "#",
-      bg: "bg-blue-600",
-    },
-    {
-      icon: Facebook,
+      icon: FaLinkedin,
       href: "#",
       bg: "bg-blue-700",
     },
     {
-      icon: Youtube,
+      icon: FaFacebook,
+      href: "#",
+      bg: "bg-blue-600",
+    },
+    {
+      icon: FaYoutube,
       href: "#",
       bg: "bg-red-600",
     },
+    {
+      icon: () => <img src={zoho} alt="Zoho Mail" className="w-8 md:w-10 object-contain" />,
+      href: "#",
+      bg: "bg-white",
+    }
   ];
+  
 
   return (
     <div>
@@ -146,14 +161,14 @@ const Footer: React.FC = () => {
               </div>
 
               {/* ICON ROW */}
-              <div className="flex flex-wrap gap-3 mt-4">
+              <div className="flex flex-wrap gap-4 md:gap-3 mt-4">
                 {socialLinks.map(({ icon: Icon, href, bg }, i) => (
                   <a
                     key={i}
                     href={href}
-                    className={`${bg} p-2 rounded-md flex items-center justify-center`}
+                    className={`${bg} p-1 rounded-md flex items-center justify-center`}
                   >
-                    <Icon className="text-white h-7 w-7 md:h-10 md:w-10" />
+                    <Icon className="text-white h-8 w-8 md:h-10 md:w-10" />
                   </a>
                 ))}
               </div>

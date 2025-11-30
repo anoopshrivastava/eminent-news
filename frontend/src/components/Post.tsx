@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { NewsPost } from "@/pages/home/HomePage";
 import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
+import type { News } from "@/types/news";
 
-const Post = ({ news }: { news: NewsPost }) => {
+const Post = ({ news }: { news: News }) => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(news.likes);
   const [followed, setFollowed] = useState(false);
@@ -27,7 +27,7 @@ const Post = ({ news }: { news: NewsPost }) => {
       {/* Image */}
       <div className="overflow-hidden">
         <img
-          src={news.image}
+          src={news.images[0]}
           alt={news.title}
           className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
         />
@@ -36,18 +36,18 @@ const Post = ({ news }: { news: NewsPost }) => {
       {/* Content */}
       <div className="px-3 pb-3 pt-1">
         {/* Title */}
-        <h2 className="text-lg font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-2 md:mb-1.5">
+        <h2 className="text-lg md:text-base font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-2 md:mb-1.5">
           {news.title}
         </h2>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm line-clamp-2 leading-[1.1]">{news.description}</p>
+        <p className="text-gray-600 text-sm md:text-xs line-clamp-2 leading-[1.1]">{news.description}</p>
 
         {/* Author + Follow */}
         <div className="flex items-center justify-between pt-2 md:pt-1.5">
           <div className="text-xs text-gray-500">
             By{" "}
-            <span className="font-medium text-gray-700">{news.author}</span>{" "}
+            <span className="font-medium text-gray-700">{news.editor?.name}</span>{" "}
             {/* • {news.date} */}
           </div>
 

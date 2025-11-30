@@ -1,12 +1,44 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { Input } from "./ui/input";
 import { Search, Menu } from "lucide-react";
 import SwipeButton from "./SwipeButton";
 import { Switch } from "./ui/switch";
+import { useDispatch, useSelector } from "react-redux";
+import { signOutFailure, signOutStart, signOutSuccess } from "@/redux/authSlice";
+import axios from "axios";
+import toast from "react-hot-toast";
+import MobileMenu from "./MobileMenu";
+import { useState } from "react";
 
 const Header = () => {
   const today = new Date().toLocaleDateString();
+  const {currentUser} = useSelector((state:any)=>state.user);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      dispatch(signOutStart());
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/logout`, { withCredentials: true });
+      if (response.data.success === false) {
+        dispatch(signOutFailure(response.data.message));
+        toast.error(response.data.message);
+        return;
+      }
+      console.log("Logout Success:", response.data);
+      toast.success("Logout Successful");
+      dispatch(signOutSuccess());
+      navigate('/login');
+    } catch (error:any) {
+      console.log(error);
+      dispatch(signOutFailure(error.message));
+      toast.error(error.message);
+    }
+  };
 
   return (
     <header className="w-full fixed top-0 z-50">
@@ -18,7 +50,7 @@ const Header = () => {
         </span>
 
         <Link to="/" className="flex items-center">
-          <img src={logo} alt="TEN Logo" className="h-9" />
+          <img src={logo} alt="TEN Logo" className="h-12" />
         </Link>
 
         {/* Center: Title */}
@@ -33,20 +65,30 @@ const Header = () => {
 
         <div className="flex gap-3">
           {/* Right: Links (Login / Subscribe / Language) */}
-          <ul className="flex flex-col  list-disc">
-            <li>
+          <ul className="flex flex-col  list-disc text-sm">
+            {currentUser  ? 
+              <li>
+                <span
+                 onClick={handleLogout}
+                 className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2 cursor-pointer">
+                Logout
+                </span>
+               
+              </li>
+              :
+              <li>
               <Link
                 to="/login"
-                className="text-gray-700 hover:text-red-500 transition font-medium flex items-center gap-2"
+                className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2"
               >
                 Login
               </Link>
             </li>
-
+            }
             <li>
               <Link
-                to="/subscribe"
-                className="text-gray-700 hover:text-red-500 transition font-medium flex items-center gap-2"
+                to="#"
+                className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2"
               >
                 Subscribe
               </Link>
@@ -54,7 +96,7 @@ const Header = () => {
             <li>
               <button
                 aria-label="Change language"
-                className="flex items-center gap-2 text-gray-700 hover:text-red-500 transition font-medium"
+                className="flex items-center gap-2 underline text-blue-700 hover:text-red-500 transition font-medium"
               >
                 Language
               </button>
@@ -71,6 +113,7 @@ const Header = () => {
           {/* left group */}
           <div className="flex items-center gap-3">
             <button
+              onClick={()=>setMenuOpen(true)}
               aria-label="Open menu"
               className="pr-2 rounded hover:bg-gray-100 transition"
             >
@@ -106,6 +149,7 @@ const Header = () => {
       <div className="md:hidden bg-white px-2 py-2 border-b border-gray-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
+            onClick={()=>setMenuOpen(true)}
             aria-label="Open menu"
             className="p-2 rounded hover:bg-gray-100"
           >
@@ -127,6 +171,13 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        currentUser={currentUser}
+        handleLogout={handleLogout}
+      />
     </header>
   );
 };

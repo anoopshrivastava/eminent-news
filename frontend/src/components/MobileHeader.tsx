@@ -15,23 +15,23 @@ const MobileHeader = () => {
 
     {
       label: "News",
-      to: "/news",
+      to: "#",
       icon: <NewspaperIcon className="h-6 w-6" />,
     },
     
     {
       label: "",
-      to: "/create-post",
-      icon: (
+      to: "#",
+      icon: ( 
         <div className="h-11 w-12 bg-gray-200 rounded-full flex items-center justify-center shadow">
           <Plus className="h-7 w-7" />
         </div>
       ),
     },
 
-    { label: "Shorts", to: "/shorts", icon: <Clapperboard className="h-6 w-6" /> },
+    { label: "Shorts", to: "#", icon: <Clapperboard className="h-6 w-6" /> },
 
-    { label: "Profile", to: "/my-profile", icon: <UserRound className="h-6 w-6" /> },
+    { label: "Profile", to: "#", icon: <UserRound className="h-6 w-6" /> },
   ];
   
 

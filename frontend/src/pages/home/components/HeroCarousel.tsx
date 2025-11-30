@@ -1,17 +1,8 @@
+import type { News } from "@/types/news";
 import React, { useEffect, useRef, useState } from "react";
 
-export type NewsPost = {
-  id: number;
-  title: string;
-  description: string;
-  author: string;
-  date: string;
-  image: string;
-  url: string;
-};
-
 type Props = {
-  posts: NewsPost[]; // expects at least 1 post, will show up to 3 (first 3)
+  posts: News[]; // expects at least 1 post, will show up to 3 (first 3)
   intervalMs?: number; // autoplay interval in milliseconds (default 5000)
 };
 
@@ -70,14 +61,14 @@ export default function HeroCarousel({ posts, intervalMs = 5000 }: Props) {
       >
         {slides.map((post) => (
           <a
-            key={post.id}
+            key={post._id}
             href={post.url}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full shrink-0 relative block"
           >
             <img
-              src={post.image}
+              src={post.images[0]}
               alt={post.title}
               className="w-full h-64 md:h-[64vh] object-cover object-top"
             />
@@ -91,9 +82,9 @@ export default function HeroCarousel({ posts, intervalMs = 5000 }: Props) {
                 {post.description}
               </p>
               <div className="mt-3 text-sm text-gray-200">
-                <span>By {post.author}</span>
+                <span>By {post.editor?.name}</span>
                 <span className="mx-2">|</span>
-                <span>{post.date}</span>
+                <span>{post.createdAt}</span>
               </div>
             </div>
           </a>

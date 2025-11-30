@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {  Rss } from "lucide-react";
 import logo from "../assets/logo2.png";
-import { categories } from "@/pages/home/HomePage";
 import {
   FaXTwitter,
   FaTelegram,
@@ -13,6 +12,7 @@ import {
 
 import { FaLinkedin } from "react-icons/fa";
 import zoho from "@/assets/zoho.png"
+import { categories } from "@/types/news";
 
 const Footer: React.FC = () => {
   const quickLinks = [
@@ -125,10 +125,10 @@ const Footer: React.FC = () => {
             <ul className="space-y-2">
               {categories.map((cat) => (
                 <li
-                  key={cat.key}
+                  key={cat}
                   className="hover:text-red-400 cursor-pointer transition"
                 >
-                  {cat.label}
+                  {cat}
                 </li>
               ))}
             </ul>

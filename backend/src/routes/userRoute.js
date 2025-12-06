@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllSeller } = require('../controllers/userController');
+const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const rateLimiter = require('../utils/rateLimit');
 const router = express.Router();
@@ -29,9 +29,12 @@ router.put('/password/update',isAuthenticatedUser,updatePassword)
 // for updating user profile -->
 router.put('/me/update',isAuthenticatedUser,updateProfile)
 
+// follow / unfollow a user (toggle)
+router.put('/user/:id/follow', isAuthenticatedUser, followUser);
+
 // for getting all users -->
 router.get('/admin/users',isAuthenticatedUser,authorizeRoles("admin"),getAllUser)
-router.get('/admin/sellers',isAuthenticatedUser,authorizeRoles("admin"),getAllSeller)
+router.get('/admin/editors',isAuthenticatedUser,authorizeRoles("admin"),getAllEditor)
 
 // for getting single user,updating role & deleting user by admin -->
 router.route('/admin/user/:id')

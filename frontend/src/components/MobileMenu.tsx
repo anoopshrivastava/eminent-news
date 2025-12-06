@@ -46,6 +46,10 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
             Language
           </Link>
 
+          <Link to="/my-profile" onClick={onClose} className="hover:text-red-500">
+            My Profile
+          </Link>
+
           {currentUser ? (
             <button
               onClick={() => {

@@ -7,19 +7,13 @@ import useDebounce from "@/lib/useDebounce";
 // import UpdateUserModal from "./UpdateUserModal"; // ensure correct import
 
 // ---------- TYPES ----------
-interface EditorInfo {
-  storeName: string;
-  businessType: string;
-  gstNumber: string;
-  storeAddress: string;
-}
-
 export interface Editor {
   _id: string;
   name: string;
   email: string;
   phone: string;
-  editorInfo: EditorInfo;
+  followers:string[];
+  following:string[];
   createdAt: string;
 }
 
@@ -114,10 +108,8 @@ function AllEditors() {
                 <th className="py-3 px-2 text-left">Name</th>
                 <th className="py-3 px-2 text-left">Email</th>
                 <th className="py-3 px-2 text-left">Phone</th>
-                <th className="py-3 px-2 text-left">StoreName</th>
-                <th className="py-3 px-2 text-left">BusinessType</th>
-                <th className="py-3 px-2 text-left">GstNumber</th>
-                <th className="py-3 px-2 text-left">Address</th>
+                <th className="py-3 px-2 text-left">Following</th>
+                <th className="py-3 px-2 text-left">Followers</th>
                 <th className="py-3 px-2 text-left">Joined On</th>
                 <th className="py-3 px-2 text-center">Actions</th>
               </tr>
@@ -130,10 +122,8 @@ function AllEditors() {
                   <td className="py-3 px-2">{editor.email}</td>
                   <td className="py-3 px-2">{editor.phone}</td>
 
-                  <td className="py-3 px-2">{editor.editorInfo.storeName}</td>
-                  <td className="py-3 px-2">{editor.editorInfo.businessType}</td>
-                  <td className="py-3 px-2">{editor.editorInfo.gstNumber}</td>
-                  <td className="py-3 px-2">{editor.editorInfo.storeAddress}</td>
+                  <td className="py-3 px-2">{editor.following.length}</td>
+                  <td className="py-3 px-2">{editor.followers.length}</td>
 
                   <td className="py-3 px-2">{editor.createdAt.split("T")[0]}</td>
 

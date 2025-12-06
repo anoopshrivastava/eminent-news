@@ -7,6 +7,7 @@ import { Flag, Flame, Globe2, Trophy } from "lucide-react";
 import FAQ from "@/components/FAQ";
 import { categories, type News } from "@/types/news";
 import axios from "axios";
+import Loading from "@/components/Loading";
 
 const featured = {
   _id: "ddlkfj",
@@ -77,7 +78,7 @@ const HomePage: React.FC = () => {
   }, [news]);
   
 
-  if(loading) return <div>Loading...</div>
+  if(loading) return <div className="min-h-[100vh]"><Loading/></div>
 
   return (
     <div className="min-h-screen md:py-2">
@@ -126,7 +127,7 @@ const HomePage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {groupedNews[key as keyof typeof groupedNews]?.length ? (
                       groupedNews[key as keyof typeof groupedNews].map((item: News) => (
-                        <Post key={item._id} news={item} />
+                        <Post key={item._id} news={item} fetchNews={fetchNews} />
                       ))
                     ) : (
                       <p className="col-span-4 text-center text-gray-500 p-10">
@@ -153,7 +154,7 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.trending.map((news) => (
-                    <Post key={news._id} news={news} />
+                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>}
@@ -166,7 +167,7 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.national.map((news) => (
-                    <Post key={news._id} news={news} />
+                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>
@@ -180,7 +181,7 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.world.map((news) => (
-                    <Post key={news._id} news={news} />
+                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>
@@ -249,7 +250,7 @@ const HomePage: React.FC = () => {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {groupedNews.sports.map((news) => (
-                <Post key={news._id} news={news} />
+                <Post key={news._id} news={news} fetchNews={fetchNews}/>
               ))}
             </div>
           </div>

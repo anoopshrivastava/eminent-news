@@ -14,6 +14,9 @@ import AllEditors from "./pages/admin/AllEditors";
 import EditorRoute from "./components/editor/EditorRoute";
 import EditorLayout from "./layouts/EditorLayout";
 import EditorDashboard from "./pages/editor/EditorDashboard";
+import AllUsers from "./pages/admin/AllUsers";
+import ProfilePage from "./pages/profile/ProfilePage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -29,6 +32,10 @@ function App() {
         {/* <Route element={<PrivateRoute />}> */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/my-profile" element={<ProfilePage />} />
+            </Route>
+            
           </Route>
         {/* </Route> */}
 
@@ -38,7 +45,7 @@ function App() {
             
             <Route path="/admin/news" element={<AdminDashboard />} />
             <Route path="/admin/editors" element={<AllEditors />} />
-            {/* <Route path="/admin/users" element={<AllUsers />} /> */}
+            <Route path="/admin/users" element={<AllUsers />} />
             {/* <Route path="/admin/orders" element={<AllOrders />} /> */}
             
           </Route>

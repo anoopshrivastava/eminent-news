@@ -155,3 +155,41 @@ exports.deleteNews = catchAsyncError(async (req, res) => {
         message: "News Deleted Successfully"
     });
 });
+
+// toggle like / unlike for a news post
+exports.likeNews = catchAsyncError(async (req, res, next) => {
+    const newsId = req.params.id;
+    const userId = req.user.id; // requires isAuthenticatedUser to set req.user
+  
+    // find news
+    const news = await News.findById(newsId);
+    if (!news) {
+      return next(new Errorhandler("News not found", 404));
+    }
+  
+    // check if already liked by this user
+    const alreadyLiked = news.likes.some(l => l.user.toString() === userId.toString());
+  
+    if (alreadyLiked) {
+      // unlike: remove the like entry
+      news.likes = news.likes.filter(l => l.user.toString() !== userId.toString());
+      await news.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "News unliked",
+        likesCount: news.likes.length,
+      });
+    } else {
+      // like: add the like entry
+      news.likes.push({ user: userId });
+      await news.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "News liked",
+        likesCount: news.likes.length,
+      });
+    }
+  });
+  

@@ -1,5 +1,5 @@
 const express = require('express');
-const {createNews, getNewsDetails, getAllNews, getEditorNews, updateNews, deleteNews} = require('../controllers/newsController');
+const {createNews, getNewsDetails, getAllNews, getEditorNews, updateNews, deleteNews, likeNews} = require('../controllers/newsController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const router = express.Router();
 const upload = require('../middleware/fileUpload')
@@ -18,6 +18,9 @@ router.get('/editor/news/:editorId',isAuthenticatedUser,authorizeRoles("editor",
 
 // update the product  -- Admin
 router.put('/news/:id',isAuthenticatedUser,authorizeRoles("editor","admin"),updateNews);
+
+// like / unlike a news post (toggle)
+router.put('/news/:id/like', isAuthenticatedUser, likeNews);
 
 // delete the product -- Admin
 router.delete('/news/:id',isAuthenticatedUser,authorizeRoles("editor","admin"),deleteNews);

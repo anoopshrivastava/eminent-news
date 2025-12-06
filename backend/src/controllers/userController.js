@@ -208,18 +208,19 @@ exports.getAllUser = catchAsyncError(async(req,res,next)=>{
         hasMore: currentPage < totalPages
     })
 })
-exports.getAllSeller = catchAsyncError(async(req,res,next)=>{
+exports.getAllEditor = catchAsyncError(async(req,res,next)=>{
 
     const resultPerPage = req?.query?.limit || 20;
     const currentPage = Number(req.query.page) || 1;
+    console.log(req.query)
 
-    const apiFeaturesForCount = new ApiFeatures(User.find({role:"seller"}), req.query)
+    const apiFeaturesForCount = new ApiFeatures(User.find({role:"editor"}), req.query)
         .search()
         .filter();
 
     const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
 
-    const apiFeatures = new ApiFeatures(User.find({role:"seller"}),req.query)
+    const apiFeatures = new ApiFeatures(User.find({role:"editor"}),req.query)
     .search() 
     .pagination(resultPerPage);
 
@@ -288,3 +289,64 @@ exports.deleteUser = catchAsyncError(async(req,res,next)=>{
         message:"User Deleted Successfully"
     })
 })
+
+// toggle follow / unfollow a user
+exports.followUser = catchAsyncError(async (req, res, next) => {
+    const targetUserId = req.params.id;
+    const currentUserId = req.user.id;
+  
+    // prevent following self
+    if (targetUserId === currentUserId) {
+      return next(new Errorhandler("You cannot follow yourself", 400));
+    }
+  
+    const targetUser = await User.findById(targetUserId);
+    const currentUser = await User.findById(currentUserId);
+  
+    if (!targetUser) {
+      return next(new Errorhandler("Target user not found", 404));
+    }
+    if (!currentUser) {
+      return next(new Errorhandler("Current user not found", 404));
+    }
+  
+    // check if already following
+    const isFollowing = currentUser.following.some(
+      (f) => f.user.toString() === targetUserId.toString()
+    );
+  
+    if (isFollowing) {
+      // unfollow: remove from both sides
+      currentUser.following = currentUser.following.filter(
+        (f) => f.user.toString() !== targetUserId.toString()
+      );
+      targetUser.followers = targetUser.followers.filter(
+        (f) => f.user.toString() !== currentUserId.toString()
+      );
+  
+      await currentUser.save();
+      await targetUser.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "User unfollowed",
+        followersCount: targetUser.followers.length,
+        followingCount: currentUser.following.length,
+      });
+    } else {
+      // follow: add to both sides
+      currentUser.following.push({ user: targetUserId, followedAt: Date.now() });
+      targetUser.followers.push({ user: currentUserId, followedAt: Date.now() });
+  
+      await currentUser.save();
+      await targetUser.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "User followed",
+        followersCount: targetUser.followers.length,
+        followingCount: currentUser.following.length,
+      });
+    }
+  });
+  

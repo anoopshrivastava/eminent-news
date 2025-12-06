@@ -31,7 +31,7 @@ const MobileHeader = () => {
 
     { label: "Shorts", to: "#", icon: <Clapperboard className="h-6 w-6" /> },
 
-    { label: "Profile", to: "#", icon: <UserRound className="h-6 w-6" /> },
+    { label: "Profile", to: "/my-profile", icon: <UserRound className="h-6 w-6" /> },
   ];
   
 

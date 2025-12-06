@@ -1,6 +1,7 @@
 export interface Editor {
     _id: string;
-    name?: string | null;
+    name: string | null;
+    followers: string[]
   }
   
   export interface News {
@@ -10,7 +11,7 @@ export interface Editor {
     category: ICategory,
     url:string,
     images: string[];
-    likes:number;
+    likes:string[];
     editor?: Editor | null;
     createdAt:string
   }

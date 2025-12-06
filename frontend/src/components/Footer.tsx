@@ -16,10 +16,10 @@ import { categories } from "@/types/news";
 
 const Footer: React.FC = () => {
   const quickLinks = [
-    { label: "About Us", to: "/about-us" },
-    { label: "Contact Us", to: "/contact-us" },
-    { label: "Disclaimer", to: "/disclaimer" },
-    { label: "Privacy Policy", to: "/privacy-policy" },
+    { label: "About Us", to: "#" },
+    { label: "Contact Us", to: "#" },
+    { label: "Disclaimer", to: "#" },
+    { label: "Privacy Policy", to: "#" },
   ];
   
   const socialLinks = [

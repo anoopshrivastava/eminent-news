@@ -7,7 +7,7 @@ const path = require("path");
 exports.uploadShort = async (req, res) => {
   try {
     const { title, description = "" } = req.body;
-    const editor = req.user && req.user.id;
+    const editor = req.user?.id;
 
     if (!editor) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
@@ -17,46 +17,49 @@ exports.uploadShort = async (req, res) => {
       return res.status(400).json({ success: false, message: "Video is required." });
     }
 
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "video",
-      folder: "shorts",
-      transformation: [
-        { quality: "auto" },
-      ],
-      eager: [
-        { width: 720, height: 1280, crop: "limit", format: "mp4", quality: "auto" },
-        { width: 480, height: 854, crop: "limit", format: "mp4", quality: "auto" }
-      ],
-      eager_async: true,
-    });
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "video",
+        folder: "shorts",
+        transformation: [{ quality: "auto" }],   // 🔥 compression
+        eager: [
+          { width: 720, height: 1280, crop: "limit", format: "mp4", quality: "auto" },
+          { width: 480, height: 854, crop: "limit", format: "mp4", quality: "auto" }
+        ],
+        eager_async: true,
+      },
+      async (error, result) => {
+        if (error) {
+          console.error("Cloudinary error", error);
+          return res.status(500).json({ success: false, message: "Cloudinary upload error" });
+        }
 
-    const short = await Short.create({
-      title,
-      description,
-      videoUrl: result.secure_url,
-      publicId: result.public_id,
-      videoMimeType: req.file.mimetype,
-      editor,
-    });
+        const short = await Short.create({
+          title,
+          description,
+          videoUrl: result.secure_url,
+          publicId: result.public_id,
+          videoMimeType: req.file.mimetype,
+          editor,
+        });
 
-    // Delete local uploaded file if exists
-    try {
-      const filePath = path.resolve(req.file.path);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    } catch (unlinkErr) {
-      console.warn("Failed to remove local upload:", unlinkErr);
-    }
+        return res.json({
+          success: true,
+          message: "Short uploaded successfully!",
+          short,
+        });
+      }
+    );
 
-    return res.json({
-      success: true,
-      message: "Short uploaded successfully!",
-      short,
-    });
+    // Use buffer instead of path
+    uploadStream.end(req.file.buffer);
+
   } catch (error) {
     console.error("uploadShort error:", error);
-    return res.status(500).json({ success: false, message: error.message || "Server Error" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Get all shorts 
 exports.getShorts = async (req, res) => {

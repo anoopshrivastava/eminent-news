@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { FiX, FiLoader } from "react-icons/fi";
 import { categories, type News } from "@/types/news";
+import api from "@/lib/axios";
 
 interface EditNewsModalProps {
   news: News;
@@ -40,11 +40,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({ news, onClose, setNews })
       data.append("category", formData.category);
       images.forEach((f) => data.append("images", f));
 
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news/${news._id}`,
-        data,
-        { withCredentials: true, headers: { "Content-Type": "multipart/form-data" } }
-      );
+      const response = await api.put(`/news/${news._id}`);
 
       const resData = response?.data ?? {};
       if (resData.success === true) {

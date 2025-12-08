@@ -6,8 +6,8 @@ import HeroCarousel from "./components/HeroCarousel";
 import { Flag, Flame, Globe2, Trophy } from "lucide-react";
 import FAQ from "@/components/FAQ";
 import { categories, type News } from "@/types/news";
-import axios from "axios";
 import Loading from "@/components/Loading";
+import api from "@/lib/axios";
 
 const featured = {
   _id: "ddlkfj",
@@ -40,10 +40,7 @@ const HomePage: React.FC = () => {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news`,
-        { withCredentials: true }
-      );
+      const response = await api.get(`/news`);
 
       const data = response?.data ?? {};
       if (data.success === true) {

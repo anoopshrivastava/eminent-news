@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { FiTrash } from "react-icons/fi";
 import EditNewsModal from "./EditNewsModal";
 import type { News } from "@/types/news";
+import api from "@/lib/axios";
 
 interface NewsCardProps {
   news: News;
@@ -17,10 +17,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
     if (!window.confirm("Are you sure you want to delete this news item?")) return;
 
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news/${news._id}`,
-        { withCredentials: true }
-      );
+      const response = await api.delete(`/news/${news._id}`);
 
       const resData = response?.data ?? {};
       if (resData.success === true) {

@@ -6,10 +6,10 @@ import SwipeButton from "./SwipeButton";
 import { Switch } from "./ui/switch";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutFailure, signOutStart, signOutSuccess } from "@/redux/authSlice";
-import axios from "axios";
 import toast from "react-hot-toast";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
+import api from "@/lib/axios";
 
 const Header = () => {
   const today = new Date().toLocaleDateString();
@@ -23,7 +23,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       dispatch(signOutStart());
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/logout`, { withCredentials: true });
+      const response = await api.get("/logout");
       if (response.data.success === false) {
         dispatch(signOutFailure(response.data.message));
         toast.error(response.data.message);

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { FiLoader, FiTrash2, FiCopy } from "react-icons/fi";
 import toast from "react-hot-toast";
 import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
+import api from "@/lib/axios";
 // import UpdateUserModal from "./UpdateUserModal"; // ensure correct import
 
 // ---------- TYPES ----------
@@ -35,10 +35,7 @@ function AllEditors() {
   const fetchEditors = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<FetchEditorsResponse>(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/admin/editors?searchKey=${search}`,
-        { withCredentials: true }
-      );
+      const response = await api.get<FetchEditorsResponse>(`/admin/editors?searchKey=${search}`);
 
       if (response.data?.success) {
         setEditors(response.data.users);
@@ -57,10 +54,7 @@ function AllEditors() {
 
     setDeleting(id);
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/admin/user/${id}`,
-        { withCredentials: true }
-      );
+      const response = await api.delete(`/admin/user/${id}`);
 
       if (response.data?.success) {
         setEditors((prev) => prev.filter((editor) => editor._id !== id));

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {  Rss } from "lucide-react";
-import logo from "../assets/logo2.png";
+import logo from "../assets/logo-white.png";
 import {
   FaXTwitter,
   FaTelegram,
@@ -20,6 +20,7 @@ const Footer: React.FC = () => {
     { label: "Contact Us", to: "#" },
     { label: "Disclaimer", to: "#" },
     { label: "Privacy Policy", to: "#" },
+    { label: "Admin Login", to: "/admin/news" },
   ];
   
   const socialLinks = [
@@ -109,7 +110,7 @@ const Footer: React.FC = () => {
         <div className="mx-auto px-4 md:px-12 pb-6 md:pb-12 grid md:grid-cols-4 gap-12 md:gap-0">
           {/* ---- ABOUT SECTION ---- */}
           <div>
-            <img src={logo} alt="TEN" className="h-16 mb-4" />
+            <img src={logo} alt="TEN" className="h-20 mb-4" />
             <p className="eading-relaxed">
               The Eminent News (TEN) provides daily current affairs news for
               competitive exams like UPSC, State Services & many others where

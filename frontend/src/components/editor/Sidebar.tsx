@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { signOutFailure, signOutStart, signOutSuccess } from '@/redux/authSlice/index';
-import axios from 'axios';
 import toast from 'react-hot-toast';
+import api from '@/lib/axios';
 
 const Sidebar = () => {
   const nav = [
@@ -24,7 +24,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       dispatch(signOutStart());
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/v1/logout`, { withCredentials: true });
+      const response = await api.get(`/logout`);
       if (response.data.success === false) {
         dispatch(signOutFailure(response.data.message));
         toast.error(response.data.message);
@@ -55,7 +55,7 @@ const Sidebar = () => {
           to={item.href}
           key={item.href}
           className={({ isActive }) =>
-            `flex items-center w-48 gap-2 pl-2 py-2 font-semibold rounded-sm transition-colors duration-300
+            `flex items-center w-56 gap-2 pl-2 py-2 font-semibold rounded-sm transition-colors duration-300
              ${isActive ? 'bg-[#626eb1]  text-white border-l-4 border-[#55497d] ' : 'hover:text-blue-700 border-l-4 border-transparent'}`
           }
         >

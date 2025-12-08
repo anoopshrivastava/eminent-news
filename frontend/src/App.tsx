@@ -17,6 +17,9 @@ import EditorDashboard from "./pages/editor/EditorDashboard";
 import AllUsers from "./pages/admin/AllUsers";
 import ProfilePage from "./pages/profile/ProfilePage";
 import PrivateRoute from "./components/PrivateRoute";
+import NewsPage from "./pages/news/NewsPage";
+import ShortsManager from "./pages/admin/Shorts";
+import ShortsReel from "./pages/shorts/ShortReels";
 
 function App() {
   return (
@@ -32,6 +35,8 @@ function App() {
         {/* <Route element={<PrivateRoute />}> */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/shorts" element={<ShortsReel />} />
             <Route element={<PrivateRoute />}>
               <Route path="/my-profile" element={<ProfilePage />} />
             </Route>
@@ -46,6 +51,7 @@ function App() {
             <Route path="/admin/news" element={<AdminDashboard />} />
             <Route path="/admin/editors" element={<AllEditors />} />
             <Route path="/admin/users" element={<AllUsers />} />
+            <Route path="/admin/shorts" element={<ShortsManager />} />
             {/* <Route path="/admin/orders" element={<AllOrders />} /> */}
             
           </Route>

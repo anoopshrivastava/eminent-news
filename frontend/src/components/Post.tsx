@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
-import axios from "axios";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
+import api from "@/lib/axios";
 
 const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
   const newsId = news._id
@@ -56,11 +56,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
     setLikesCount((prev) => (willLike ? prev + 1 : Math.max(0, prev - 1)));
 
     try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news/${newsId}/like`,
-        {},
-        { withCredentials: true }
-      );
+      const res = await api.put(`/news/${newsId}/like`);
       // server may return counts; prefer server data if present
       if (res?.data?.likesCount !== undefined) {
         setLikesCount(res.data.likesCount);
@@ -97,11 +93,8 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
     const willFollow = !followed;
 
     try {
-      const res = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/user/${editorId}/follow`,
-        {},
-        { withCredentials: true }
-      );
+      const res = await api.put(`/user/${editorId}/follow`);
+
       toast.success(res?.data?.message || (willFollow ? "Following" : "Unfollowed"));
       fetchNews?.()
       // setFollowed(willFollow);

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FiLoader } from "react-icons/fi";
 import useDebounce from "@/lib/useDebounce";
 import AddNewsModal from "@/components/admin/AddNewsModal";
 import SearchInput from "@/components/SearchInput";
 import Card from "@/components/admin/Card";
 import { categories, type News } from "@/types/news";
+import api from "@/lib/axios";
 
 const AdminDashboard: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -19,12 +19,7 @@ const AdminDashboard: React.FC = () => {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news?searchKey=${encodeURIComponent(
-          debouncedSearch
-        )}&category=${encodeURIComponent(category)}`,
-        { withCredentials: true }
-      );
+      const response = await api.get(`/news?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}`);
 
       const data = response?.data ?? {};
       if (data.success === true) {

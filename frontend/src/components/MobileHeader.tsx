@@ -15,7 +15,7 @@ const MobileHeader = () => {
 
     {
       label: "News",
-      to: "#",
+      to: "/news",
       icon: <NewspaperIcon className="h-6 w-6" />,
     },
     
@@ -29,7 +29,7 @@ const MobileHeader = () => {
       ),
     },
 
-    { label: "Shorts", to: "#", icon: <Clapperboard className="h-6 w-6" /> },
+    { label: "Shorts", to: "/shorts", icon: <Clapperboard className="h-6 w-6" /> },
 
     { label: "Profile", to: "/my-profile", icon: <UserRound className="h-6 w-6" /> },
   ];

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import axios from "axios";
 import {
   signInStart,
   signInSuccess,
@@ -9,6 +8,7 @@ import {
 } from "@/redux/authSlice/index";
 import { toast } from "react-hot-toast";
 import img from "../../assets/loginImg.png";
+import api from "@/lib/axios";
 
 const SignupPage = () => {
   const { role } = useParams();
@@ -37,8 +37,7 @@ const SignupPage = () => {
 
     try {
       dispatch(signInStart());
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/register`,
+      const response = await api.post(`/register`,
         role === "editor"
           ? { ...formData, role }
           : {
@@ -48,7 +47,6 @@ const SignupPage = () => {
               phone: formData.phone,
               role,
             },
-        { withCredentials: true }
       );
 
       if (response.data.success === false) {

@@ -98,23 +98,23 @@ const ProfilePage: React.FC = () => {
           </div>
 
           {/* stats */}
-          <div className="mt-4 flex items-center gap-6 text-sm md:text-base">
+          <div className="mt-4 flex items-center gap-6 ">
             {/* <div>
               <div className="font-semibold text-gray-900">12</div>
               <div className="text-gray-500">Posts</div>
             </div> */}
             <div>
-              <div className="font-semibold text-gray-900">{followersCount}</div>
+              <div className="font-semibold text-gray-900 text-center">{followersCount}</div>
               <div className="text-gray-500">Followers</div>
             </div>
             <div>
-              <div className="font-semibold text-gray-900">{followingCount}</div>
+              <div className="font-semibold text-gray-900 text-center">{followingCount}</div>
               <div className="text-gray-500">Following</div>
             </div>
           </div>
 
           {/* bio desktop */}
-          <div className="hidden md:block mt-4 text-sm md:text-base text-gray-700">
+          <div className="hidden md:block mt-4 text-gray-700">
             <p className="font-medium">{user.name} • {user.role}</p>
             <p className="text-sm text-gray-600 mt-1">Joined {formatDate(user.createdAt)}</p>
             <p className="mt-3 text-gray-600">This is a short bio. Add your location, interests or a short description here.</p>
@@ -137,12 +137,12 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* bio - mobile view */}
-      <div className="block md:hidden mt-4 text-sm md:text-base text-gray-700">
-            <p className="font-medium">{user.name} • {user.role}</p>
+      <div className="block md:hidden mt-4 text-gray-700">
+            <p className="font-medium text-lg">{user.name} • {user.role}</p>
             <p className="text-sm text-gray-600 mt-1">Joined {formatDate(user.createdAt)}</p>
-            <p className="mt-3 text-gray-600">This is a short bio. Add your location, interests or a short description here.</p>
+            <p className="mt-3 text-gray-600 text-sm">This is a short bio. Add your location, interests or a short description here.</p>
 
-            <div className="mt-3 flex items-center gap-3 text-sm text-gray-600">
+            <div className="mt-3 flex items-center gap-3 text-gray-600">
               {user.phone && (
                 <div className="flex items-center gap-1">
                   <Mail size={14} />

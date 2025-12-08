@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { FiLoader, FiTrash2, FiCopy } from "react-icons/fi";
 import toast from "react-hot-toast";
 import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
+import api from "@/lib/axios";
 // import UpdateUserModal from "./UpdateUserModal"; // ensure correct import
 
 // ---------- TYPES ----------
@@ -35,10 +35,7 @@ function AllUsers() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get<FetchUsersResponse>(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/admin/users?searchKey=${search}`,
-        { withCredentials: true }
-      );
+      const response = await api.get<FetchUsersResponse>(`/admin/users?searchKey=${search}`);
 
       if (response.data?.success) {
         setUsers(response.data.users);
@@ -57,10 +54,7 @@ function AllUsers() {
 
     setDeleting(id);
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/admin/user/${id}`,
-        { withCredentials: true }
-      );
+      const response = await api.delete(`/admin/user/${id}`);
 
       if (response.data?.success) {
         setUsers((prev) => prev.filter((user) => user._id !== id));

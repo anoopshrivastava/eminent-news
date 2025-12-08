@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Card from "../../components/admin/Card";
-import axios from "axios";
 import { FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -8,6 +7,7 @@ import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
 import AddNewsModal from "@/components/admin/AddNewsModal";
 import { categories, type News } from "@/types/news";
+import api from "@/lib/axios";
 
 const EditorDashboard = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -35,10 +35,7 @@ const EditorDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/editor/news/${editorId}?searchKey=${debouncedSearch}&category=${category}`,
-        { withCredentials: true }
-      );
+      const response = await api.get(`/editor/news/${editorId}?searchKey=${debouncedSearch}&category=${category}`);
 
       const data = response?.data ?? {};
       if (data.success === true) {

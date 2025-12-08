@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { FiX, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { categories, type News } from "@/types/news";
 import { compressFile } from "@/lib/compression";
+import api from "@/lib/axios";
 
 interface AddNewsModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -68,8 +68,7 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
       images.forEach((img) => data.append("images", img));
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/v1/news/create`,
+      const response = await api.post("/news/create",
         data,
         {
           withCredentials: true,

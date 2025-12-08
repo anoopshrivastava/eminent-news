@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import img from "../../assets/loginImg.png";
 import { useDispatch } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from "@/redux/authSlice/index";
 import toast from "react-hot-toast";
+import api from "@/lib/axios";
 
 
 const LoginPage = () => {
@@ -29,10 +29,10 @@ const LoginPage = () => {
     try {
       dispatch(signInStart());
 
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/v1/login`, {
+      const response = await api.post(`/login`, {
         email,
         password,
-      },{withCredentials:true});
+      });
       if(response.data.success === false){
         dispatch(signInFailure(response.data.message))
         toast.error(response.data.message)

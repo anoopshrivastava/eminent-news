@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Home,
   Clapperboard,
-  Plus,
+  // Plus,
   UserRound,
   NewspaperIcon,
 } from "lucide-react";
@@ -11,7 +11,7 @@ const MobileHeader = () => {
   const location = useLocation();
   
   const navItems = [
-    { label: "Home", to: "/", icon: <Home className="h-6 w-6" /> },
+    { label: "Home", to: "/home", icon: <Home className="h-6 w-6" /> },
 
     {
       label: "News",
@@ -19,15 +19,15 @@ const MobileHeader = () => {
       icon: <NewspaperIcon className="h-6 w-6" />,
     },
     
-    {
-      label: "",
-      to: "#",
-      icon: ( 
-        <div className="h-11 w-12 bg-gray-200 rounded-full flex items-center justify-center shadow">
-          <Plus className="h-7 w-7" />
-        </div>
-      ),
-    },
+    // {
+    //   label: "",
+    //   to: "#",
+    //   icon: ( 
+    //     <div className="h-11 w-12 bg-gray-200 rounded-full flex items-center justify-center shadow">
+    //       <Plus className="h-7 w-7" />
+    //     </div>
+    //   ),
+    // },
 
     { label: "Shorts", to: "/shorts", icon: <Clapperboard className="h-6 w-6" /> },
 

@@ -58,7 +58,7 @@ const Header = () => {
           <h1 className="text-red-500 text-xl md:text-3xl font-extrabold tracking-tight">
             The Eminent News
           </h1>
-          <div className="text-lg -mt-1 text-gray-500">Empowering wisdom</div>
+          <h3 className="text-lg -mt-1 text-gray-500">Empowering wisdom</h3>
         </div>
 
         <SwipeButton onSuccess={() => console.log("swiped")} />
@@ -85,14 +85,14 @@ const Header = () => {
               </Link>
             </li>
             }
-            <li>
+            {/* <li>
               <Link
                 to="#"
                 className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2"
               >
                 Subscribe
               </Link>
-            </li>
+            </li> */}
             <li>
               <button
                 aria-label="Change language"

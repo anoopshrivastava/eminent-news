@@ -20,6 +20,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import NewsPage from "./pages/news/NewsPage";
 import ShortsManager from "./pages/admin/Shorts";
 import ShortsReel from "./pages/shorts/ShortReels";
+import LandingPage from "./pages/landing-page/LandingPage";
 
 function App() {
   return (
@@ -31,10 +32,11 @@ function App() {
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/:role" element={<SignupPage />} />
+        <Route path="/" element={<LandingPage />} />
 
         {/* <Route element={<PrivateRoute />}> */}
           <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/news" element={<NewsPage />} />
             <Route path="/shorts" element={<ShortsReel />} />
             <Route element={<PrivateRoute />}>

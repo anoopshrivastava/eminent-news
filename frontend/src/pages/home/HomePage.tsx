@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Post from "@/components/Post";
+// import Post from "@/components/Post";
 import img4 from "@/assets/w1.jpeg";
-import HeroCarousel from "./components/HeroCarousel";
+// import HeroCarousel from "./components/HeroCarousel";
 import { Flag, Flame, Globe2, Trophy } from "lucide-react";
 import FAQ from "@/components/FAQ";
 import { categories, type News } from "@/types/news";
 import Loading from "@/components/Loading";
 import api from "@/lib/axios";
+import PostX from "@/components/PostX";
 
 const featured = {
   _id: "ddlkfj",
@@ -80,10 +81,10 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen md:py-2">
       {/* Hero / Featured Section*/}
-      <HeroCarousel posts={groupedNews.national} />
-      <div className=" md:px-8 mx-4 md:mx-20">
+      {/* <HeroCarousel posts={groupedNews.national} /> */}
+      <div className=" md:px-8 mx-4 md:mx-10">
         {/* Introduction Section (Styled) */}
-        <section className="container mx-auto py-6">
+        {/* <section className="container mx-auto py-6">
           <blockquote className="border-l-4 border-red-500 pl-4 py-2 bg-white shadow-md rounded-md">
             <p className="text-gray-700 italic text-lg leading-relaxed">
               "The Eminent News (TEN) provides daily current affairs news for
@@ -91,12 +92,12 @@ const HomePage: React.FC = () => {
               **Learn, Leap & Lead** with quality content & better results."
             </p>
           </blockquote>
-        </section>
+        </section> */}
 
-        <hr className="my-4 border-t border-gray-200" />
+        {/* <hr className="my-4 border-t border-gray-200" /> */}
 
         {/* Mobile Tabbed News Section (Consolidated Categories) */}
-        <section className="block md:hidden container mx-auto">
+        <section className="block md:hidden container mx-auto mt-6">
           <div className="pb-6">
             <h2 className="text-3xl font-bold text-gray-800 border-b-2 border-red-500 inline-block pb-1">
               Explore Categories 📰
@@ -124,7 +125,7 @@ const HomePage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {groupedNews[key as keyof typeof groupedNews]?.length ? (
                       groupedNews[key as keyof typeof groupedNews].map((item: News) => (
-                        <Post key={item._id} news={item} fetchNews={fetchNews} />
+                        <PostX key={item._id} news={item} fetchNews={fetchNews} />
                       ))
                     ) : (
                       <p className="col-span-4 text-center text-gray-500 p-10">
@@ -142,7 +143,7 @@ const HomePage: React.FC = () => {
         {/* desktop mode */}
         <section className="hidden md:flex flex-col gap-4 container mx-auto py-4">
           <div className="flex gap-10">
-            <div className="w-3/4 space-y-12">
+            <div className="w-[70%] space-y-12">
               {/* trending news section */}
               {groupedNews.trending.length > 0 && <div>
                 <h3 className="bg-red-500 py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
@@ -151,7 +152,7 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.trending.map((news) => (
-                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
+                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>}
@@ -164,7 +165,7 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.national.map((news) => (
-                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
+                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>
@@ -178,14 +179,14 @@ const HomePage: React.FC = () => {
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {groupedNews.world.map((news) => (
-                    <Post key={news._id} news={news} fetchNews={fetchNews}/>
+                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
                   ))}
                 </div>
               </div>
               }
             </div>
 
-            <div className="w-1/4">
+            <div className="w-[30%]">
               <div className="mb-2">
                 <h3 className="bg-black py-2 px-4 text-xl text-white font-bold rounded-full flex items-center gap-2">
                   <span className="text-2xl">⚡</span> Latest News
@@ -219,20 +220,32 @@ const HomePage: React.FC = () => {
                     key={item._id}
                     className="flex items-start gap-3 border-b pb-3 last:border-none"
                   >
+
+                     {/* Image */}
+                     <img
+                      src={item.images[0]}
+                      alt={item.title}
+                      className="w-28 h-28 rounded object-cover"
+                    />
+
                     {/* Content */}
                     <div className="flex-1">
                       <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-1">{item.createdAt}</p>
+                      <p className="text-[10px] text-gray-500 mt-1">By {item.editor?.name} / {item.createdAt.split("T")[0]}</p>
+                      <p className="text-[10px] line-clamp-2">{item.description}</p>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block text-red-500 font-medium text-sm "
+                      >
+                        Read more →
+                      </a>
                     </div>
 
-                    {/* Image */}
-                    <img
-                      src={item.images[0]}
-                      alt={item.title}
-                      className="w-20 h-14 rounded object-cover"
-                    />
+                   
                   </div>
                 ))}
               </div>
@@ -247,7 +260,7 @@ const HomePage: React.FC = () => {
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {groupedNews.sports.map((news) => (
-                <Post key={news._id} news={news} fetchNews={fetchNews}/>
+                <PostX key={news._id} news={news} fetchNews={fetchNews}/>
               ))}
             </div>
           </div>

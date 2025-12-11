@@ -16,7 +16,8 @@ import { categories } from "@/types/news";
 
 const Footer: React.FC = () => {
   const quickLinks = [
-    { label: "About Us", to: "#" },
+    { label: "Home", to: "/home" },
+    { label: "About Us", to: "/" },
     { label: "Contact Us", to: "#" },
     { label: "Disclaimer", to: "#" },
     { label: "Privacy Policy", to: "#" },

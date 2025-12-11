@@ -45,20 +45,21 @@ const Header = () => {
       {/* Top big header row */}
       <div className="hidden md:flex items-center justify-between border-b border-gray-200 bg-white px-16 py-1 select-none shadow">
         {/* Left: Date + Logo */}
-        <span className="text-lg text-gray-600 font-semibold">
-          Date: {today}
-        </span>
-
+        
         <Link to="/" className="flex items-center">
           <img src={logo} alt="TEN Logo" className="h-12" />
         </Link>
+
+        <span className="text-lg text-gray-600 font-semibold">
+          Date: {today}
+        </span>
 
         {/* Center: Title */}
         <div className="text-center">
           <h1 className="text-red-500 text-xl md:text-3xl font-extrabold tracking-tight">
             The Eminent News
           </h1>
-          <h3 className="text-lg -mt-1 text-gray-500">Empowering wisdom</h3>
+          <h3 className="text-lg -mt-1 text-gray-500">Empowering Wisdom</h3>
         </div>
 
         <SwipeButton onSuccess={() => console.log("swiped")} />
@@ -158,9 +159,9 @@ const Header = () => {
 
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="TEN Logo" className="h-8" />
-            <span className="text-xs font-bold text-wrap max-w-16">
+            <h3 className="text-xs font-bold text-wrap max-w-16">
               Empowering Wisdom
-            </span>
+            </h3>
           </Link>
         </div>
         

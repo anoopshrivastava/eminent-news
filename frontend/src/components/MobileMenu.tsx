@@ -16,16 +16,16 @@ export const categories = [
   "Trending",
   "Sports",
   "Entertainment",
-  "Education",
+  "Exam Update",
 ];
 
 const subCategoriesMap: Record<string, string[]> = {
   National: ["Daily Short News", "State News", "Government Scheme", "Economy & Business", "Judicial News", "Social Justice", "Indian Society", "Internal Security", "Editorial", "Essays"],
   World: ["World News", "Bilateral Relations", "World Organizations", "World Indexes & Reports","Conferences, meeting & Summits", "Space Technology", "Defense News", "Innovation & Technology", "Environment"],
-  Trending: ["Viral News", "Social Media", "Tech Buzz", "Top Stories"],
+  Trending: ["Honors and Awards", "Books & Authors", "Brand Ambassadors", "Eminent", "Health & Disease", "Important Days and Themes", "GI Tags", "Fairs, Festivals & Exhibitions"],
   Sports: ["Indian Sports", "Team 11", "Athelatic Events", "Olympic Games", "Sports Persons"],
-  Entertainment: ["Bollywood", "Hollywood", "TV Shows", "Celebrities"],
-  Education: ["Exam Notification", "Job Notification", "Q/A", "Magazines", "Podcast", "TEN updates"],
+  Entertainment: ["Automobiles", "Gadget", "Lovey Dovey", "Startups", "Travel"],
+  "Exam Update": ["Exam Notification", "Job Notification", "Q/A", "Magazines", "Podcast", "TEN updates"],
 };
 
 const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
@@ -41,7 +41,7 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
       <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
 
       {/* Sidebar */}
-      <div className="absolute left-0 top-0 h-full w-72 bg-white shadow-lg p-5 flex flex-col">
+      <div className="absolute left-0 top-0 h-screen w-72 bg-white shadow-lg p-5 flex flex-col overflow-y-scroll">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <img src={logo} alt="TEN Logo" className="h-12" />

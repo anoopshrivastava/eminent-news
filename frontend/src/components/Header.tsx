@@ -56,7 +56,7 @@ const Header = () => {
 
         {/* Center: Title */}
         <div className="text-center">
-          <h1 className="text-red-500 text-xl md:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-[#f40607] text-xl md:text-3xl font-extrabold tracking-tight">
             The Eminent News
           </h1>
           <h3 className="text-lg -mt-1 text-gray-500">Empowering Wisdom</h3>
@@ -71,7 +71,7 @@ const Header = () => {
               <li>
                 <span
                  onClick={handleLogout}
-                 className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2 cursor-pointer">
+                 className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2 cursor-pointer">
                 Logout
                 </span>
                
@@ -80,7 +80,7 @@ const Header = () => {
               <li>
               <Link
                 to="/login"
-                className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2"
+                className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2"
               >
                 Login
               </Link>
@@ -89,7 +89,7 @@ const Header = () => {
             {/* <li>
               <Link
                 to="#"
-                className="text-blue-700 underline hover:text-red-500 transition font-medium flex items-center gap-2"
+                className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2"
               >
                 Subscribe
               </Link>
@@ -97,7 +97,7 @@ const Header = () => {
             <li>
               <button
                 aria-label="Change language"
-                className="flex items-center gap-2 underline text-blue-700 hover:text-red-500 transition font-medium"
+                className="flex items-center gap-2 underline text-blue-700 hover:text-[#f40607] transition font-medium"
               >
                 Language
               </button>
@@ -109,7 +109,7 @@ const Header = () => {
       </div>
 
       {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
-      <div className="hidden md:block w-full bg-red-500 px-16 py-2 shadow-sm">
+      <div className="hidden md:block w-full bg-[#f40607] px-16 py-2 shadow-sm">
         <div className="flex items-center mx-auto">
           {/* left group */}
           <div className="flex items-center gap-3">

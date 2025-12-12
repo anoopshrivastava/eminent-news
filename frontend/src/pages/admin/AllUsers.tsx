@@ -10,6 +10,7 @@ import api from "@/lib/axios";
 export interface User {
   _id: string;
   name: string;
+  username: string;
   email: string;
   phone: string;
   followers:string[];
@@ -100,6 +101,7 @@ function AllUsers() {
             <thead className="bg-blue-700 text-white">
               <tr>
                 <th className="py-3 px-2 text-left">Name</th>
+                <th className="py-3 px-2 text-left">Username</th>
                 <th className="py-3 px-2 text-left">Email</th>
                 <th className="py-3 px-2 text-left">Phone</th>
                 <th className="py-3 px-2 text-left">Following</th>
@@ -113,6 +115,7 @@ function AllUsers() {
               {users.map((user) => (
                 <tr key={user._id} className="border-b hover:bg-blue-50">
                   <td className="py-3 px-2">{user.name}</td>
+                  <td className="py-3 px-2">{user.username}</td>
                   <td className="py-3 px-2">{user.email}</td>
                   <td className="py-3 px-2">{user.phone}</td>
 
@@ -134,12 +137,12 @@ function AllUsers() {
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(user._id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-[#f40607] hover:text-red-700"
                       disabled={deleting === user._id}
                       title="Delete User"
                     >
                       {deleting === user._id ? (
-                        <FiLoader className="animate-spin text-red-500" />
+                        <FiLoader className="animate-spin text-[#f40607]" />
                       ) : (
                         <FiTrash2 />
                       )}

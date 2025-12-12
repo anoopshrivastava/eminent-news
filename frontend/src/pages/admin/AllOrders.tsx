@@ -231,12 +231,12 @@
 //                     </button>
 //                     <button
 //                       onClick={() => handleDelete(order._id)}
-//                       className="text-red-500 hover:text-red-700 focus:outline-none cursor-pointer"
+//                       className="text-[#f40607] hover:text-red-700 focus:outline-none cursor-pointer"
 //                       disabled={deleting === order._id}
 //                       title="Delete order"
 //                     >
 //                       {deleting === order._id ? (
-//                         <FiLoader className="animate-spin text-red-500" />
+//                         <FiLoader className="animate-spin text-[#f40607]" />
 //                       ) : (
 //                         <FiTrash2 />
 //                       )}

@@ -11,11 +11,11 @@ const Sidebar = () => {
       label: 'News',
       href: '/editor/news',
     },
-    // {
-    //   icon: "#",
-    //   label: 'Orders',
-    //   href: '/seller/orders',
-    // }
+    {
+      icon: "#",
+      label: 'Shorts',
+      href: '/editor/shorts',
+    }
   ];
 
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const Sidebar = () => {
 
     <div className="h-32 flex justify-center items-center gap-2 ">
       {/* <img src={logo} alt="" className='h-9 -ml-1'/> */}
-      <h1 className="text-blue-900 text-2xl font-bold mb-3">Seller Dashboard</h1>
+      <h1 className="text-blue-900 text-2xl font-bold mb-3">Editor Dashboard</h1>
     </div>
 
       <div className="flex flex-col w-full h-full px-4 gap-5 text-center py-3 items-center ">

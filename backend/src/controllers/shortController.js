@@ -1,16 +1,20 @@
 const Short = require("../models/shortsModel");
 const cloudinary = require("../config/cloudinary");
-const fs = require("fs");
-const path = require("path");
+const Errorhandler = require("../utils/errorhander");
 
 // Upload short 
 exports.uploadShort = async (req, res) => {
   try {
     const { title, description = "" } = req.body;
     const editor = req.user?.id;
+    const role = req.user?.role;
 
     if (!editor) {
       return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    if(!role || !role === "editor" || !role === "admin"){
+      return res.status(401).json({success:false, message: "only editor or admin can upload shorts video."})
     }
 
     if (!req.file) {
@@ -66,6 +70,26 @@ exports.getShorts = async (req, res) => {
   try {
    
     const shorts = await Short.find()
+      .populate("editor", "name email")
+      .sort({ createdAt: -1 });
+
+    return res.json({ success: true, shorts });
+  } catch (error) {
+    console.error("getShorts error:", error);
+    return res.status(500).json({ success: false, message: error.message || "Server Error" });
+  }
+};
+
+exports.getMyShorts = async (req, res, next) => {
+  try {
+   
+    const userId = req.user._id;
+
+    if (!userId) {
+        return next(new Errorhandler("editor ID is required", 400));
+    }
+
+    const shorts = await Short.find({editor: userId})
       .populate("editor", "name email")
       .sort({ createdAt: -1 });
 

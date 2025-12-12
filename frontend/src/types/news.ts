@@ -1,6 +1,8 @@
 export interface Editor {
     _id: string;
-    name: string | null;
+    username: string
+    name: string;
+    email:string;
     followers: string[]
   }
   

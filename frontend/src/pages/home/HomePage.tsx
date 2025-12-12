@@ -111,7 +111,7 @@ const HomePage: React.FC = () => {
                 <TabsTrigger
                   key={category}
                   value={category}
-                  className={`py-2 data-[state=active]:bg-red-500 data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold ${index === 0 && "ml-36"}`}
+                  className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold ${index === 0 && "ml-36"}`}
                 >
                   {category}
                 </TabsTrigger>
@@ -146,7 +146,7 @@ const HomePage: React.FC = () => {
             <div className="w-[70%] space-y-12">
               {/* trending news section */}
               {groupedNews.trending.length > 0 && <div>
-                <h3 className="bg-red-500 py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
+                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
                   <Flame size={22} />
                   Trending News
                 </h3>
@@ -159,7 +159,7 @@ const HomePage: React.FC = () => {
 
               {/* national news section */}
               {groupedNews.national.length > 0 && <div>
-                <h3 className="bg-black py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
+                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
                   <Flag size={22} />
                   National News
                 </h3>
@@ -173,7 +173,7 @@ const HomePage: React.FC = () => {
 
               {/* world news section */}
               {groupedNews.world.length > 0 && <div>
-                <h3 className="bg-red-500 py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
+                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
                   <Globe2 size={22} />
                   World News
                 </h3>
@@ -188,7 +188,7 @@ const HomePage: React.FC = () => {
 
             <div className="w-[30%]">
               <div className="mb-2">
-                <h3 className="bg-black py-2 px-4 text-xl text-white font-bold rounded-full flex items-center gap-2">
+                <h3 className="bg-[#f40607] py-2 px-4 text-xl text-white font-bold rounded-full flex items-center gap-2">
                   <span className="text-2xl">⚡</span> Latest News
                 </h3>
               </div>
@@ -239,7 +239,7 @@ const HomePage: React.FC = () => {
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-block text-red-500 font-medium text-sm "
+                        className="inline-block text-[#f40607] font-medium text-sm "
                       >
                         Read more →
                       </a>
@@ -254,7 +254,7 @@ const HomePage: React.FC = () => {
 
           {/* sports news section */}
           {groupedNews.sports.length > 0 && <div>
-            <h3 className="bg-black py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
+            <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
               <Trophy size={22} />
               Sports News
             </h3>

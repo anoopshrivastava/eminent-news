@@ -128,7 +128,7 @@ const Footer: React.FC = () => {
               {categories.map((cat) => (
                 <li
                   key={cat}
-                  className="hover:text-red-400 cursor-pointer transition"
+                  className="hover:text-[#f40607] cursor-pointer transition"
                 >
                   {cat}
                 </li>
@@ -141,7 +141,7 @@ const Footer: React.FC = () => {
             <h3 className="font-semibold text-xl mb-4">Quick Links</h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
-                <li key={link.to} className="hover:text-red-400 cursor-pointer">
+                <li key={link.to} className="hover:text-[#f40607] cursor-pointer">
                   <Link to={link.to}>{link.label}</Link>
                 </li>
               ))}

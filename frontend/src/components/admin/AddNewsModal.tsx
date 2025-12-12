@@ -120,7 +120,7 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
           </button>
         </div>
 
-        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        {error && <p className="text-[#f40607] text-sm mb-2">{error}</p>}
 
         <div className="flex flex-col md:flex-row justify-center md:gap-4">
           <div className="w-full md:w-1/2">

@@ -10,17 +10,49 @@ const ApiFeatures = require('../utils/apiFeatures.js')
 
 // creating a user --> Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
-    const { name, email, password, phone, avatar, role } = req.body;
+    const { name, username, email, password, phone, address, avatar, role } = req.body;
 
     if (!["user", "editor"].includes(role)) {
         return next(new Errorhandler("Role should be either 'user' or 'editor'", 402));
     }
 
+    if(!name || !username || !email || !password || !phone || !address){
+        return next( new Errorhandler("Please fill required fields !", 402));
+    }
+
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+
+    if (!usernameRegex.test(username)) {
+        return next( new Errorhandler( "Username can only contain letters, numbers, and underscore (no spaces or special characters).", 400 ));
+    }
+
+    const existing = await User.findOne({
+        $or: [
+            { username: username.toLowerCase() },
+            { email: email.toLowerCase() },
+            { phone }
+        ]
+    });
+
+    if (existing) {
+        if (existing.username === username.toLowerCase()) {
+            return next(new Errorhandler("Username already taken!", 400));
+        }
+        if (existing.email === email.toLowerCase()) {
+            return next(new Errorhandler("Email already registered!", 400));
+        }
+        if (existing.phone === phone) {
+            return next(new Errorhandler("Phone number already registered!", 400));
+        }
+    }
+
     let user = await User.create({
         name,
+        username,
         email,
         password,
         phone,
+        address,
         avatar: avatar || "sampleurl",
         role,
     });

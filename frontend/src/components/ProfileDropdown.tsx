@@ -57,7 +57,7 @@ export function ProfileDropdown({name}:{name:string}) {
 
         <DropdownMenuItem
           onClick={onLogout}
-          className="cursor-pointer text-red-600 focus:text-red-600"
+          className="cursor-pointer text-[#f40607] focus:text-[#f40607]"
         >
           <LogOutIcon className="mr-2 h-4 w-4" />
           Logout

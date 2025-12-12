@@ -109,7 +109,7 @@ export default function ShortUploadModal({ onUploaded }: Props) {
 
           {uploading && <Progress value={progress} className="mt-2" />}
 
-          {error && <div className="text-sm text-red-600">{error}</div>}
+          {error && <div className="text-sm text-[#f40607]">{error}</div>}
         </div>
 
         <DialogFooter>

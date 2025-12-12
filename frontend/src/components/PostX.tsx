@@ -3,7 +3,7 @@ import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
@@ -134,7 +134,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
             </span>
             <span>
               {" "}
-              @{news.editor?.name?.split(" ").join("").toLocaleLowerCase()}
+              @{news.editor?.username}
             </span>
           </div>
 
@@ -144,7 +144,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
             className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition 
               ${
                 followed
-                  ? "bg-red-500 border-red-500 text-white"
+                  ? "bg-[#f40607] border-red-500 text-white"
                   : "border-gray-300 text-gray-600 hover:bg-gray-100"
               }`}
           >
@@ -190,12 +190,12 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
           <button
             onClick={handleLike}
             disabled={loadingLike}
-            className="flex items-center gap-1 text-sm text-gray-700 hover:text-red-500 transition"
+            className="flex items-center gap-1 text-sm text-gray-700 hover:text-[#f40607] transition"
           >
             <Heart
               size={18}
               className={`${
-                liked ? "fill-red-500 text-red-500" : ""
+                liked ? "fill-red-500 text-[#f40607]" : ""
               } transition`}
             />
             {likesCount > 0 && <span>{likesCount}</span>}
@@ -215,14 +215,12 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
         </div>
 
         {/* Read More */}
-          <a
-            href={news.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-red-500 font-medium text-sm hover:underline "
+          <Link
+            to={`/news/${news._id}`}
+            className="inline-block text-[#f40607] font-medium text-sm hover:underline "
           >
             Read more →
-          </a>
+          </Link>
       </div>
     </div>
   );

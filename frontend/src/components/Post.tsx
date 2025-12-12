@@ -153,7 +153,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
             className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md border transition 
               ${
                 followed
-                  ? "bg-red-500 border-red-500 text-white"
+                  ? "bg-[#f40607] border-red-500 text-white"
                   : "border-gray-300 text-gray-600 hover:bg-gray-100"
               }`}
           >
@@ -176,11 +176,11 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
             <button
               onClick={handleLike}
               disabled={loadingLike}
-              className="flex items-center gap-1 text-sm text-gray-700 hover:text-red-500 transition"
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-[#f40607] transition"
             >
               <Heart
                 size={18}
-                className={`${liked ? "fill-red-500 text-red-500" : ""} transition`}
+                className={`${liked ? "fill-red-500 text-[#f40607]" : ""} transition`}
               />
               {likesCount > 0 && <span>{likesCount}</span>}
             </button>
@@ -200,7 +200,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
             href={news.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block text-red-500 font-medium text-sm hover:underline pt-1"
+            className="inline-block text-[#f40607] font-medium text-sm hover:underline pt-1"
           >
             Read more →
           </a>

@@ -21,6 +21,8 @@ import NewsPage from "./pages/news/NewsPage";
 import ShortsManager from "./pages/admin/Shorts";
 import ShortsReel from "./pages/shorts/ShortReels";
 import LandingPage from "./pages/landing-page/LandingPage";
+import EditorShorts from "./pages/editor/EditorShorts";
+import NewsDetail from "./pages/news-detail/NewsDetail";
 
 function App() {
   return (
@@ -38,6 +40,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/shorts" element={<ShortsReel />} />
             <Route element={<PrivateRoute />}>
               <Route path="/my-profile" element={<ProfilePage />} />
@@ -63,7 +66,7 @@ function App() {
         <Route element={<EditorRoute/>}>
           <Route element={<EditorLayout />}>
             <Route path="/editor/news" element={<EditorDashboard />} />
-            {/* <Route path="/seller/orders" element={<AllSellerOrders />} /> */}
+            <Route path="/editor/shorts" element={<EditorShorts />} />
           </Route>
         </Route>
 

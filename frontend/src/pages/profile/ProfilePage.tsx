@@ -6,6 +6,8 @@ import profile from "@/assets/profile.webp"
 type User = {
   _id?: string;
   name?: string;
+  username?: string,
+  address?: string,
   email?: string;
   avatar?: string;
   role?: string;
@@ -76,7 +78,10 @@ const ProfilePage: React.FC = () => {
 
         <div className="flex-1">
           <div className="flex items-center gap-4 flex-wrap">
-            <h1 className="text-2xl md:text-3xl font-semibold">{user.name}</h1>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-semibold">{user.name}</h1>
+              <h3 className="text-gray-500 text-sm">{user?.username ?? "-"}</h3>
+            </div>
 
             {/* actions */}
             {/* <div className="ml-auto flex items-center gap-2">
@@ -152,7 +157,7 @@ const ProfilePage: React.FC = () => {
 
               <div className="flex items-center gap-1">
                 <MapPin size={14} />
-                <span>Earth</span>
+                <span>{user.address}</span>
               </div>
             </div>
           </div>
@@ -160,7 +165,7 @@ const ProfilePage: React.FC = () => {
       {/* tabs */}
       {/* <div className="mt-6 border-b border-gray-100">
         <div className="flex gap-6 text-sm md:text-base text-gray-600">
-          <button className="pb-3 border-b-2 border-red-500 text-red-500">Posts</button>
+          <button className="pb-3 border-b-2 border-red-500 text-[#f40607]">Posts</button>
           <button className="pb-3 hover:text-gray-900">Saved</button>
           <button className="pb-3 hover:text-gray-900">Tagged</button>
         </div>

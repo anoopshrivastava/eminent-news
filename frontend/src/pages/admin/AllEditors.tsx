@@ -10,6 +10,7 @@ import api from "@/lib/axios";
 export interface Editor {
   _id: string;
   name: string;
+  username: string;
   email: string;
   phone: string;
   followers:string[];
@@ -100,6 +101,7 @@ function AllEditors() {
             <thead className="bg-blue-700 text-white">
               <tr>
                 <th className="py-3 px-2 text-left">Name</th>
+                <th className="py-3 px-2 text-left">Username</th>
                 <th className="py-3 px-2 text-left">Email</th>
                 <th className="py-3 px-2 text-left">Phone</th>
                 <th className="py-3 px-2 text-left">Following</th>
@@ -113,6 +115,7 @@ function AllEditors() {
               {editors.map((editor) => (
                 <tr key={editor._id} className="border-b hover:bg-blue-50">
                   <td className="py-3 px-2">{editor.name}</td>
+                  <td className="py-3 px-2">{editor.username}</td>
                   <td className="py-3 px-2">{editor.email}</td>
                   <td className="py-3 px-2">{editor.phone}</td>
 
@@ -134,12 +137,12 @@ function AllEditors() {
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(editor._id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-[#f40607] hover:text-red-700"
                       disabled={deleting === editor._id}
                       title="Delete Editor"
                     >
                       {deleting === editor._id ? (
-                        <FiLoader className="animate-spin text-red-500" />
+                        <FiLoader className="animate-spin text-[#f40607]" />
                       ) : (
                         <FiTrash2 />
                       )}

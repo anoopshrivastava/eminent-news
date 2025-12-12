@@ -44,7 +44,7 @@ const LoginPage = () => {
       const userRole = response.data.user.role;
       if (userRole === "admin") navigate('/admin/news');
       else if (userRole === "editor") navigate('/editor/news');
-      else navigate('/');
+      else navigate('/home');
 
     } catch (err:any) {
       console.error("Login Error:", err.response?.data || err.message);
@@ -87,7 +87,7 @@ const LoginPage = () => {
       <div className="flex md:items-center justify-center bg-white gap-3 p-4 md:p-8 rounded-lg shadow-sm w-[700px] md:w-[800px] h-[500px]">
         {isLogin ? <div className="w-full md:w-1/2">
           <h2 className="text-2xl font-bold mb-6 text-center text-red-700">WELCOME BACK</h2>
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p className="text-[#f40607] text-sm text-center">{error}</p>}
           {msg && <p className="text-green-500 text-sm text-center">{msg}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -116,7 +116,7 @@ const LoginPage = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-red-600 flex items-center justify-center"
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-[#f40607] flex items-center justify-center"
               disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}
@@ -137,7 +137,7 @@ const LoginPage = () => {
         </div>
         :
           <div className="flex flex-col pr-4 mb-4 min-w-40">
-            {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
+            {error && <p className="text-[#f40607] text-sm mb-4 text-center">{error}</p>}
             <label className="block text-gray-700 text-sm font-semibold mb-1 w-full pl-1" htmlFor="username">Enter Your Email:</label>
             <input
               type="email"

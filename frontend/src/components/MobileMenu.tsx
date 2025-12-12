@@ -61,7 +61,7 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
                   onClick={() =>
                     setOpenCategory(isOpen ? null : category)
                   }
-                  className="flex justify-between items-center w-full hover:text-red-500"
+                  className="flex justify-between items-center w-full hover:text-[#f40607]"
                 >
                   {category}
                   {isOpen ? (
@@ -79,7 +79,7 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
                         key={sub}
                         to={`/category/${category.toLowerCase()}/${sub.toLowerCase()}`}
                         onClick={onClose}
-                        className="hover:text-red-500"
+                        className="hover:text-[#f40607]"
                       >
                         {sub}
                       </Link>
@@ -97,12 +97,12 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
                 handleLogout?.();
                 onClose();
               }}
-              className="text-left hover:text-red-500 mt-4"
+              className="text-left hover:text-[#f40607] mt-4"
             >
               Logout
             </button>
           ) : (
-            <Link to="/login" onClick={onClose} className="hover:text-red-500 mt-4">
+            <Link to="/login" onClick={onClose} className="hover:text-[#f40607] mt-4">
               Login
             </Link>
           )}

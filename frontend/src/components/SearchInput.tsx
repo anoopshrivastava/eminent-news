@@ -37,7 +37,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
             e.preventDefault();
             onClear();
           }}
-          className="ml-2 text-sm font-semibold cursor-pointer text-gray-500 hover:text-red-500"
+          className="ml-2 text-sm font-semibold cursor-pointer text-gray-500 hover:text-[#f40607]"
           aria-label="clear search"
         >
           ╳

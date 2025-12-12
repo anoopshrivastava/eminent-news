@@ -90,7 +90,7 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
 });
 
 
-// Get product details
+// Get news details
 exports.getNewsDetails=catchAsyncError(async(req,res,next)=>{
     let news = await News.findById(req.params.id).populate('editor');
     

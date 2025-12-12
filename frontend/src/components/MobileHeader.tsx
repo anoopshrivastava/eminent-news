@@ -48,14 +48,14 @@ const MobileHeader = () => {
           >
             <div
               className={`${
-                isActive ? "text-red-500" : "text-black"
+                isActive ? "text-[#f40607]" : "text-black"
               } transition`}
             >
               {item.icon}
             </div>
             <span
               className={`text-[13px] font-medium ${
-                isActive ? "text-red-500" : "text-black"
+                isActive ? "text-[#f40607]" : "text-black"
               }`}
             >
               {item.label}

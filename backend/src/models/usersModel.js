@@ -11,6 +11,14 @@ const UsersSchema = new mongoose.Schema({
         minLength:[4,"Name should be atleast 4 characters"],
         maxLength:[30,"Name should not exceed 30 characters"],
     },
+    username:{
+        type:String,
+        required:[true,"Enter Your Username"],
+        unique: true,
+        trim: true,
+        lowercase: true,
+        match: /^[a-zA-Z0-9_]+$/, 
+    },
     email:{
         type:String,
         required:[true,"Enter Your Email"],
@@ -37,6 +45,10 @@ const UsersSchema = new mongoose.Schema({
     },
     phone: { 
         type: String 
+    },
+    verified:{
+        type: Boolean,
+        default: false,
     },
     followers: [
         {

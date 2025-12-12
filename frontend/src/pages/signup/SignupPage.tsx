@@ -9,6 +9,7 @@ import {
 import { toast } from "react-hot-toast";
 import img from "../../assets/loginImg.png";
 import api from "@/lib/axios";
+import { Input } from "@/components/ui/input";
 
 const SignupPage = () => {
   const { role } = useParams();
@@ -16,14 +17,11 @@ const SignupPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     phone: "",
-    storeName: "",
-    storeDescription: "",
-    storeAddress: "",
-    gstNumber: "",
-    businessType: "",
+    address: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -33,8 +31,13 @@ const SignupPage = () => {
 
   const handleSubmit = async (e:any) => {
     e.preventDefault();
+    
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(formData.username)) {
+      toast.error("Username can only contain letters, numbers, and underscore (no spaces or special characters)");
+      return;
+    }
     setLoading(true);
-
     try {
       dispatch(signInStart());
       const response = await api.post(`/register`,
@@ -42,9 +45,11 @@ const SignupPage = () => {
           ? { ...formData, role }
           : {
               name: formData.name,
+              username: formData.username,
               email: formData.email,
               password: formData.password,
               phone: formData.phone,
+              address: formData.address,
               role,
             },
       );
@@ -57,7 +62,7 @@ const SignupPage = () => {
 
       dispatch(signInSuccess(response.data.user));
       toast.success("Signup Successful");
-      navigate(role === "editor" ? "/editor/news" : "/");
+      navigate(role === "editor" ? "/editor/news" : "/home");
     } catch (err:any) {
       toast.error(err.response?.data?.message || "An error occurred");
       dispatch(
@@ -76,107 +81,68 @@ const SignupPage = () => {
             {role === "editor" ? "Editor Signup" : "User Signup"}
           </h2>
           <form onSubmit={handleSubmit}>
-            <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
-              <input
+            {/* <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}> */}
+              <Input
                 type="text"
                 name="name"
                 placeholder="Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full md:max-w-80 px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
-              <input
+              <Input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                required
+              />
+              <Input
                 type="number"
                 name="phone"
                 placeholder="Phone No"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full md:max-w-80  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
-            </div>
+            {/* </div> */}
 
-            <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
-              <input
+            {/* <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}> */}
+              <Input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full md:max-w-80  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
-              <input
+              <Input
+                type="text"
+                name="address"
+                placeholder="Address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                required
+              />
+              <Input
                 type="password"
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full md:max-w-80  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
-            </div>
-
-            {/* {role === "editor" && (
-              <>
-                <div className="flex flex-col md:flex-row gap-2">
-                  <input
-                    type="text"
-                    name="storeName"
-                    placeholder="Store Name"
-                    value={formData.storeName}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                    required
-                  />
-                  <select
-                    name="businessType"
-                    value={formData.businessType}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                    required
-                  >
-                    <option value="">Select Business Type</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Wholesale">Wholesale</option>
-                    <option value="E-commerce">E-commerce</option>
-                  </select>
-                </div>
-                <div className="flex flex-col md:flex-row gap-2">
-                  <input
-                    type="text"
-                    name="storeAddress"
-                    placeholder="Store Address"
-                    value={formData.storeAddress}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="gstNumber"
-                    placeholder="GST Number"
-                    value={formData.gstNumber}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                    required
-                  />
-                </div>
-
-                <textarea
-                  name="storeDescription"
-                  placeholder="Store Description"
-                  value={formData.storeDescription}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                  required
-                />
-              </>
-            )} */}
+            {/* </div> */}
             <button
               type="submit"
-              className="w-full md:max-w-80  bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-red-600 flex items-center justify-center"
+              className="w-full  bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-red-600 flex items-center justify-center"
               disabled={loading}
             >
               {loading ? "Signing up..." : "Sign Up"}

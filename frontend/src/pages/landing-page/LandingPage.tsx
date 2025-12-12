@@ -97,8 +97,8 @@ const LandingPage: React.FC = () => {
         </div>
 
         <nav className="flex space-x-8 text-gray-400 text-sm">
-          <Link to="/home" className="hover:text-red-500 cursor-pointer hover:underline">Read Now</Link>
-          <a className="hidden md:flex hover:text-red-500 cursor-pointer hover:underline">Blog</a>
+          <Link to="/home" className="hover:text-[#f40607] cursor-pointer hover:underline">Read Now</Link>
+          <a className="hidden md:flex hover:text-[#f40607] cursor-pointer hover:underline">Blog</a>
         </nav>
       </header>
 
@@ -130,7 +130,7 @@ const LandingPage: React.FC = () => {
 
       {/* Award Section */}
       <section className="flex flex-col items-center w-full max-w-7xl gap-12 py-20 md:py-40 px-0">
-        <h3 className="text-lg border-b border-red-300 text-red-500">Awards</h3>
+        <h3 className="text-lg border-b border-red-300 text-[#f40607]">Awards</h3>
         <div className="bg-gray-100 w-full flex flex-col items-center py-8 px-4">
           <img src={award} alt="" className="w-52 md:w-auto" />
           <p className="font-bold text-lg text-black text-center mt-4">
@@ -151,7 +151,7 @@ const LandingPage: React.FC = () => {
         className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 md:py-40 px-6 text-center md:text-left"
       >
         <div className="w-full">
-          <div className="font-semibold text-xl text-red-500 mb-6">
+          <div className="font-semibold text-xl text-[#f40607] mb-6">
             <h3>Your Personal App,</h3>
             <h3>Your Personalised Shorts.</h3>
           </div>
@@ -174,7 +174,7 @@ const LandingPage: React.FC = () => {
         className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 px-6 text-center md:text-left"
       >
         <div className="w-full">
-          <div className="font-semibold text-xl text-red-500 mb-6">
+          <div className="font-semibold text-xl text-[#f40607] mb-6">
             <h3>Explore an array of news</h3>
             <h3>categories, all in one place.</h3>
           </div>
@@ -197,7 +197,7 @@ const LandingPage: React.FC = () => {
         className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 px-6 text-center md:text-left"
       >
         <div className="w-full">
-          <div className="font-semibold text-xl text-red-500 mb-6">
+          <div className="font-semibold text-xl text-[#f40607] mb-6">
             <h3>Your favourite sources in</h3>
             <h3>one app TEN .</h3>
           </div>
@@ -210,7 +210,7 @@ const LandingPage: React.FC = () => {
 
       {/* Featured In */}
       <section className="flex flex-col items-center w-full max-w-7xl gap-12 py-20 md:py-40 px-0">
-        <h3 className="text-lg border-b border-red-300 text-red-500">As Featured In</h3>
+        <h3 className="text-lg border-b border-red-300 text-[#f40607]">As Featured In</h3>
         <div className="bg-gray-100 w-full flex flex-wrap justify-center gap-8 md:gap-10 py-10 md:py-20 px-4">
           {[award1, award2, award3, award4, award5].map((img, i) => (
             // keep the same markup; only added a key which is fine
@@ -223,19 +223,19 @@ const LandingPage: React.FC = () => {
 
       {/* Business Section */}
       <section className="flex flex-col items-center w-full max-w-7xl gap-12 pb-20 px-0">
-        <h3 className="text-lg border-b border-red-300 text-red-500">Best in the Business</h3>
+        <h3 className="text-lg border-b border-red-300 text-[#f40607]">Best in the Business</h3>
 
         <div className="bg-gray-100 w-full flex flex-col md:flex-row justify-around items-center gap-10 py-14 px-4 md:px-20">
 
           <div className="flex flex-col items-center text-center max-w-xs">
             <img src={rating} />
-            <h3 className="text-red-500 font-semibold mt-4">Loved by Users</h3>
+            <h3 className="text-[#f40607] font-semibold mt-4">Loved by Users</h3>
             <p className="text-gray-500">Rating of 4.6 on Playstore</p>
           </div>
-
+          
           <div className="flex flex-col items-center text-center max-w-xs">
             <img src={andLogo} />
-            <h3 className="text-red-500 font-semibold mt-4">Loved by app stores</h3>
+            <h3 className="text-[#f40607] font-semibold mt-4">Loved by app stores</h3>
             <p className="text-gray-500">
               Featured by Apple & Google
             </p>
@@ -243,7 +243,7 @@ const LandingPage: React.FC = () => {
 
           <div className="flex flex-col items-center text-center max-w-xs">
             <img src={publisher} />
-            <h3 className="text-red-500 font-semibold mt-4">Loved by publishers</h3>
+            <h3 className="text-[#f40607] font-semibold mt-4">Loved by publishers</h3>
             <p className="text-gray-500">
               30+ global content partners
             </p>

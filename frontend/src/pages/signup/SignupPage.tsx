@@ -77,7 +77,7 @@ const SignupPage = () => {
     <div className="min-h-screen flex items-center justify-center md:bg-gray-100">
       <div className="flex md:items-center justify-center bg-white gap-3 p-4 md:p-8 rounded-lg md:shadow-sm w-[700px] md:w-[900px] h-screen md:h-[500px]">
         <div className="w-full md:w-1/2 flex flex-col">
-          <h2 className="text-2xl font-bold mb-6 pt-16 md:pt-0 text-center text-red-700">
+          <h2 className="text-2xl font-bold mb-6 pt-16 md:pt-0 text-center text-[#f40607]">
             {role === "editor" ? "Editor Signup" : "User Signup"}
           </h2>
           <form onSubmit={handleSubmit}>
@@ -142,7 +142,7 @@ const SignupPage = () => {
             {/* </div> */}
             <button
               type="submit"
-              className="w-full  bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-red-600 flex items-center justify-center"
+              className="w-full  bg-gradient-to-r from-[#f40607] to-red-600 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-red-700 flex items-center justify-center"
               disabled={loading}
             >
               {loading ? "Signing up..." : "Sign Up"}

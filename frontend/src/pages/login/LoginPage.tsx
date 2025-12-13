@@ -86,7 +86,7 @@ const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center md:bg-gray-100">
       <div className="flex md:items-center justify-center bg-white gap-3 p-4 md:p-8 rounded-lg shadow-sm w-[700px] md:w-[800px] h-[500px]">
         {isLogin ? <div className="w-full md:w-1/2">
-          <h2 className="text-2xl font-bold mb-6 text-center text-red-700">WELCOME BACK</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center text-[#f40607]">WELCOME BACK</h2>
           {error && <p className="text-[#f40607] text-sm text-center">{error}</p>}
           {msg && <p className="text-green-500 text-sm text-center">{msg}</p>}
           <form onSubmit={handleSubmit}>
@@ -116,7 +116,7 @@ const LoginPage = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-red-600 to-red-700 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-[#f40607] flex items-center justify-center"
+              className="w-full bg-gradient-to-r from-[#f40607] to-red-600 font-bold text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-[#f40607] flex items-center justify-center"
               disabled={loading}
             >
               {loading ? "Logging in..." : "Login"}

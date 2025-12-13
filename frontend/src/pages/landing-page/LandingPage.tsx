@@ -16,7 +16,7 @@ import rating from '@/assets/rating.png'
 import andLogo from '@/assets/andlogo.png'
 import publisher from '@/assets/publisher.png'
 import { Link } from "react-router-dom";
-import Footer from "@/components/Footer";
+import Footer2 from "@/components/Footer2";
 
 const LandingPage: React.FC = () => {
   // refs for the three slider sections
@@ -260,7 +260,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      <Footer />
+      <Footer2 />
     </div>
   );
 };

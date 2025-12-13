@@ -9,19 +9,15 @@ import {
   FaFacebook,
   FaYoutube,
 } from "react-icons/fa6";
-
 import { FaLinkedin } from "react-icons/fa";
 import zoho from "@/assets/zoho.png"
-import { categories } from "@/types/news";
+// import { categories } from "@/types/news";
 
-const Footer: React.FC = () => {
+const Footer2: React.FC = () => {
   const quickLinks = [
     { label: "Home", to: "/home" },
     { label: "About Us", to: "/" },
-    { label: "Contact Us", to: "#" },
-    { label: "Disclaimer", to: "#" },
-    { label: "Privacy Policy", to: "#" },
-    { label: "Admin Login", to: "/admin/news" },
+    // { label: "Admin Login", to: "/admin/news" },
   ];
   
   const socialLinks = [
@@ -108,21 +104,24 @@ const Footer: React.FC = () => {
 
       <footer className=" bg-black text-white relative">
         {/* ======== MAIN FOOTER CONTENT ======== */}
-        <div className="mx-auto px-4 md:px-12 pb-6 md:pb-12 grid md:grid-cols-4 gap-12 md:gap-0">
+        <div className="mx-auto px-4 md:px-12 pb-6 md:pb-12 grid md:grid-cols-2 gap-12 md:gap-96">
           {/* ---- ABOUT SECTION ---- */}
-          <div>
+          <div className="md:mt-8">
             <img src={logo} alt="TEN" className="h-12 mb-4" />
-            <p className="eading-relaxed">
-              The Eminent News (TEN) provides daily current affairs news for
-              competitive exams like UPSC, State Services & many others where
-              current affairs matter. Join us to learn, lead & succeed with
-              quality content and better results.
-            </p>
-            <p className="mt-4">Email : contact@eminentnews.com</p>
+
+            <ul className="space-y-2 ml-2">
+              {quickLinks.map((link) => (
+                <li key={link.to} className="hover:text-[#f40607] hover:underline cursor-pointer">
+                  <Link to={link.to}>{link.label}</Link>
+                </li>
+              ))}
+            </ul>
+
+            <p className="mt-4 ml-2">contact@eminentnews.com</p>
           </div>
 
           {/* ---- CATEGORIES ---- */}
-          <div className="md:ml-16">
+          {/* <div className="md:ml-16">
             <h3 className="font-semibold text-xl mb-4">Categories</h3>
             <ul className="space-y-2">
               {categories.map((cat) => (
@@ -134,10 +133,10 @@ const Footer: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* ---- QUICK LINKS ---- */}
-          <div>
+          {/* <div>
             <h3 className="font-semibold text-xl mb-4">Quick Links</h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
@@ -146,7 +145,7 @@ const Footer: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* ---- SOCIAL MEDIA BOX ---- */}
           <div>
@@ -189,4 +188,4 @@ const Footer: React.FC = () => {
   );
 };
 
-export default Footer;
+export default Footer2;

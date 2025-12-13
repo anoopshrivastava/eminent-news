@@ -82,7 +82,7 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen md:py-2">
       {/* Hero / Featured Section*/}
       {/* <HeroCarousel posts={groupedNews.national} /> */}
-      <div className=" md:px-8 mx-4 md:mx-10">
+      <div className=" md:px-8 mx-4 md:mx-8">
         {/* Introduction Section (Styled) */}
         {/* <section className="container mx-auto py-6">
           <blockquote className="border-l-4 border-red-500 pl-4 py-2 bg-white shadow-md rounded-md">
@@ -106,7 +106,7 @@ const HomePage: React.FC = () => {
 
           {/* Tabs Component */}
           <Tabs defaultValue={categories[0]}>
-            <TabsList className="w-full overflow-x-scroll  h-12">
+            <TabsList className="w-full overflow-x-scroll bg-white h-12">
               {categories.map((category, index) => (
                 <TabsTrigger
                   key={category}
@@ -186,15 +186,15 @@ const HomePage: React.FC = () => {
               }
             </div>
 
-            <div className="w-[30%]">
-              <div className="mb-2">
-                <h3 className="bg-[#f40607] py-2 px-4 text-xl text-white font-bold rounded-full flex items-center gap-2">
+            <div className="relative w-[30%] border px-4 rounded-md mt-6">
+              <div className="absolute -top-6 ">
+                <h3 className="w-64 bg-[#f40607] py-1 px-4 text-xl text-white font-bold rounded-full flex items-center gap-1">
                   <span className="text-2xl">⚡</span> Latest News
                 </h3>
               </div>
 
               {featured && (
-                <div className="mb-6">
+                <div className="mb-6 mt-8">
                   <div className="relative rounded-md overflow-hidden">
                     <img
                       src={featured.images}

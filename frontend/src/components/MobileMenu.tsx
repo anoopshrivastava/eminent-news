@@ -19,7 +19,7 @@ export const categories = [
   "Exam Update",
 ];
 
-const subCategoriesMap: Record<string, string[]> = {
+export const subCategoriesMap: Record<string, string[]> = {
   National: ["Daily Short News", "State News", "Government Scheme", "Economy & Business", "Judicial News", "Social Justice", "Indian Society", "Internal Security", "Editorial", "Essays"],
   World: ["World News", "Bilateral Relations", "World Organizations", "World Indexes & Reports","Conferences, meeting & Summits", "Space Technology", "Defense News", "Innovation & Technology", "Environment"],
   Trending: ["Honors and Awards", "Books & Authors", "Brand Ambassadors", "Eminent", "Health & Disease", "Important Days and Themes", "GI Tags", "Fairs, Festivals & Exhibitions"],

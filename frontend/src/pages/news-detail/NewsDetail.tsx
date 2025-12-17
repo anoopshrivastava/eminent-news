@@ -66,7 +66,7 @@ export default function NewsDetail() {
 
           {/* Category */}
           {news.category && (
-            <Badge className="w-fit px-3 py-1 rounded-full">
+            <Badge className="w-fit px-3 py-1 rounded-full bg-red-500">
               {news.category}
             </Badge>
           )}
@@ -76,7 +76,7 @@ export default function NewsDetail() {
             <img
               src={news.images[0]}
               alt="News"
-              className="w-full rounded-lg object-contain max-h-[400px]"
+              className="w-full rounded-lg object-cover max-h-[400px]"
             />
           ) : (
             <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">

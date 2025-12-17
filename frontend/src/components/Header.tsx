@@ -1,19 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo-white.png";
 import { Input } from "./ui/input";
 import { Search, Menu } from "lucide-react";
-import SwipeButton from "./SwipeButton";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutFailure, signOutStart, signOutSuccess } from "@/redux/authSlice";
+import {
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
+} from "@/redux/authSlice";
 import toast from "react-hot-toast";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
 import api from "@/lib/axios";
 import MobileTopHeader from "./MobileTopHeader";
+import profile from "../assets/profile.webp";
 
 const Header = () => {
-  const today = new Date().toLocaleDateString();
-  const {currentUser} = useSelector((state:any)=>state.user);
+  const { currentUser } = useSelector((state: any) => state.user);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -32,8 +35,8 @@ const Header = () => {
       console.log("Logout Success:", response.data);
       toast.success("Logout Successful");
       dispatch(signOutSuccess());
-      navigate('/login');
-    } catch (error:any) {
+      navigate("/login");
+    } catch (error: any) {
       console.log(error);
       dispatch(signOutFailure(error.message));
       toast.error(error.message);
@@ -42,111 +45,57 @@ const Header = () => {
 
   return (
     <header className="w-full fixed top-0 z-50">
-      {/* Top big header row */}
-      <div className="hidden md:flex items-center justify-between border-b border-gray-200 bg-white px-16 py-1 select-none shadow">
-        {/* Left: Date + Logo */}
-        
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="TEN Logo" className="h-12" />
-        </Link>
-
-        <span className="text-lg text-gray-600 font-semibold">
-          Date: {today}
-        </span>
-
-        {/* Center: Title */}
-        <div className="text-center">
-          <h1 className="text-[#f40607] text-xl md:text-3xl font-extrabold tracking-tight">
-            The Eminent News
-          </h1>
-          <h3 className="text-lg -mt-1 text-gray-500">Empowering Wisdom</h3>
-        </div>
-
-        <SwipeButton onSuccess={() => console.log("swiped")} />
-
-        <div className="flex gap-3">
-          {/* Right: Links (Login / Subscribe / Language) */}
-          <ul className="flex flex-col  list-disc text-sm">
-            {currentUser  ? 
-              <li>
-                <span
-                 onClick={handleLogout}
-                 className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2 cursor-pointer">
-                Logout
-                </span>
-               
-              </li>
-              :
-              <li>
-              <Link
-                to="/login"
-                className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2"
-              >
-                Login
-              </Link>
-            </li>
-            }
-            {/* <li>
-              <Link
-                to="#"
-                className="text-blue-700 underline hover:text-[#f40607] transition font-medium flex items-center gap-2"
-              >
-                Subscribe
-              </Link>
-            </li> */}
-            <li>
-              <button
-                aria-label="Change language"
-                className="flex items-center gap-2 underline text-blue-700 hover:text-[#f40607] transition font-medium"
-              >
-                Language
-              </button>
-            </li>
-          </ul>
-          {/* If logged in, show profile dropdown instead of Login */}
-          {/* <ProfileDropdown name="Unknown" /> */}
-        </div>
-      </div>
-
       {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
-      <div className="hidden md:block w-full bg-[#f40607] px-16 py-2 shadow-sm">
-        <div className="flex items-center mx-auto">
+      <div className="hidden md:flex justify-between items-center w-full bg-[#f40607] px-14 py-2 shadow-sm">
+        <div className="flex items-center">
           {/* left group */}
           <div className="flex items-center gap-3">
             <button
-              onClick={()=>setMenuOpen(true)}
+              onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
-              className="pr-2 rounded hover:bg-gray-100 transition"
+              className="rounded transition"
             >
-              <Menu className="h-8 text-white" />
+              <Menu size={36} className=" text-white hover:text-black" />
             </button>
 
-            <button
-              aria-label="Search"
-              className="p-2 rounded bg-white hover:bg-gray-100 transition md:hidden"
-            >
-              <Search className="h-5 w-5 text-white" />
-            </button>
+            <Link to="/home">
+              <img src={logo} alt="" className="h-11" />
+            </Link>
 
-            {/* On larger screens you might want a small inline search (optional) */}
-            <div className="hidden md:block">
-              <div className="relative w-64">
-                <Input
-                  type="text"
-                  placeholder="Search news..."
-                  className="rounded-lg pl-3 pr-10 py-1.5 w-full bg-white border-none"
-                />
-                <Search className="text-white absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 " />
-              </div>
+            <div className="flex flex-col text-white border-l-2 border-white pl-4">
+              <p className="text-3xl font-bold border-b border-white">Eminent News</p>
+              <span className="text-xs">Empowering Wisdom</span>
             </div>
           </div>
-
-          {/* center / right of the second row (keeps space) */}
-          <div className="flex-1" />
+        </div>
+        <div className="hidden md:flex items-center gap-3">
+          <div className="relative w-64">
+            <Input
+              type="text"
+              placeholder="Search news..."
+              className="rounded-lg pl-3 pr-10 py-1.5 w-full bg-white border-none text-red-600"
+            />
+            <Search className="text-black absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 " />
+          </div>
+          {currentUser ? (
+            <div
+              onClick={() => navigate("/my-profile")}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <img src={profile} alt="" className="h-8 rounded-full" />
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-white text-black px-3 pt-1 pb-1.5 hover:bg-black hover:text-white rounded-md flex items-center font-medium"
+            >
+              <span>Login</span>
+            </Link>
+          )}
         </div>
       </div>
 
-      <MobileTopHeader/>
+      <MobileTopHeader />
 
       <MobileMenu
         open={menuOpen}

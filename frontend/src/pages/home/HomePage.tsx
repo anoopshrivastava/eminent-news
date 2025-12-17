@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-// import Post from "@/components/Post";
 import img4 from "@/assets/w1.jpeg";
-// import HeroCarousel from "./components/HeroCarousel";
-import { Flag, Flame, Globe2, Trophy } from "lucide-react";
+import HeroCarousel from "./components/HeroCarousel";
+import { Trophy } from "lucide-react";
 import FAQ from "@/components/FAQ";
 import { categories, type News } from "@/types/news";
 import Loading from "@/components/Loading";
 import api from "@/lib/axios";
 import PostX from "@/components/PostX";
+import Post3 from "@/components/Post3";
 
 const featured = {
   _id: "ddlkfj",
@@ -23,7 +23,6 @@ const featured = {
 };
 
 const HomePage: React.FC = () => {
-
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [groupedNews, setGroupedNews] = useState<{
@@ -66,36 +65,27 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (news.length > 0) {
       const grouped = {
-        national: news.filter(n => n.category === "National"),
-        world: news.filter(n => n.category === "World"),
-        trending: news.filter(n => n.category === "Trending"),
-        sports: news.filter(n => n.category === "Sports"),
+        national: news.filter((n) => n.category === "National"),
+        world: news.filter((n) => n.category === "World"),
+        trending: news.filter((n) => n.category === "Trending"),
+        sports: news.filter((n) => n.category === "Sports"),
       };
       setGroupedNews(grouped);
     }
   }, [news]);
-  
 
-  if(loading) return <div className="min-h-[100vh]"><Loading/></div>
+  if (loading)
+    return (
+      <div className="min-h-[100vh]">
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="min-h-screen md:py-2">
       {/* Hero / Featured Section*/}
-      {/* <HeroCarousel posts={groupedNews.national} /> */}
+      <HeroCarousel posts={groupedNews.national} />
       <div className=" md:px-8 mx-4 md:mx-8">
-        {/* Introduction Section (Styled) */}
-        {/* <section className="container mx-auto py-6">
-          <blockquote className="border-l-4 border-red-500 pl-4 py-2 bg-white shadow-md rounded-md">
-            <p className="text-gray-700 italic text-lg leading-relaxed">
-              "The Eminent News (TEN) provides daily current affairs news for
-              competitive exams like **UPSC, State Services** & more. Join us to
-              **Learn, Leap & Lead** with quality content & better results."
-            </p>
-          </blockquote>
-        </section> */}
-
-        {/* <hr className="my-4 border-t border-gray-200" /> */}
-
         {/* Mobile Tabbed News Section (Consolidated Categories) */}
         <section className="block md:hidden container mx-auto mt-6">
           <div className="pb-6">
@@ -111,7 +101,9 @@ const HomePage: React.FC = () => {
                 <TabsTrigger
                   key={category}
                   value={category}
-                  className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold ${index === 0 && "ml-36"}`}
+                  className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold ${
+                    index === 0 && "ml-36"
+                  }`}
                 >
                   {category}
                 </TabsTrigger>
@@ -119,14 +111,24 @@ const HomePage: React.FC = () => {
             </TabsList>
 
             {categories.map((category) => {
-              const key = category.toLowerCase(); // convert "National" → "national"
+              const key = category.toLowerCase();
               return (
-                <TabsContent key={category} value={category} className="mt-6 p-0">
+                <TabsContent
+                  key={category}
+                  value={category}
+                  className="mt-6 p-0"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {groupedNews[key as keyof typeof groupedNews]?.length ? (
-                      groupedNews[key as keyof typeof groupedNews].map((item: News) => (
-                        <PostX key={item._id} news={item} fetchNews={fetchNews} />
-                      ))
+                      groupedNews[key as keyof typeof groupedNews].map(
+                        (item: News) => (
+                          <PostX
+                            key={item._id}
+                            news={item}
+                            fetchNews={fetchNews}
+                          />
+                        )
+                      )
                     ) : (
                       <p className="col-span-4 text-center text-gray-500 p-10">
                         No posts found for this category.
@@ -137,56 +139,45 @@ const HomePage: React.FC = () => {
               );
             })}
           </Tabs>
-
         </section>
 
         {/* desktop mode */}
-        <section className="hidden md:flex flex-col gap-4 container mx-auto py-4">
-          <div className="flex gap-10">
-            <div className="w-[70%] space-y-12">
-              {/* trending news section */}
-              {groupedNews.trending.length > 0 && <div>
-                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
-                  <Flame size={22} />
-                  Trending News
-                </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {groupedNews.trending.map((news) => (
-                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
-                  ))}
-                </div>
-              </div>}
+        <section className="hidden md:flex flex-col gap-4 container mx-auto pt-4">
+          <div className="flex gap-10 mt-8">
+            <div className="relative w-[70%] space-y-12">
+              {/* todays highlight section */}
+              {news.length > 0 && (
+                <div className="border rounded-lg">
+                  <div className="absolute -top-6 left-5">
+                    <h3 className="w-64 bg-[#f40607] py-2 px-4 text-xl text-white font-bold rounded-full flex items-center gap-2">
+                      <Trophy size={22} />
+                      Todays Highlights
+                    </h3>
+                  </div>
 
-              {/* national news section */}
-              {groupedNews.national.length > 0 && <div>
-                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
-                  <Flag size={22} />
-                  National News
-                </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {groupedNews.national.map((news) => (
-                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
-                  ))}
+                  <div className="flex flex-col gap-3 border-gray-500 border-b py-8 px-4 last:border-none">
+                  {[...news]
+                    .sort(
+                      (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime()
+                    )
+                    .map((item, index) => (
+                      <>
+                      <Post3 key={item._id} news={item} fetchNews={fetchNews} />
+                      {(index === 4 || index === 9) && (
+                        <div className="my-6 p-4 border rounded-lg bg-gray-100 text-center">
+                          <p className="text-sm text-gray-600">Advertisement</p>
+                        </div>
+                      )}
+                      </>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              }
-
-              {/* world news section */}
-              {groupedNews.world.length > 0 && <div>
-                <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
-                  <Globe2 size={22} />
-                  World News
-                </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {groupedNews.world.map((news) => (
-                    <PostX key={news._id} news={news} fetchNews={fetchNews}/>
-                  ))}
-                </div>
-              </div>
-              }
+              )}
             </div>
 
-            <div className="relative w-[30%] border px-4 rounded-md mt-6">
+            <div className="relative w-[30%] border px-4 rounded-md">
               <div className="absolute -top-6 ">
                 <h3 className="w-64 bg-[#f40607] py-1 px-4 text-xl text-white font-bold rounded-full flex items-center gap-1">
                   <span className="text-2xl">⚡</span> Latest News
@@ -220,9 +211,8 @@ const HomePage: React.FC = () => {
                     key={item._id}
                     className="flex items-start gap-3 border-b pb-3 last:border-none"
                   >
-
-                     {/* Image */}
-                     <img
+                    {/* Image */}
+                    <img
                       src={item.images[0]}
                       alt={item.title}
                       className="w-28 h-28 rounded object-cover"
@@ -233,8 +223,12 @@ const HomePage: React.FC = () => {
                       <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2">
                         {item.title}
                       </h3>
-                      <p className="text-[10px] text-gray-500 mt-1">By {item.editor?.name} / {item.createdAt.split("T")[0]}</p>
-                      <p className="text-[10px] line-clamp-2">{item.description}</p>
+                      <p className="text-[10px] text-gray-500 mt-1">
+                        By {item.editor?.name} / {item.createdAt.split("T")[0]}
+                      </p>
+                      <p className="text-[10px] line-clamp-2">
+                        {item.description}
+                      </p>
                       <a
                         href={item.url}
                         target="_blank"
@@ -244,30 +238,14 @@ const HomePage: React.FC = () => {
                         Read more →
                       </a>
                     </div>
-
-                   
                   </div>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* sports news section */}
-          {groupedNews.sports.length > 0 && <div>
-            <h3 className="bg-[#f40607] py-2 px-3 text-xl text-white font-bold max-w-96 mb-2 rounded-lg flex items-center gap-2">
-              <Trophy size={22} />
-              Sports News
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {groupedNews.sports.map((news) => (
-                <PostX key={news._id} news={news} fetchNews={fetchNews}/>
-              ))}
-            </div>
-          </div>
-          }
         </section>
 
-        <FAQ/>
+        <FAQ />
       </div>
     </div>
   );

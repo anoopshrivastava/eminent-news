@@ -1,13 +1,13 @@
-import type { News } from "@/types/news";
+import type { Ads } from "@/types/ads";
 import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
-  posts: News[]; // expects at least 1 post, will show up to 3 (first 3)
+  ads: Ads[]; // expects at least 1 post, will show up to 3 (first 3)
   intervalMs?: number; // autoplay interval in milliseconds (default 5000)
 };
 
-export default function HeroCarousel({ posts, intervalMs = 5000 }: Props) {
-  const slides = (posts || []).slice(0, 3);
+export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
+  const slides = (ads || []).slice(0, 3);
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
@@ -74,18 +74,12 @@ export default function HeroCarousel({ posts, intervalMs = 5000 }: Props) {
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent p-6 flex flex-col justify-end">
-              <span className="text-xs uppercase tracking-widest text-red-400">Featured</span>
               <h3 className="text-xl md:text-3xl font-extrabold text-white leading-tight mt-1">
                 {post.title}
               </h3>
               <p className="hidden sm:block text-white/80 mt-2 text-sm md:text-base">
                 {post.description}
               </p>
-              <div className="mt-3 text-sm text-gray-200">
-                <span>By {post.editor?.name}</span>
-                <span className="mx-2">|</span>
-                <span>{post.createdAt}</span>
-              </div>
             </div>
           </a>
         ))}

@@ -12,7 +12,6 @@ import toast from "react-hot-toast";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
 import api from "@/lib/axios";
-import MobileTopHeader from "./MobileTopHeader";
 import profile from "../assets/profile.webp";
 
 const Header = () => {
@@ -46,7 +45,7 @@ const Header = () => {
   return (
     <header className="w-full fixed top-0 z-50">
       {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
-      <div className="hidden md:flex justify-between items-center w-full bg-[#f40607] px-14 py-2 shadow-sm">
+      <div className="flex justify-between items-center w-full bg-[#f40607] px-4 md:px-14 py-2 shadow-sm">
         <div className="flex items-center">
           {/* left group */}
           <div className="flex items-center gap-3">
@@ -55,21 +54,22 @@ const Header = () => {
               aria-label="Open menu"
               className="rounded transition"
             >
-              <Menu size={36} className=" text-white hover:text-black" />
+              <Menu size={36} className="hidden md:block text-white hover:text-black" />
+              <Menu size={32} className="block md:hidden text-white hover:text-black" />
             </button>
 
             <Link to="/home">
-              <img src={logo} alt="" className="h-11" />
+              <img src={logo} alt="" className="h-10 md:h-11" />
             </Link>
 
-            <div className="flex flex-col text-white border-l-2 border-white pl-4">
-              <p className="text-3xl font-bold border-b border-white">Eminent News</p>
-              <span className="text-xs">Empowering Wisdom</span>
+            <div className="flex flex-col text-white -ml-2 md:ml-0 border-l-2 border-white pl-2 md:pl-4">
+              <p className="text-lg md:text-3xl font-bold border-b border-white">Eminent News</p>
+              <span className="text-[10px] md:text-xs">Empowering Wisdom</span>
             </div>
           </div>
         </div>
-        <div className="hidden md:flex items-center gap-3">
-          <div className="relative w-64">
+        <div className="flex items-center gap-0 md:gap-3">
+          <div className="hidden md:block relative w-64">
             <Input
               type="text"
               placeholder="Search news..."
@@ -94,8 +94,6 @@ const Header = () => {
           )}
         </div>
       </div>
-
-      <MobileTopHeader />
 
       <MobileMenu
         open={menuOpen}

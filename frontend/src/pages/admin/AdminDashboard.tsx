@@ -84,6 +84,7 @@ const AdminDashboard: React.FC = () => {
           <AddNewsModal
             setIsOpen={setIsOpen}
             fetchNews={fetchNews}
+            setNews={setNews}
             admin={true}
           />
         )}

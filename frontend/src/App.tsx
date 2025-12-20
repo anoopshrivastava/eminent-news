@@ -23,6 +23,7 @@ import ShortsReel from "./pages/shorts/ShortReels";
 import LandingPage from "./pages/landing-page/LandingPage";
 import EditorShorts from "./pages/editor/EditorShorts";
 import NewsDetail from "./pages/news-detail/NewsDetail";
+import AdsPage from "./pages/admin/AdsPage";
 
 function App() {
   return (
@@ -57,7 +58,7 @@ function App() {
             <Route path="/admin/editors" element={<AllEditors />} />
             <Route path="/admin/users" element={<AllUsers />} />
             <Route path="/admin/shorts" element={<ShortsManager />} />
-            {/* <Route path="/admin/orders" element={<AllOrders />} /> */}
+            <Route path="/admin/ads" element={<AdsPage />} />
             
           </Route>
         </Route>

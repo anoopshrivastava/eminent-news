@@ -9,7 +9,7 @@ const cors = require('cors')
 const news = require("../src/routes/newsRoute")
 const users = require("../src/routes/userRoute")
 const shorts = require("../src/routes/shortRoute")
-// const order = require('../src/routes/orderRoute')
+const ads = require('../src/routes/adsRoute')
 
 const app = express();
 const bodyparser = require('body-parser');
@@ -43,7 +43,7 @@ app.get("/",(req,res)=>{
 app.use('/api/v1',news);
 app.use('/api/v1',users);
 app.use('/api/v1',shorts);
-// app.use('/api/v1',order);
+app.use('/api/v1',ads);
 
 // middleware for errors
 app.use(errorMiddleware)

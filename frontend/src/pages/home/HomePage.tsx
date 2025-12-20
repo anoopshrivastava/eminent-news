@@ -9,6 +9,7 @@ import Loading from "@/components/Loading";
 import api from "@/lib/axios";
 import PostX from "@/components/PostX";
 import Post3 from "@/components/Post3";
+import type { Ads } from "@/types/ads";
 
 const featured = {
   _id: "ddlkfj",
@@ -24,6 +25,7 @@ const featured = {
 
 const HomePage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
+  const [ads, setAds] = useState<Ads[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [groupedNews, setGroupedNews] = useState<{
     national: News[];
@@ -57,8 +59,29 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const fetchAds = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/ads`);
+
+      const data = response?.data ?? {};
+      if (data.success === true) {
+        const list: Ads[] = data.ads ?? data.data ?? [];
+        setAds(list);
+      } else {
+        setAds([]);
+      }
+    } catch (error) {
+      console.error("Error fetching ads:", error);
+      setAds([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchNews();
+    fetchAds();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -74,17 +97,21 @@ const HomePage: React.FC = () => {
     }
   }, [news]);
 
-  if (loading)
-    return (
-      <div className="min-h-[100vh]">
-        <Loading />
-      </div>
-    );
+  if (loading) return (
+    <div className="min-h-[100vh]">
+      <Loading />
+    </div>
+  );
 
+  const bannerAds = ads.filter((ad) => ad.category === "Banner");
+  const highlightAds = ads.filter((ad) => ad.category === "Highlights");
+
+  const getHighlightAd = (position: number) => highlightAds[position % highlightAds.length];
+  
   return (
     <div className="min-h-screen md:py-2">
       {/* Hero / Featured Section*/}
-      <HeroCarousel posts={groupedNews.national} />
+      <HeroCarousel ads={bannerAds} />
       <div className=" md:px-8 mx-4 md:mx-8">
         {/* Mobile Tabbed News Section (Consolidated Categories) */}
         <section className="block md:hidden container mx-auto mt-6">
@@ -165,11 +192,16 @@ const HomePage: React.FC = () => {
                     .map((item, index) => (
                       <>
                       <Post3 key={item._id} news={item} fetchNews={fetchNews} />
-                      {(index === 4 || index === 9) && (
-                        <div className="my-6 p-4 border rounded-lg bg-gray-100 text-center">
-                          <p className="text-sm text-gray-600">Advertisement</p>
+                      {(index === 4 || index === 9) && highlightAds.length > 0 && (
+                        <div className="my-6 rounded-lg overflow-hidden border">
+                          <img
+                            src={getHighlightAd(index).images[0]}
+                            alt="Advertisement"
+                            className="w-full h-40 object-cover"
+                          />
                         </div>
                       )}
+
                       </>
                     ))}
                   </div>

@@ -16,14 +16,14 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [showPlayButton, setShowPlayButton] = useState(false);
   const [liked, setLiked] = useState<boolean>(false);
-  const [muted, setMuted] = useState<boolean>(true);
+  const [muted, setMuted] = useState<boolean>(false);
   const [processingLike, setProcessingLike] = useState(false);
 
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    vid.muted = muted;
+    // vid.muted = muted;
     vid.playsInline = true;
     vid.preload = "auto";
 
@@ -159,26 +159,28 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
 
         {/* Persistent control buttons (top-right) */}
         <div className="absolute top-4 right-4 z-20 flex flex-col items-center gap-3 pointer-events-auto">
+
+          {/* Refresh/Replay button */}
+          <Button
+            title="Refresh"
+            variant="ghost"
+            size="icon"
+            onClick={handleRefresh}
+            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-white hover:text-black shadow-lg border border-white "
+            aria-label="Replay"
+          >
+            <RefreshCw size={18} />
+          </Button>
+
           {/* Play/Pause button */}
           <Button
             variant="ghost"
             size="icon"
             onClick={togglePlayPause}
-            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-black/90 shadow-lg border border-white "
+            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-white hover:text-black shadow-lg border border-white "
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-          </Button>
-
-          {/* Refresh/Replay button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleRefresh}
-            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-black/90 shadow-lg border border-white "
-            aria-label="Replay"
-          >
-            <RefreshCw size={18} />
           </Button>
 
           {/* Mute/Unmute button */}
@@ -186,7 +188,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
             variant="ghost"
             size="icon"
             onClick={toggleMute}
-            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-black/90 shadow-lg border border-white "
+            className="w-10 h-10 rounded-full bg-black/70 text-white hover:bg-white hover:text-black shadow-lg border border-white "
             aria-label={muted ? "Unmute" : "Mute"}
           >
             {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -222,7 +224,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
             className={`w-12 h-12 rounded-full shadow-lg border-2 border-white ${
               liked 
                 ? "bg-red-500/90 text-white hover:bg-red-600/90" 
-                : "bg-black/70 text-white hover:bg-black/90"
+                : "bg-black/70 text-white hover:bg-red-500"
             }`}
           >
             <Heart 
@@ -235,7 +237,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
           <Button
             variant="ghost"
             size="icon"
-            className="w-12 h-12 rounded-full bg-black/70 text-white hover:bg-black/90 shadow-lg border-2 border-white "
+            className="w-12 h-12 rounded-full bg-black/70 text-white hover:bg-white hover:text-black shadow-lg border-2 border-white "
             aria-label="Share"
           >
             <Share2 size={22} />

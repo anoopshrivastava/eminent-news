@@ -1,0 +1,75 @@
+import React from "react";
+import toast from "react-hot-toast";
+import { FiTrash } from "react-icons/fi";
+import api from "@/lib/axios";
+import type { Ads } from "@/types/ads";
+
+interface AdsCardProps {
+  ads: Ads;
+  setAds?: React.Dispatch<React.SetStateAction<Ads[]>>;
+}
+
+const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds }) => {
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this ads item?")) return;
+
+    try {
+      const response = await api.delete(`/ads/${ads._id}`);
+
+      const resData = response?.data ?? {};
+      if (resData.success === true) {
+        if (setAds) {
+            setAds((prev) => prev.filter((n) => n._id !== ads._id));
+        }
+        toast.success("Ads Deleted Successfully");
+      } else {
+        toast.error(resData.message ?? "Failed to delete Ads");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error Deleting Ads");
+    }
+  };
+
+  return (
+    <>
+      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden w-80 md:w-72">
+        {/* Image block with edit/delete overlay */}
+        <div className="relative h-48 md:h-60 overflow-hidden bg-gray-100">
+          <img
+            src={ads.images?.[0] ?? ""}
+            alt={ads.title}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+
+          {/* Edit & Delete buttons (top-right) */}
+          <div className="absolute top-2 right-2 flex gap-2 z-10">
+            <button
+              onClick={handleDelete}
+              className="bg-rose-600 p-1 rounded-full text-white hover:bg-rose-700 shadow"
+              title="Delete"
+            >
+              <FiTrash />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="px-3 pb-3 pt-2">
+          <h3 className="text-lg md:text-base font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-1">
+            Title : {ads.title}
+          </h3>
+
+          <p className="font-medium text-gray-700 text-sm md:text-xs line-clamp-2 leading-[1.2]">Description : {ads.description}</p>
+
+          <div className="pt-1 text-xs font-medium text-gray-700">
+            <span className="mr-3">Category : {ads.category ?? "Other"}</span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default AdsCard;

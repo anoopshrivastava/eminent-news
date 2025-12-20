@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { X, ChevronDown, ChevronUp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { X, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import logo from "../assets/logo.png";
 
 interface Props {
@@ -28,8 +28,17 @@ export const subCategoriesMap: Record<string, string[]> = {
   "Exam Update": ["Exam Notification", "Job Notification", "Q/A", "Magazines", "Podcast", "TEN updates"],
 };
 
+export type Language = "en" | "hi";
+
 const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const navigate = useNavigate()
+
+  const [language, setLanguage] = useState<Language>("en");
+
+  const toggleLanguage = () => {
+    setLanguage((prev) => (prev === "en" ? "hi" : "en"));
+  };
 
   return (
     <div
@@ -52,6 +61,12 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
 
         {/* Menu Links */}
         <nav className="flex flex-col gap-4 text-lg font-semibold">
+          <span 
+            onClick={()=>{
+              onClose();
+              navigate("/shorts")
+            }} 
+            className="hidden cursor-pointer md:flex items-center gap-2 hover:text-[#f40607] hover:underline">Shorts <ArrowRight size={22} className="mt-0.5"/></span>
           {categories.map((category) => {
             const isOpen = openCategory === category;
             return (
@@ -89,6 +104,14 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
               </div>
             );
           })}
+
+<button
+  onClick={toggleLanguage}
+  className="px-4 py-2 rounded bg-red-600 text-white"
+>
+  {language === "en" ? "हिंदी" : "English"}
+</button>
+
 
           {/* Login / Logout */}
           {currentUser ? (

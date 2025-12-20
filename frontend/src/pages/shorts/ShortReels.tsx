@@ -52,10 +52,10 @@ export default function ShortsReel() {
           }
           
           // try to play
-          video.muted = true;
+          // video.muted = true;
           video.play().catch(() => {
             // autoplay might be blocked; keep muted
-            video.muted = true;
+            // video.muted = true;
           });
         } else {
           // pause if not intersecting
@@ -110,11 +110,11 @@ export default function ShortsReel() {
   }
 
   return (
-    <div className="md:hidden w-full h-screen bg-gray-900">
+    <div className="w-full mx-auto h-screen bg-gray-900">
 
       {/* Reel items */}
       <div 
-        className="w-full h-full overflow-y-auto snap-y snap-mandatory touch-pan-y scrollbar-hide" 
+        className="max-w-md mx-auto w-full h-full overflow-y-auto snap-y snap-mandatory touch-pan-y scrollbar-hide" 
         ref={containerRef}
       >
         {shorts.map((short) => (

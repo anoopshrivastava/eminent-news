@@ -26,11 +26,11 @@ const Sidebar = () => {
       label: 'Shorts',
       href: '/admin/shorts',
     },
-    // {
-    //   icon: "#",
-    //   label: 'Orders',
-    //   href: '/admin/orders',
-    // }
+    {
+      icon: "#",
+      label: 'Advertisement',
+      href: '/admin/ads',
+    }
   ];
 
   const navigate = useNavigate();

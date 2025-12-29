@@ -42,7 +42,7 @@ const faqData = [
 const FAQ: React.FC = () => {
   return (
     <div className="w-full mx-auto pt-16 md:pt-20 pb-4 md:pb-8">
-      <h2 className="text-[24px] md:text-3xl font-bold mb-3 md:mb-6">Frequently Asked Questions</h2>
+      <h2 className="text-[20px] md:text-2xl font-bold mb-3 md:mb-6">Frequently Asked Questions</h2>
 
       <Accordion type="single" collapsible className="w-full">
         {faqData.map((item) => (

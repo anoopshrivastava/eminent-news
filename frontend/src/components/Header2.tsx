@@ -49,7 +49,7 @@ const Header2 = () => {
       <div className="items-center justify-between py-2 hidden md:flex bg-[#f40607] text-white px-16 z-50">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img src={logo} alt="TEN Logo" className="h-12" />
+          <img src={logo} alt="TEN Logo" className="h-1" />
         </Link>
 
         {/* Navigation */}

@@ -115,21 +115,21 @@ const HomePage: React.FC = () => {
       <div className=" md:px-8 mx-4 md:mx-8">
         {/* Mobile Tabbed News Section (Consolidated Categories) */}
         <section className="block md:hidden container mx-auto mt-6">
-          <div className="pb-6">
-            <h2 className="text-3xl font-bold text-gray-800 border-b-2 border-red-500 inline-block pb-1">
-              Explore Categories 📰
+          <div className="pb-2">
+            <h2 className="text-3xl font-bold text-gray-800  inline-block pb-1">
+              Explore Categories
             </h2>
           </div>
 
           {/* Tabs Component */}
           <Tabs defaultValue={categories[0]}>
-            <TabsList className="w-full overflow-x-scroll bg-white h-12">
+            <TabsList className="w-full overflow-x-scroll bg-white h-12 border-y-2 border-red-500 rounded-none">
               {categories.map((category, index) => (
                 <TabsTrigger
                   key={category}
                   value={category}
-                  className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold ${
-                    index === 0 && "ml-36"
+                  className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold  ${
+                    index === 0 && "ml-40"
                   }`}
                 >
                   {category}

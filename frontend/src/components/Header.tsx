@@ -45,26 +45,28 @@ const Header = () => {
   return (
     <header className="w-full fixed top-0 z-50">
       {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
-      <div className="flex justify-between items-center w-full bg-[#f40607] px-4 md:px-14 py-2 shadow-sm">
+      <div className="flex justify-between items-center w-full bg-[#f40607] px-2 md:px-14 py-2 shadow-sm">
         <div className="flex items-center">
           {/* left group */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-6">
             <button
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               className="rounded transition"
             >
-              <Menu size={36} className="hidden md:block text-white hover:text-black" />
-              <Menu size={32} className="block md:hidden text-white hover:text-black" />
+              <Menu size={32} className="hidden md:block text-white hover:text-black" />
+              <Menu size={26} className="block md:hidden text-white hover:text-black" />
             </button>
 
-            <Link to="/home">
-              <img src={logo} alt="" className="h-10 md:h-11" />
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/home">
+                <img src={logo} alt="" className="h-7 md:h-9" />
+              </Link>
 
-            <div className="flex flex-col text-white -ml-2 md:ml-0 border-l-2 border-white pl-2 md:pl-4">
-              <p className="text-lg md:text-3xl font-bold border-b border-white">Eminent News</p>
-              <span className="text-[10px] md:text-xs">Empowering Wisdom</span>
+              <div className="flex flex-col text-white -ml-1 md:ml-0 border-l-2 border-white pl-2 md:pl-3">
+                <h3 className="text-[16px] md:text-3xl font-bold">The Eminent News</h3>
+                <h5 className="text-[10px] md:text-xs -mt-1 pl-1">Empowering Wisdom</h5>
+              </div>
             </div>
           </div>
         </div>
@@ -76,6 +78,9 @@ const Header = () => {
               className="rounded-lg pl-3 pr-10 py-1.5 w-full bg-white border-none text-red-600"
             />
             <Search className="text-black absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 " />
+          </div>
+          <div className="">
+            <Search className="flex items-center md:hidden text-white mr-3" />
           </div>
           {currentUser ? (
             <div

@@ -57,7 +57,7 @@ export default function NewsDetail() {
       </Button>
 
       <div className="">
-        <div className="p-6 space-y-6">
+        <div className="p-4 md:p-6 space-y-6">
 
           {/* Title */}
           <h1 className="text-3xl md:text-4xl font-bold leading-snug">
@@ -99,21 +99,10 @@ export default function NewsDetail() {
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 leading-relaxed text-lg">
+          <p className="text-gray-700 leading-relaxed text-sm">
             {news.description}
           </p>
 
-          {/* External link */}
-          {news.url && (
-            <a
-              href={news.url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-600 underline"
-            >
-              Read full article →
-            </a>
-          )}
 
           {/* Buttons */}
           <div className="flex gap-2 mt-4">

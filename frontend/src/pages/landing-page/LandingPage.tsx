@@ -91,7 +91,7 @@ const LandingPage: React.FC = () => {
     <div className="w-full min-h-screen bg-white flex flex-col items-center">
 
       {/* Top Navbar */}
-      <header className="w-full max-w-7xl flex items-center justify-between py-4 px-6 md:px-28 shadow-md">
+      <header className="w-full flex items-center justify-between py-4 px-6 md:px-28 shadow-md">
         <div className="flex items-center space-x-2">
           <img src={logo} alt="ten logo" className="h-8" />
         </div>

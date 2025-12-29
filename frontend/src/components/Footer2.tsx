@@ -52,7 +52,7 @@ const Footer2: React.FC = () => {
       bg: "bg-red-600",
     },
     {
-      icon: () => <img src={zoho} alt="Zoho Mail" className="w-8 md:w-10 object-contain" />,
+      icon: () => <img src={zoho} alt="Zoho Mail" className="w-5 md:w-6 object-contain" />,
       href: "#",
       bg: "bg-white",
     }
@@ -109,10 +109,19 @@ const Footer2: React.FC = () => {
     <div className="mx-auto px-4 md:px-12 pb-6 flex flex-col md:flex-row justify-between">
       {/* ---- ABOUT SECTION ---- */}
       <div className="md:mt-8 md:w-[75%]">
-        <img src={logo} alt="TEN" className="h-14" />
-        <h2 className="text-2xl ml-1 mb-4">The Eminent News</h2>
 
-        <ul className="space-y-2 ml-1">
+        <div className="flex items-center gap-2">
+          <Link to="/home">
+            <img src={logo} alt="" className="h-8 md:h-9" />
+          </Link>
+
+          <div className="flex flex-col text-white border-l-2 border-white pl-3">
+            <h3 className="text-lg md:text-3xl font-bold">The Eminent News</h3>
+            <h5 className="text-[10px] md:text-xs -mt-1 pl-1">Empowering Wisdom</h5>
+          </div>
+        </div>
+
+        <ul className="space-y-2 ml-1 mt-2">
           {quickLinks.map((link) => (
             <li key={link.to} className="hover:text-[#f40607] hover:underline cursor-pointer">
               <Link to={link.to}>{link.label}</Link>
@@ -120,42 +129,15 @@ const Footer2: React.FC = () => {
           ))}
         </ul>
 
-        <div className="flex flex-col ml-1 mt-4">
+        <div className="flex flex-col ml-1 mt-3">
           <span className="">contact@eminentnews.com</span>
           <span className="">+91 1234567890</span>
         </div>
         
       </div>
 
-      {/* ---- CATEGORIES ---- */}
-      {/* <div className="md:ml-16">
-        <h3 className="font-semibold text-xl mb-4">Categories</h3>
-        <ul className="space-y-2">
-          {categories.map((cat) => (
-            <li
-              key={cat}
-              className="hover:text-[#f40607] cursor-pointer transition"
-            >
-              {cat}
-            </li>
-          ))}
-        </ul>
-      </div> */}
-
-      {/* ---- QUICK LINKS ---- */}
-      {/* <div>
-        <h3 className="font-semibold text-xl mb-4">Quick Links</h3>
-        <ul className="space-y-2">
-          {quickLinks.map((link) => (
-            <li key={link.to} className="hover:text-[#f40607] cursor-pointer">
-              <Link to={link.to}>{link.label}</Link>
-            </li>
-          ))}
-        </ul>
-      </div> */}
-
       {/* ---- SOCIAL MEDIA BOX ---- */}
-      <div className="md:w-[25%]">
+      <div className="md:w-[30%]">
         {/* <h4 className="font-semibold text-xl md:text-2xl mb-3">
           Follow Us On
         </h4> */}
@@ -170,14 +152,14 @@ const Footer2: React.FC = () => {
           </div>
 
           {/* ICON ROW */}
-          <div className="flex flex-wrap gap-4 md:gap-3 mt-4">
+          <div className="flex flex-wrap gap-3 mt-4">
             {socialLinks.map(({ icon: Icon, href, bg }, i) => (
               <a
                 key={i}
                 href={href}
                 className={`${bg} p-1 rounded-md flex items-center justify-center`}
               >
-                <Icon className="text-white h-8 w-8" />
+                <Icon className="text-white h-5 w-5 md:h-6 md:w-6" />
               </a>
             ))}
           </div>

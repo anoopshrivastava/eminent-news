@@ -53,7 +53,7 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
       <div className="absolute left-0 top-0 h-screen w-72 bg-white shadow-lg p-5 flex flex-col overflow-y-scroll">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <img src={logo} alt="TEN Logo" className="h-12" />
+          <img src={logo} alt="TEN Logo" className="h-9" />
           <button onClick={onClose}>
             <X className="h-6 w-6" />
           </button>

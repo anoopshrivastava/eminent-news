@@ -44,7 +44,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">
       <div className="flex items-center gap-6 mb-8 pr-10">
-        <h1 className="text-3xl font-bold text-blue-900">All News</h1>
+        <h1 className="text-3xl font-bold text-black">All News</h1>
 
         <div>
           <SearchInput

@@ -11,7 +11,8 @@ export interface Editor {
     title: string;
     description: string;
     category: ICategory,
-    url:string,
+    subCategories: string[],
+    videoUrl:string,
     images: string[];
     likes:string[];
     editor?: Editor | null;

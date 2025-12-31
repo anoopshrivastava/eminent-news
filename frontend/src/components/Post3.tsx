@@ -3,7 +3,7 @@ import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
@@ -22,6 +22,9 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
   const { currentUser } = useSelector((state: any) => state.user);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const fullPath = location.pathname + location.search;
 
   // try to determine current user and initial liked/followed state
   useEffect(() => {
@@ -116,7 +119,7 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(news.url);
+      await navigator.clipboard.writeText(fullPath);
       toast.success("Link copied to clipboard!");
     } catch {
       toast.error("Failed to copy link.");
@@ -143,9 +146,11 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       {/* Content */}
       <div className="relative h-48 flex-1">
         <div >
-            <Badge className="px-2 py-0.5 w-fit text-[10px] mr-2 rounded-full bg-[#f40607]">
+            <Badge className="px-2 py-0.5 w-fit text-[10px] mr-2 rounded-full bg-[#f40607] hover:bg-[#f40607]">
               {news.category}
             </Badge>
+            {news.subCategories && news.subCategories.length > 0 && news.subCategories.map((item)=>
+            <Badge className="px-2 py-0.5 w-fit text-[10px] mr-2 rounded-full bg-[#f40607] hover:bg-[#f40607]">{item}</Badge>) }
         </div>
         {/* username + follow */}
         <div className="flex items-center justify-between">

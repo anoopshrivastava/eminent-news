@@ -3,7 +3,7 @@ import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 
@@ -20,6 +20,9 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
 
   const {currentUser} = useSelector((state:any)=>state.user);
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const fullPath = location.pathname + location.search;
 
   // try to determine current user and initial liked/followed state
   useEffect(() => {
@@ -110,7 +113,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(news.url);
+      await navigator.clipboard.writeText(fullPath);
       toast.success("Link copied to clipboard!");
     } catch {
       toast.error("Failed to copy link.");
@@ -196,14 +199,12 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
           </div>
 
           {/* Read More */}
-          <a
-            href={news.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-[#f40607] font-medium text-sm hover:underline pt-1"
+          <Link
+            to={`/news/${news._id}`}
+            className="inline-block text-[#f40607] font-medium text-sm hover:underline "
           >
             Read more →
-          </a>
+          </Link>
         </div>
       </div>
     </div>

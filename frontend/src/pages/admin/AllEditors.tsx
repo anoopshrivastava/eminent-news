@@ -77,7 +77,7 @@ function AllEditors() {
     <div className="flex-1 flex-col min-h-screen">
       <div className="flex items-center gap-3 mb-4 mt-2">
         <div className="flex items-center justify-between pr-10">
-          <h1 className="text-3xl font-bold text-blue-600">All Editors</h1>
+          <h1 className="text-3xl font-bold text-black">All Editors</h1>
         </div>
 
         <SearchInput
@@ -98,7 +98,7 @@ function AllEditors() {
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-blue-700 text-white">
+            <thead className="bg-[#f40607] text-white">
               <tr>
                 <th className="py-3 px-2 text-left">Name</th>
                 <th className="py-3 px-2 text-left">Username</th>

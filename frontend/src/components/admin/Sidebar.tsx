@@ -57,11 +57,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col sticky left-0 top-0  h-screen items-center text-lg shadow-2xl pb-4 z-50 max-w-[16rem] bg-[#e6e3f8] border-r-[1px] border-[#62b179]/15">
+    <div className="flex flex-col sticky left-0 top-0  h-screen items-center text-lg shadow-2xl pb-4 z-50 max-w-[16rem] bg-white border-r-[1px] border-[#62b179]/15">
 
     <div className="h-32 flex justify-center items-center gap-2 ">
       {/* <img src={logo} alt="" className='h-9 -ml-1'/> */}
-      <h1 className="text-blue-900 text-2xl font-bold mb-3">Admin Dashboard</h1>
+      <h1 className="text-[#f40607] text-2xl font-bold mb-3">Admin Dashboard</h1>
     </div>
 
       <div className="flex flex-col w-full h-full px-4 gap-5 text-center py-3 items-center ">
@@ -71,7 +71,7 @@ const Sidebar = () => {
           key={item.href}
           className={({ isActive }) =>
             `flex items-center w-56 gap-2 pl-2 py-2 font-semibold rounded-sm transition-colors duration-300
-             ${isActive ? 'bg-[#626eb1]  text-white border-l-4 border-[#55497d]' : 'hover:text-blue-700 border-l-4 border-transparent'}`
+             ${isActive ? 'bg-[#ef6262]  text-white border-l-4 border-black' : 'hover:bg-gray-200 border-l-4 hover:border-gray-500 border-transparent'}`
           }
         >
           <p className='max-w-20'>{item.label}</p>
@@ -82,7 +82,7 @@ const Sidebar = () => {
       <div 
         onClick={() => handleLogout()}
         className='flex w-full rounded-md  gap-1 items-center justify-center px-4  mt-2 cursor-pointer'>
-        <p className='py-2 hover:bg-[#626eb1] hover:border-l-4 hover:border-[#55497d] rounded-sm px-3 hover:text-white w-full font-semibold'>Logout</p>
+        <p className='py-2 hover:border-l-4 rounded-sm px-3 w-full font-semibold hover:bg-gray-200 border-l-4 hover:border-black border-transparent'>Logout</p>
       </div>
     </div>
   );

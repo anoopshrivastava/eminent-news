@@ -10,6 +10,7 @@ import api from "@/lib/axios";
 import PostX from "@/components/PostX";
 import Post3 from "@/components/Post3";
 import type { Ads } from "@/types/ads";
+import { Link } from "react-router-dom";
 
 const featured = {
   _id: "ddlkfj",
@@ -261,14 +262,13 @@ const HomePage: React.FC = () => {
                       <p className="text-[10px] line-clamp-2">
                         {item.description}
                       </p>
-                      <a
-                        href={item.url}
-                        target="_blank"
+                      <Link 
+                        to={`/news/${item._id}`}
                         rel="noopener noreferrer"
                         className="inline-block text-[#f40607] font-medium text-sm "
                       >
                         Read more →
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ))}

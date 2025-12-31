@@ -60,11 +60,8 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
         {slides.map((post) => (
-          <a
+          <div
             key={post._id}
-            href={post.url}
-            target="_blank"
-            rel="noopener noreferrer"
             className="w-full shrink-0 relative block"
           >
             <img
@@ -81,7 +78,7 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
                 {post.description}
               </p>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 

@@ -65,11 +65,13 @@ export default function NewsDetail() {
           </h1>
 
           {/* Category */}
-          {news.category && (
-            <Badge className="w-fit px-3 py-1 rounded-full bg-red-500">
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            <Badge className="px-3 py-1 w-fit rounded-full bg-[#f40607] hover:bg-[#f40607]">
               {news.category}
             </Badge>
-          )}
+            {news.subCategories && news.subCategories.length > 0 && news.subCategories.map((item)=>
+            <Badge className="px-3 py-1 w-fit rounded-full bg-[#f40607] hover:bg-[#f40607]">{item}</Badge>) }
+          </div>
 
           {/* Image */}
           {news.images?.length > 0 ? (
@@ -118,6 +120,17 @@ export default function NewsDetail() {
           <p className="text-sm text-gray-500 mt-4">
             Published on: {new Date(news.createdAt).toLocaleDateString()}
           </p>
+
+          {news.videoUrl && 
+          <video
+            src={news.videoUrl}
+            className="w-full h-full object-contain"
+            loop
+            playsInline
+            controls={false}
+            autoPlay
+          />
+          }
         </div>
       </div>
     </div>

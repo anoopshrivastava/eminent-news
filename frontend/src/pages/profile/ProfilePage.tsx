@@ -1,7 +1,15 @@
 import React from "react";
-import { Edit2, Settings, Mail, MapPin } from "lucide-react";
-import { useSelector } from "react-redux";
+import { Edit2, Settings, Mail, MapPin, LogOutIcon } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
+} from "@/redux/authSlice";
 import profile from "@/assets/profile.webp"
+import { useNavigate } from "react-router-dom";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
 
 type User = {
   _id?: string;
@@ -23,31 +31,10 @@ const formatDate = (iso?: string) => {
   return d.toLocaleDateString(undefined, { month: "short", year: "numeric" });
 };
 
-// const PlaceholderGrid: React.FC<{ count?: number; imageSrc?: string }> = ({
-//   count = 9,
-//   imageSrc = "/placeholder.png",
-// }) => {
-//   const arr = Array.from({ length: count }).map((_, i) => i);
-//   return (
-//     <div className="grid grid-cols-3 gap-1 md:gap-2">
-//       {arr.map((i) => (
-//         <div
-//           key={i}
-//           className="relative aspect-square w-full bg-gray-100 overflow-hidden rounded-sm"
-//         >
-//           <img
-//             src={imageSrc}
-//             alt={`post-${i}`}
-//             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-//           />
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
 const ProfilePage: React.FC = () => {
   const { currentUser } = useSelector((state: any) => state.user || {});
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   console.log("current",currentUser)
 
   // fallback profile when currentUser is not yet available
@@ -63,11 +50,31 @@ const ProfilePage: React.FC = () => {
     createdAt: new Date().toISOString(),
   };
 
+    const handleLogout = async () => {
+    try {
+      dispatch(signOutStart());
+      const response = await api.get("/logout");
+      if (response.data.success === false) {
+        dispatch(signOutFailure(response.data.message));
+        toast.error(response.data.message);
+        return;
+      }
+      console.log("Logout Success:", response.data);
+      toast.success("Logout Successful");
+      dispatch(signOutSuccess());
+      navigate("/login");
+    } catch (error: any) {
+      console.log(error);
+      dispatch(signOutFailure(error.message));
+      toast.error(error.message);
+    }
+  };
+
   const followersCount = (user.followers && user.followers.length) || 0;
   const followingCount = (user.following && user.following.length) || 0;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">
       {/* header */}
       <div className="flex flex-row md:items-center gap-6 md:gap-8 pt-2">
         <div className="flex-shrink-0">
@@ -84,22 +91,24 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* actions */}
-            {/* <div className="ml-auto flex items-center gap-2">
-              <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 border rounded-md hover:shadow-sm transition bg-white">
+            <div className="ml-auto flex items-center gap-2">
+              {/* <button className="hidden md:inline-flex items-center gap-2 px-4 py-2 border rounded-md hover:shadow-sm transition bg-white">
                 <Edit2 size={16} />
                 Edit Profile
-              </button>
+              </button> */}
 
-              <button className="inline-flex items-center gap-2 px-3 py-1.5 border rounded-md text-sm hover:bg-gray-50 transition">
+              {/* <button className="inline-flex items-center gap-2 px-3 py-1.5 border rounded-md text-sm hover:bg-gray-50 transition">
                 <Share2 size={16} />
                 Share
-              </button>
+              </button> */}
 
-              <button className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-tr from-red-500 to-pink-500 text-white rounded-md shadow-sm hover:opacity-95 transition">
-                <UserPlus size={16} />
-                Follow
+              <button 
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-tr from-red-500 to-pink-500 text-white rounded-md shadow-sm hover:opacity-95 transition">
+                <LogOutIcon size={16} />
+                Logout
               </button>
-            </div> */}
+            </div> 
           </div>
 
           {/* stats */}

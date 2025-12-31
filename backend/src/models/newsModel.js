@@ -1,5 +1,21 @@
 const mongoose = require('mongoose')
 
+const commentSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  { timestamps: true }
+);
+
 const newsSchema = new mongoose.Schema({
     title:{
         type:String,
@@ -17,7 +33,10 @@ const newsSchema = new mongoose.Schema({
     category:{
         type:String,
     },
-    url:{
+    subCategories:{
+        type:[String],
+    },
+    videoUrl:{
         type:String,
     },
     likes: [
@@ -25,6 +44,7 @@ const newsSchema = new mongoose.Schema({
           user: { type: mongoose.Schema.Types.ObjectId, ref: "User", }
         }
       ],
+    comments: [commentSchema],
     editor:{
         type:mongoose.Schema.Types.ObjectId,
         ref : "User",

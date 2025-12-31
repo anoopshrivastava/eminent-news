@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiX, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { categories, type News } from "@/types/news";
 import { compressFile } from "@/lib/compression";
 import api from "@/lib/axios";
+import { subCategoriesMap } from "../MobileMenu";
 
 interface AddNewsModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,41 +18,63 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
     editorId: "",
     title: "",
     description: "",
-    url: "",
+    videoUrl: "",
     category: "National",
+    subCategories: [] as string[],
   });
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // reset subCategories when category changes (extra safety)
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, subCategories: [] }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.category]); // intentional: react will warn about missing setter, but this keeps behavior explicit
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
+    // if category changes, also reset subCategories
+    if (name === "category") {
+      setFormData((prev) => ({ ...prev, [name]: value, subCategories: [] }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const toggleSubCategory = (sub: string) => {
+    setFormData(prev => {
+      const exists = prev.subCategories.includes(sub);
+      return {
+        ...prev,
+        subCategories: exists ? prev.subCategories.filter(s => s !== sub) : [...prev.subCategories, sub],
+      };
+    });
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
-  
+
     const fileArray = Array.from(files);
-  
     const compressedFiles: File[] = [];
-  
+
     for (const file of fileArray) {
       const compressed: any = await compressFile(file);
-  
+
       // convert compressed Blob → File (FormData needs File)
-      const compressedFile = new File([compressed], file.name.replace(/\.\w+$/, '.webp'), {
-        type: compressed.type || 'image/webp'
+      const compressedFile = new File([compressed], file.name.replace(/\.\w+$/, ".webp"), {
+        type: compressed.type || "image/webp",
       });
-  
+
       compressedFiles.push(compressedFile);
     }
-  
+
     setImages(compressedFiles);
     toast.success("Images compressed successfully (under 1MB)");
   };
-  
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,12 +86,16 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       data.append("editorId", formData.editorId);
       data.append("title", formData.title);
       data.append("description", formData.description);
-      data.append("url", formData.url);
+      data.append("videoUrl", formData.videoUrl);
       data.append("category", formData.category);
+
+      // append subCategories as multiple values (multipart array)
+      formData.subCategories.forEach((sc) => data.append("subCategories", sc));
 
       images.forEach((img) => data.append("images", img));
 
-      const response = await api.post("/news/create",
+      const response = await api.post(
+        "/news/create",
         data,
         {
           withCredentials: true,
@@ -87,11 +114,17 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
       if (fetchNews) await fetchNews();
       else if (setNews && resData.news) {
-        // if API returns created item(s)
         setNews((prev) => [resData.news, ...prev]);
       }
 
-      setFormData({ editorId: "", title: "", description: "", category: "National", url: "" });
+      setFormData({
+        editorId: "",
+        title: "",
+        description: "",
+        category: "National",
+        videoUrl: "",
+        subCategories: [],
+      });
       setImages([]);
       setIsOpen(false);
     } catch (err: any) {
@@ -103,14 +136,16 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
     }
   };
 
+  const availableSubCategories = subCategoriesMap[formData.category] ?? [];
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
       <form
         onSubmit={handleCreatePost}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 md:w-[450px]"
+        className="bg-white p-6 rounded-lg shadow-lg w-96 md:w-[550px] max-h-[95%] overflow-y-scroll"
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-blue-600">Add News</h2>
+          <h2 className="text-xl font-bold text-[#f40607]">Add News</h2>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -122,22 +157,20 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
         {error && <p className="text-[#f40607] text-sm mb-2">{error}</p>}
 
-        <div className="flex flex-col md:flex-row justify-center md:gap-4">
-          <div className="w-full md:w-1/2">
-            <label htmlFor="title">Title</label>
-            <input
-              type="text"
-              name="title"
-              placeholder="Title"
-              disabled={loading}
-              className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700"
-              value={formData.title}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <label htmlFor="title">Title</label>
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          disabled={loading}
+          className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
 
-          <div className="w-full md:w-1/2">
+        {/* <div className="flex flex-col md:flex-row justify-center md:gap-4"> */}
+          <div className="w-full">
             <label htmlFor="category">Category:</label>
             <select
               name="category"
@@ -156,7 +189,47 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
               ))}
             </select>
           </div>
-        </div>
+
+          <div className="w-full">
+            <label>Select SubCategories</label>
+            <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50">
+            {availableSubCategories.length === 0 ? (
+              <p className="text-sm text-gray-500">No subcategories available</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {availableSubCategories.map((sub) => {
+                  const selected = formData.subCategories.includes(sub);
+
+                  return (
+                    <button
+                      type="button"
+                      key={sub}
+                      disabled={loading}
+                      onClick={() => toggleSubCategory(sub)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all
+                        ${
+                          selected
+                            ? "bg-[#f40607] text-white border-red-600 shadow-sm"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-blue-50 hover:border-blue-400"
+                        }
+                      `}
+                    >
+                      {sub}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {formData.subCategories.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">
+              Selected: <span className="font-medium">{formData.subCategories.length}</span>
+            </p>
+          )}
+
+          </div>
+        {/* </div> */}
 
         <label htmlFor="description">Description</label>
         <textarea
@@ -170,16 +243,15 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
         />
 
         <div className="w-full">
-          <label htmlFor="url">Link Url</label>
+          <label htmlFor="videoUrl">Video Url</label>
           <input
             type="text"
-            name="url"
-            placeholder="Link Url"
+            name="videoUrl"
+            placeholder="Video Url"
             disabled={loading}
             className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700"
-            value={formData.url}
+            value={formData.videoUrl}
             onChange={handleChange}
-            required
           />
         </div>
 
@@ -212,7 +284,7 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
         <button
           type="submit"
-          className="w-full cursor-pointer bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:bg-gray-400 flex justify-center items-center gap-2"
+          className="w-full cursor-pointer bg-[#f40607] text-white p-2 rounded hover:bg-red-700 disabled:bg-gray-400 flex justify-center items-center gap-2"
           disabled={loading}
         >
           {loading && <FiLoader className="animate-spin" />}{" "}

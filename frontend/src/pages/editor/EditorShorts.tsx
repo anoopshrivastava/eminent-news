@@ -48,7 +48,7 @@ export default function EditorShorts() {
   return (
     <div className="px-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold">My Shorts</h2>
+        <h2 className="text-3xl font-bold">My Shorts</h2>
         <ShortUploadModal onUploaded={fetchShorts} />
       </div>
 

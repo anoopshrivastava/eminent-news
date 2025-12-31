@@ -60,7 +60,7 @@ const EditorDashboard = () => {
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">
       <div className="flex items-center gap-6 mb-8 pr-10">
-        <h1 className="text-3xl font-bold text-[#4a5396]">My News</h1>
+        <h1 className="text-3xl font-bold text-black">My News</h1>
 
         <SearchInput
           value={search}

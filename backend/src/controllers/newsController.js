@@ -8,18 +8,18 @@ exports.createNews = catchAsyncError(async(req,res) =>{
 
     // assigning value of req.body.user as the id of loggedin user (i.e id of logged in user will be req.user.id)
     const editor = req.user.id;
-    const { title, description, category, url } = req.body;
+    const { title, description, category, videoUrl, subCategories } = req.body;
 
     const images = req.files ? req.files.map((file) => file.path) : [];
 
-    if (!title || !description || !category || !url ) {
+    if (!title || !description || !category ) {
         return res.status(400).json({ 
             success: false, 
             message: 'All fields are required including at least one image.'
         });
     }
 
-    const news = await News.create({ title, description, url, editor, images, category});
+    const news = await News.create({ title, description, videoUrl, editor, images, category, subCategories: subCategories || [], comments: []});
 
     res.status(201).json({
         success:true,

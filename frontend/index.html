@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=-5.0" />
     <title>TEN</title>
 
-    <!-- HARD BLOCK GOOGLE UI -->
+    <!-- Hide Google Translate UI safely -->
     <style>
       html {
         margin-top: 0 !important;
@@ -15,7 +15,6 @@
       body {
         top: 0 !important;
         margin-top: 0 !important;
-        position: static !important;
       }
 
       .goog-te-banner-frame,
@@ -26,8 +25,7 @@
       .goog-te-gadget-icon,
       .goog-logo-link,
       #goog-gt-tt,
-      iframe[src*="translate"],
-      iframe[src*="googleusercontent"] {
+      iframe[src*="translate"] {
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
@@ -42,7 +40,7 @@
   </head>
 
   <body>
-    <!-- hidden google container -->
+    <!-- Hidden Google container -->
     <div id="google_translate_element"></div>
 
     <!-- React root -->
@@ -50,8 +48,10 @@
 
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- GOOGLE TRANSLATE -->
+    <!-- Google Translate -->
     <script>
+      window.__googleTranslateVisible = false;
+
       function googleTranslateElementInit() {
         new google.translate.TranslateElement(
           {
@@ -62,22 +62,17 @@
           "google_translate_element"
         );
 
-        // FORCE REMOVE GOOGLE NAVBAR (VERY IMPORTANT)
-        const removeGoogleBar = () => {
+        // Detect banner presence (DO NOT REMOVE IT)
+        setInterval(() => {
+          const bar = document.querySelector(".goog-te-banner-frame");
+          window.__googleTranslateVisible = !!bar;
+
+          // prevent body shift
           document.body.style.top = "0px";
           document.documentElement.style.marginTop = "0px";
+        }, 300);
 
-          document
-            .querySelectorAll(
-              ".goog-te-banner-frame, iframe[src*='translate']"
-            )
-            .forEach((el) => el.remove());
-        };
-
-        // Run repeatedly
-        setInterval(removeGoogleBar, 200);
-
-        // expose global lang switcher
+        // Expose language switcher for React
         window.setSiteLanguage = function (lang) {
           const iv = setInterval(() => {
             const select = document.querySelector(".goog-te-combo");
@@ -86,7 +81,7 @@
               select.dispatchEvent(new Event("change"));
               clearInterval(iv);
             }
-          }, 200);
+          }, 250);
         };
       }
     </script>

@@ -5,8 +5,6 @@ import { Outlet } from 'react-router-dom';
 import Footer2 from '@/components/Footer2';
 import MobileHeader from '@/components/MobileHeader';
 
-export type Language = "en" | "hi";
-
 const MainLayout = () => {
 
   return (

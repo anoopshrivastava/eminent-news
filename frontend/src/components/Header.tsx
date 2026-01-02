@@ -10,7 +10,7 @@ import {
 } from "@/redux/authSlice";
 import toast from "react-hot-toast";
 import MobileMenu from "./MobileMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import profile from "../assets/profile.webp";
 
@@ -42,8 +42,22 @@ const Header = () => {
     }
   };
 
+  const [googleBarVisible, setGoogleBarVisible] = useState(false);
+  console.log(googleBarVisible)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGoogleBarVisible(
+        Boolean((window as any).__googleTranslateVisible)
+      );
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <header className="w-full fixed top-0 z-50">
+    <header className="w-full fixed z-50 transition-all duration-200" style={{ top: googleBarVisible ? "40px" : "0px" }}>
+
       {/* Second row: small bar with hamburger + search icons on left (and optional search input) */}
       <div className="flex justify-between items-center w-full bg-[#f40607] px-2 md:px-14 py-2 shadow-sm">
         <div className="flex items-center">

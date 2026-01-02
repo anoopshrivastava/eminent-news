@@ -115,3 +115,31 @@ input[type="number"] {
 h1, h2, h3, h4, h5, h6 {
   font-family: "Droid Serif", serif;
 }
+
+.goog-te-banner-frame.skiptranslate,
+.goog-te-bubble-frame,
+.goog-te-menu-frame,
+.goog-te-gadget,
+.goog-te-gadget-icon,
+.goog-logo-link,
+#goog-gt-tt,
+iframe[src*="translate"],
+iframe[src*="googleusercontent"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* hide powered-by dropdown and the internal select combo */
+#google_translate_element,
+.goog-te-combo {
+  display: none !important;
+}
+
+/* ensure body isn't pushed down */
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+}

@@ -28,17 +28,16 @@ export const subCategoriesMap: Record<string, string[]> = {
   "Exam Update": ["Exam Notification", "Job Notification", "Q/A", "Magazines", "Podcast", "TEN updates"],
 };
 
-export type Language = "en" | "hi";
-
 const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const navigate = useNavigate()
 
-  const [language, setLanguage] = useState<Language>("en");
-
-  const toggleLanguage = () => {
-    setLanguage((prev) => (prev === "en" ? "hi" : "en"));
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const lang = e.target.value;
+    // @ts-ignore
+    window.setSiteLanguage?.(lang);
   };
+
 
   return (
     <div
@@ -105,12 +104,21 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
             );
           })}
 
-<button
-  onClick={toggleLanguage}
-  className="px-4 py-2 rounded bg-red-600 text-white"
->
-  {language === "en" ? "हिंदी" : "English"}
-</button>
+          <div className="mt-4">
+            <label className="text-sm text-rose-600 mb-1 block">
+              Select Language :
+            </label>
+
+            <select
+              defaultValue="en"
+              onChange={handleLanguageChange}
+              className="w-full border bg-white cursor-pointer border-gray-300 rounded px-3 py-2"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+            </select>
+          </div>
+
 
 
           {/* Login / Logout */}

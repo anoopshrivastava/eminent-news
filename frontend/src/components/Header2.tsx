@@ -1,6 +1,6 @@
 import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
-import { categories, subCategoriesMap } from "./MobileMenu";
+import { categories, subCategoriesMap } from "../types/news";
 import logo from "../assets/logo-white.png";
 import profile from "../assets/profile.webp";
 import MobileTopHeader from "./MobileTopHeader";

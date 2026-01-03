@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { X, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import logo from "../assets/logo.png";
+import { categories, subCategoriesMap } from "@/types/news";
 
 interface Props {
   open: boolean;
@@ -10,23 +11,6 @@ interface Props {
   handleLogout?: () => void;
 }
 
-export const categories = [
-  "National",
-  "World",
-  "Trending",
-  "Sports",
-  "Entertainment",
-  "Exam Update",
-];
-
-export const subCategoriesMap: Record<string, string[]> = {
-  National: ["Daily Short News", "State News", "Government Scheme", "Economy & Business", "Judicial News", "Social Justice", "Indian Society", "Internal Security", "Editorial", "Essays"],
-  World: ["World News", "Bilateral Relations", "World Organizations", "World Indexes & Reports","Conferences, meeting & Summits", "Space Technology", "Defense News", "Innovation & Technology", "Environment"],
-  Trending: ["Honors and Awards", "Books & Authors", "Brand Ambassadors", "Eminent", "Health & Disease", "Important Days and Themes", "GI Tags", "Fairs, Festivals & Exhibitions"],
-  Sports: ["Indian Sports", "Team 11", "Athelatic Events", "Olympic Games", "Sports Persons"],
-  Entertainment: ["Automobiles", "Gadget", "Lovey Dovey", "Startups", "Travel"],
-  "Exam Update": ["Exam Notification", "Job Notification", "Q/A", "Magazines", "Podcast", "TEN updates"],
-};
 
 const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
@@ -36,6 +20,7 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
     const lang = e.target.value;
     // @ts-ignore
     window.setSiteLanguage?.(lang);
+    onClose()
   };
 
 

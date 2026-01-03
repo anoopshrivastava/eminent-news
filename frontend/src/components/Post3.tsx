@@ -217,7 +217,7 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
             </button>
 
             <button className="flex items-center gap-1 text-sm">
-              <FaCommentDots size={18} />2
+              <FaCommentDots size={18} />{news.comments.length}
             </button>
 
             {/* Share Button */}

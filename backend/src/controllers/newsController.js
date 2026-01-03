@@ -34,7 +34,7 @@ exports.getAllNews = catchAsyncError(async(req,res) =>{
     const currentPage = Number(req.query.page) || 1;
 
     if(req?.query?.category === 'all'){
-        req.query.category = { $in: ['National', 'World', 'Sports', 'Education', 'Entertainment'] };
+        req.query.category = { $in: ['National', 'World', 'Sports', 'Trending', 'Entertainment', 'Exam Update'] };
     }
 
     const apiFeaturesForCount = new ApiFeatures(News.find(), req.query,['editor'])
@@ -71,7 +71,7 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
     }
 
     if(req?.query?.category === 'all'){
-        req.query.category = { $in: ['National', 'World', 'Sports', 'Education', 'Entertainment'] };
+        req.query.category = { $in: ['National', 'World', 'Sports', 'Trending', 'Entertainment', 'Exam Update'] };
     }
 
     const newsCount = await News.countDocuments({ editor: editorId });
@@ -92,7 +92,7 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
 
 // Get news details
 exports.getNewsDetails=catchAsyncError(async(req,res,next)=>{
-    let news = await News.findById(req.params.id).populate('editor');
+    let news = await News.findById(req.params.id).populate('editor').populate("comments.user", "name avatar");;
     
     if(!news){
         return next(new Errorhandler("News Not Found",404));
@@ -193,3 +193,64 @@ exports.likeNews = catchAsyncError(async (req, res, next) => {
     }
   });
   
+
+exports.addComment = catchAsyncError(async (req, res, next) => {
+
+    const { id: newsId } = req.params;
+    const { comment } = req.body;
+    const userId = req.user.id;
+
+    if (!comment || !comment.trim()) {
+        return next(new Errorhandler("Comment cannot be empty", 400));
+    }
+
+    const news = await News.findById(newsId);
+    if (!news) {
+        return next(new Errorhandler("News not found", 404));
+    }
+
+    const newComment = {
+        user: userId,
+        comment,
+    };
+
+    news.comments.push(newComment);
+    await news.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Comment added successfully",
+        comment: news.comments[news.comments.length - 1],
+    });
+});
+
+
+exports.deleteComment = catchAsyncError(async (req, res, next) => {
+    const { id: newsId, commentId } = req.params;
+    const userId = req.user.id;
+
+    const news = await News.findById(newsId);
+    if (!news) {
+        return next(new Errorhandler("News not found", 404));
+    }
+
+    const comment = news.comments.id(commentId);
+
+    if (!comment) {
+        return next(new Errorhandler("Comment not found", 404));
+    }
+
+    // allow only owner of comment
+    if (comment.user.toString() !== userId.toString()) {
+        return next(new Errorhandler("You can delete only your own comment", 403));
+    }
+
+    comment.deleteOne(); // mongoose subdocument delete
+    await news.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Comment deleted successfully",
+    });
+});
+

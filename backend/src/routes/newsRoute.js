@@ -1,5 +1,5 @@
 const express = require('express');
-const {createNews, getNewsDetails, getAllNews, getEditorNews, updateNews, deleteNews, likeNews} = require('../controllers/newsController');
+const {createNews, getNewsDetails, getAllNews, getEditorNews, updateNews, deleteNews, likeNews, addComment, deleteComment} = require('../controllers/newsController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const router = express.Router();
 const upload = require('../middleware/fileUpload')
@@ -24,6 +24,13 @@ router.put('/news/:id/like', isAuthenticatedUser, likeNews);
 
 // delete the product -- Admin
 router.delete('/news/:id',isAuthenticatedUser,authorizeRoles("editor","admin"),deleteNews);
+
+// comment on news
+router.post('/news/:id/comment',isAuthenticatedUser,addComment);
+
+// delete own comment
+router.delete('/news/:id/comment/:commentId',isAuthenticatedUser,deleteComment);
+
 
 
 module.exports = router

@@ -3,15 +3,29 @@ import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Share2, ArrowLeft } from "lucide-react";
-import { FaRegHeart } from "react-icons/fa";
+import { Loader2, Share2, ArrowLeft, Heart, Trash2 } from "lucide-react";
 import api from "@/lib/axios";
 import type { News } from "@/types/news";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
 
 export default function NewsDetail() {
   const { id } = useParams();
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const { currentUser } = useSelector((state: any) => state.user);
+
+  const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [loadingLike, setLoadingLike] = useState(false);
+
+  const [commentText, setCommentText] = useState("");
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+
+
 
   const fetchNewsDetail = async () => {
     try {
@@ -24,9 +38,125 @@ export default function NewsDetail() {
     }
   };
 
+  const handleLike = async () => {
+    if (loadingLike) return;
+
+    if (!currentUser) {
+      toast.error("Please Login First !!");
+      return;
+    }
+
+    setLoadingLike(true);
+
+    const willLike = !liked;
+
+    // optimistic update
+    setLiked(willLike);
+    setLikesCount((prev) => (willLike ? prev + 1 : Math.max(0, prev - 1)));
+
+    try {
+      const res = await api.put(`/news/${news?._id}/like`);
+
+      if (res?.data?.likesCount !== undefined) {
+        setLikesCount(res.data.likesCount);
+      }
+
+      toast.success(res?.data?.message || (willLike ? "Liked" : "Unliked"));
+    } catch (err: any) {
+      // rollback
+      setLiked(!willLike);
+      setLikesCount((prev) =>
+        willLike ? Math.max(0, prev - 1) : prev + 1
+      );
+
+      toast.error(
+        err?.response?.data?.message || "Failed to toggle like"
+      );
+    } finally {
+      setLoadingLike(false);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const fullUrl = `${window.location.origin}/news/${news?._id}`;
+      await navigator.clipboard.writeText(fullUrl);
+      toast.success("Link copied to clipboard!");
+    } catch {
+      toast.error("Failed to copy link.");
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!currentUser) {
+      toast.error("Please Login First !!");
+      return;
+    }
+
+    if (!commentText.trim()) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
+
+    try {
+      setCommentLoading(true);
+
+      const { data } = await api.post(`/news/${news?._id}/comment`, {
+        comment: commentText,
+      });
+
+      // update UI instantly
+      setNews((prev: any) => ({
+        ...prev,
+        comments: [...(prev?.comments || []), data.comment],
+      }));
+
+      setCommentText("");
+      toast.success("Comment added Successfully");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to add comment");
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      setDeleteLoading(commentId);
+
+      await api.delete(`/news/${news?._id}/comment/${commentId}`);
+
+      setNews((prev: any) => ({
+        ...prev,
+        comments: prev.comments.filter((c: any) => c._id !== commentId),
+      }));
+
+      toast.success("Comment deleted Successfully");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to delete comment");
+    } finally {
+      setDeleteLoading(null);
+    }
+  };
+
+
   useEffect(() => {
     fetchNewsDetail();
   }, []);
+
+  useEffect(() => {
+    if (!news || !currentUser) return;
+
+    const myId = currentUser._id;
+
+    const isLiked =
+      Array.isArray(news.likes) &&
+      news.likes.some((l: any) => String(l.user) === String(myId));
+
+    setLiked(isLiked);
+    setLikesCount(news.likes?.length || 0);
+  }, [news, currentUser]);
+
 
   if (loading) {
     return (
@@ -105,21 +235,36 @@ export default function NewsDetail() {
             {news.description}
           </p>
 
-
           {/* Buttons */}
           <div className="flex gap-2 mt-4">
-            <Button className="flex items-center gap-2">
-              <FaRegHeart /> {news.likes?.length} Likes
+            <Button
+              onClick={handleLike}
+              disabled={loadingLike}
+              className="flex items-center gap-2"
+            >
+              <Heart
+              size={18}
+              className={`${
+                liked ? "fill-red-500 text-[#f40607]" : ""
+              } transition`}
+            />
+              {likesCount} Likes
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+
+            <Button
+              variant="outline"
+              onClick={handleShare}
+              className="flex items-center gap-2"
+            >
               <Share2 className="w-4 h-4" /> Share
             </Button>
+
           </div>
 
           {/* Timestamp */}
-          <p className="text-sm text-gray-500 mt-4">
+          <span className="text-sm text-gray-500">
             Published on: {new Date(news.createdAt).toLocaleDateString()}
-          </p>
+          </span>
 
           {news.videoUrl && 
           <video
@@ -131,6 +276,72 @@ export default function NewsDetail() {
             autoPlay
           />
           }
+
+          {/* Add Comment */}
+          <div className="mt-6 space-y-2">
+            <h3 className="font-semibold">Comments</h3>
+
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              className="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#f40607] bg-white"
+              rows={3}
+            />
+
+            <Button
+              onClick={handleAddComment}
+              disabled={commentLoading}
+              className="bg-[#f40607] hover:bg-red-600"
+            >
+              {commentLoading ? "Posting..." : "Post Comment"}
+            </Button>
+          </div>
+
+          {/* Comments List */}
+          <div className="mt-4 space-y-4">
+            {news.comments && news.comments.length > 0 ? (
+              news.comments.map((c: any) => (
+                <div
+                  key={c._id}
+                  className="flex gap-3 p-3 border rounded-md"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {c.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold">
+                        {c.user?.name || "User"} {currentUser?._id === c.user?._id && <span>(You)</span>}
+                      </p>
+
+                      {/* Delete only own comment */}
+                      {currentUser?._id === c.user?._id && (
+                        <button
+                          onClick={() => handleDeleteComment(c._id)}
+                          className="flex items-center gap-1 text-xs text-red-500 hover:underline"
+                          disabled={deleteLoading === c._id}
+                        >
+                          {deleteLoading === c._id ? "Deleting..." : ""}
+                          <Trash2 size={13}/>
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-gray-700">{c.comment}</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(c.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">No comments yet.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

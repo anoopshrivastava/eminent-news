@@ -130,7 +130,7 @@ const HomePage: React.FC = () => {
                   key={category}
                   value={category}
                   className={`py-2 data-[state=active]:bg-[#f40607] data-[state=active]:text-white data-[state=active]:shadow-md transition-colors duration-200 text-gray-700 font-semibold  ${
-                    index === 0 && "ml-40"
+                    index === 0 && "ml-48"
                   }`}
                 >
                   {category}

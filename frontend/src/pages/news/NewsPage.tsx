@@ -43,7 +43,7 @@ const NewsPage: React.FC = () => {
         <section className="block md:hidden container mx-auto">
           <div className="pb-6">
             <h2 className="text-3xl font-bold text-gray-800 border-b-2 border-red-500 inline-block pb-1">
-              All News 📰
+              All News
             </h2>
           </div>
 

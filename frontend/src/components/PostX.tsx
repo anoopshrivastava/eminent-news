@@ -3,7 +3,7 @@ import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
@@ -21,9 +21,6 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
   const { currentUser } = useSelector((state: any) => state.user);
   const navigate = useNavigate();
-
-  const location = useLocation();
-  const fullPath = location.pathname + location.search;
 
   // try to determine current user and initial liked/followed state
   useEffect(() => {
@@ -118,7 +115,8 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
   const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(fullPath);
+      const fullUrl = `${window.location.origin}/news/${news?._id}`;
+      await navigator.clipboard.writeText(fullUrl);
       toast.success("Link copied to clipboard!");
     } catch {
       toast.error("Failed to copy link.");
@@ -205,7 +203,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
           </button>
 
           <button className="flex items-center gap-1 text-sm">
-            <FaCommentDots size={18} />2
+            <FaCommentDots size={18} />{news.comments.length}
           </button>
 
           {/* Share Button */}

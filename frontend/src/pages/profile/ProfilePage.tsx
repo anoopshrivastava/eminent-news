@@ -76,7 +76,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">
       {/* header */}
-      <div className="flex flex-row md:items-center gap-6 md:gap-8 pt-2">
+      <div className="flex flex-row md:items-center gap-6 md:gap-8 pt-2 md:pt-4">
         <div className="flex-shrink-0">
           <div className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-gray-200">
             <img src={profile} alt={user.name} className="w-full h-full object-cover" />
@@ -106,13 +106,13 @@ const ProfilePage: React.FC = () => {
               onClick={handleLogout}
               className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-tr from-red-500 to-pink-500 text-white rounded-md shadow-sm hover:opacity-95 transition">
                 <LogOutIcon size={16} />
-                Logout
+                <span className="hidden md:block">Logout</span>
               </button>
             </div> 
           </div>
 
           {/* stats */}
-          <div className="mt-4 flex items-center gap-6 ">
+          <div className="mt-4 md:mt-6 flex items-center gap-6 border-b border-gray-200 pb-5">
             {/* <div>
               <div className="font-semibold text-gray-900">12</div>
               <div className="text-gray-500">Posts</div>
@@ -130,10 +130,10 @@ const ProfilePage: React.FC = () => {
           {/* bio desktop */}
           <div className="hidden md:block mt-4 text-gray-700">
             <p className="font-medium">{user.name} • {user.role}</p>
-            <p className="text-sm text-gray-600 mt-1">Joined {formatDate(user.createdAt)}</p>
-            <p className="mt-3 text-gray-600">This is a short bio. Add your location, interests or a short description here.</p>
+            <p className="text-sm text-gray-600">Joined {formatDate(user.createdAt)}</p>
+            <p className="mt-6 text-gray-600">This is a short bio. Add your location, interests or a short description here.</p>
 
-            <div className="mt-3 flex items-center gap-3 text-sm text-gray-600">
+            <div className="mt-6 flex items-center gap-3 text-sm text-gray-600">
               {user.phone && (
                 <div className="flex items-center gap-1">
                   <Mail size={14} />
@@ -153,10 +153,10 @@ const ProfilePage: React.FC = () => {
       {/* bio - mobile view */}
       <div className="block md:hidden mt-4 text-gray-700">
             <p className="font-medium text-lg">{user.name} • {user.role}</p>
-            <p className="text-sm text-gray-600 mt-1">Joined {formatDate(user.createdAt)}</p>
-            <p className="mt-3 text-gray-600 text-sm">This is a short bio. Add your location, interests or a short description here.</p>
+            <p className="text-sm text-gray-600">Joined {formatDate(user.createdAt)}</p>
+            <p className="mt-5 text-gray-600 text-sm">This is a short bio. Add your location, interests or a short description here.</p>
 
-            <div className="mt-3 flex items-center gap-3 text-gray-600">
+            <div className="mt-5 flex items-center gap-3 text-gray-600">
               {user.phone && (
                 <div className="flex items-center gap-1">
                   <Mail size={14} />

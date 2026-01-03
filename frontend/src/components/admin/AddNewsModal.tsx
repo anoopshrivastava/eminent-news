@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FiX, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { categories, type News } from "@/types/news";
+import { categories, subCategoriesMap, type News } from "@/types/news";
 import { compressFile } from "@/lib/compression";
 import api from "@/lib/axios";
-import { subCategoriesMap } from "../MobileMenu";
 
 interface AddNewsModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

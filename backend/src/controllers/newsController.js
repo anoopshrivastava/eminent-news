@@ -46,6 +46,7 @@ exports.getAllNews = catchAsyncError(async(req,res) =>{
     const apiFeatures = new ApiFeatures(News.find(),req.query,['editor'])
     .search()     // search function
     .filter()     // filter function on category,price,rating
+    .sort() 
     .pagination(resultPerPage);    // total result to show in 1 page
 
     // const products = await Product.find();  // now instead of this do below line due to search feature
@@ -78,7 +79,8 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
 
     const apiFeatures = new ApiFeatures(News.find({ editor: editorId }), req.query,['editor'])
         .search()    // Apply search function
-        .filter();   // Apply filters (category, price, rating)
+        .filter()   // Apply filters (category, price, rating)
+        .sort() 
 
     const news = await apiFeatures.query;
 

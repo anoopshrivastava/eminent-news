@@ -23,32 +23,32 @@ const Footer2: React.FC = () => {
   const socialLinks = [
     {
       icon: FaXTwitter,
-      href: "#",
+      href: "https://x.com/TheEminentNews",
       bg: "bg-black",
     },
     {
       icon: FaTelegram,
-      href: "#",
+      href: "https://t.me/TheEminentNews",
       bg: "bg-sky-500",
     },
     {
       icon: FaWhatsapp,
-      href: "#",
+      href: "https://whatsapp.com/channel/0029Vb5Eh3vC6ZvkjqBCRX25",
       bg: "bg-green-500",
     },
     {
       icon: FaLinkedin,
-      href: "#",
+      href: "https://www.linkedin.com/company/eminent-news/",
       bg: "bg-blue-700",
     },
     {
       icon: FaFacebook,
-      href: "#",
+      href: "https://www.facebook.com/share/1Vruc3yr65/",
       bg: "bg-blue-600",
     },
     {
       icon: FaYoutube,
-      href: "#",
+      href: "https://youtube.com/@eminentnews?si=QzcdpYJQstk1deol",
       bg: "bg-red-600",
     },
     {
@@ -156,6 +156,7 @@ const Footer2: React.FC = () => {
             {socialLinks.map(({ icon: Icon, href, bg }, i) => (
               <a
                 key={i}
+                target="_blank"
                 href={href}
                 className={`${bg} p-1 rounded-md flex items-center justify-center`}
               >
@@ -168,7 +169,7 @@ const Footer2: React.FC = () => {
     </div>
 
     {/* ======== COPYRIGHT ======== */}
-    <div className="flex flex-col border-t border-white/90 py-4 mt-4">
+    <div className="flex flex-col border-t border-white/90 py-4 mt-4 pb-20 md:pb-4">
       <p className="text-center ">⁠Powered by Kubza Pvt Ltd</p>
       <p className="text-center text-sm">
         © {new Date().getFullYear()} Eminentnews.com — All rights reserved

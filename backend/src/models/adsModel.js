@@ -16,6 +16,10 @@ const adsSchema = new mongoose.Schema({
         type:[String],
         default:[]
     },
+    isApproved:{
+        type:Boolean,
+        default: false,
+    },
     url:{
         type:String,
     }

@@ -55,6 +55,8 @@ const Header = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const avatar = (currentUser.avatar && currentUser.avatar.trim() !== "sampleurl") ? currentUser.avatar : profile;
+
   return (
     <header className="w-full fixed z-50 transition-all duration-200" style={{ top: googleBarVisible ? "40px" : "0px" }}>
 
@@ -101,7 +103,7 @@ const Header = () => {
               onClick={() => navigate("/my-profile")}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <img src={currentUser?.avatar || profile} alt="" className="h-10 w-10 rounded-full" />
+              <img src={avatar} alt="" className="h-10 w-10 rounded-full" />
             </div>
           ) : (
             <Link

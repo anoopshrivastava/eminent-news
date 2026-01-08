@@ -43,6 +43,7 @@ exports.getAllAds = catchAsyncError(async(req,res) =>{
     const apiFeatures = new ApiFeatures(Ads.find(),req.query)
     .search()     // search function
     .filter()     // filter function on category,price,rating
+    .sort() 
     .pagination(resultPerPage);    // total result to show in 1 page
 
     // const products = await Product.find();  // now instead of this do below line due to search feature

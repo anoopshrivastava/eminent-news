@@ -62,7 +62,7 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
     password,
     phone,
     address,
-    avatar: avatar || "sampleurl",
+    avatar: avatar,
     role,
   });
 
@@ -289,12 +289,14 @@ exports.getAllUser = catchAsyncError(async (req, res, next) => {
     req.query
   )
     .search()
-    .filter();
+    .filter()
 
   const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
 
   const apiFeatures = new ApiFeatures(User.find({ role: "user" }), req.query)
     .search()
+    .filter()
+    .sort() 
     .pagination(resultPerPage);
 
   const users = await apiFeatures.query;
@@ -325,6 +327,8 @@ exports.getAllEditor = catchAsyncError(async (req, res, next) => {
 
   const apiFeatures = new ApiFeatures(User.find({ role: "editor" }), req.query)
     .search()
+    .filter()
+    .sort()
     .pagination(resultPerPage);
 
   const users = await apiFeatures.query;

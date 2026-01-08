@@ -50,6 +50,15 @@ class ApiFeatures{
         return this;
     }
 
+    sort() {
+        const sortField = this.querystr.sort || "createdAt";
+        const sortOrder =
+            this.querystr.order === "asc" ? 1 : -1; // default desc
+
+        this.query = this.query.sort({ [sortField]: sortOrder });
+        return this;
+    }
+
     pagination(resultPerPage){
         const currPage = Number(this.querystr.page) || 1;
         const skip = resultPerPage * (currPage-1);

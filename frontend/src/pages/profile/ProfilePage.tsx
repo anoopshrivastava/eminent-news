@@ -75,13 +75,15 @@ const ProfilePage: React.FC = () => {
   const followersCount = (user.followers && user.followers.length) || 0;
   const followingCount = (user.following && user.following.length) || 0;
 
+  const avatar = (currentUser.avatar && currentUser.avatar.trim() !== "sampleurl") ? currentUser.avatar : profile;
+
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">
       {/* header */}
       <div className="flex flex-row md:items-center gap-6 md:gap-8 pt-2 md:pt-4">
         <div className="flex-shrink-0">
           <div className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-gray-200">
-            <img src={user?.avatar || profile} alt={user.name} className="w-full h-full object-cover" />
+            <img src={avatar} alt={user.name} className="w-full h-full object-cover" />
           </div>
         </div>
 

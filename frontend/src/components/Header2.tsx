@@ -41,6 +41,8 @@ const Header2 = () => {
   //   }
   // };
 
+  const avatar = (currentUser.avatar && currentUser.avatar.trim() !== "sampleurl") ? currentUser.avatar : profile;
+
   return (
     <header className="fixed w-full z-50">
       <MobileTopHeader />
@@ -100,7 +102,7 @@ const Header2 = () => {
               className="flex items-center gap-2 cursor-pointer"
             >
               {/* <span className="hidden sm:inline">Profile</span> */}
-              <img src={currentUser?.avatar || profile } alt="" className="h-8 rounded-full"/>
+              <img src={avatar} alt="" className="h-8 rounded-full"/>
             </div>
           ) : (
             <Link

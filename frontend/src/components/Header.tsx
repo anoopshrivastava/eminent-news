@@ -101,7 +101,7 @@ const Header = () => {
               onClick={() => navigate("/my-profile")}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <img src={profile} alt="" className="h-8 rounded-full" />
+              <img src={currentUser?.avatar || profile} alt="" className="h-10 w-10 rounded-full" />
             </div>
           ) : (
             <Link

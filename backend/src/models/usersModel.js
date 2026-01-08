@@ -35,6 +35,12 @@ const UsersSchema = new mongoose.Schema({
     avatar:{
         type:String
     },
+    bio:{
+        type:String
+    },
+    location:{
+        type:String
+    },
     role:{
         type: String,
         enum: ["user", "editor", "admin"],

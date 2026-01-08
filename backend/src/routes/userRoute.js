@@ -2,6 +2,7 @@ const express = require('express');
 const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const rateLimiter = require('../utils/rateLimit');
+const upload = require('../middleware/fileUpload');
 const router = express.Router();
 
 
@@ -27,7 +28,7 @@ router.get('/me',isAuthenticatedUser,getUserDetails)
 router.put('/password/update',isAuthenticatedUser,updatePassword)
 
 // for updating user profile -->
-router.put('/me/update',isAuthenticatedUser,updateProfile)
+router.put('/me/update',isAuthenticatedUser,upload.array("images", 10),updateProfile)
 
 // follow / unfollow a user (toggle)
 router.put('/user/:id/follow', isAuthenticatedUser, followUser);

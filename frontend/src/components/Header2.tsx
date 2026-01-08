@@ -100,7 +100,7 @@ const Header2 = () => {
               className="flex items-center gap-2 cursor-pointer"
             >
               {/* <span className="hidden sm:inline">Profile</span> */}
-              <img src={profile} alt="" className="h-8 rounded-full"/>
+              <img src={currentUser?.avatar || profile } alt="" className="h-8 rounded-full"/>
             </div>
           ) : (
             <Link

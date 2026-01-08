@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { X, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import logo from "../assets/logo.png";
 import { categories, subCategoriesMap } from "@/types/news";
+import { User, Lock } from "lucide-react";
+
 
 interface Props {
   open: boolean;
@@ -14,6 +16,7 @@ interface Props {
 
 const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const [openAccount, setOpenAccount] = useState(false);
   const navigate = useNavigate()
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,6 +106,50 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
               <option value="hi">हिंदी</option>
             </select>
           </div>
+
+          {/* My Account (Authenticated Users Only) */}
+{currentUser && (
+  <div className="mt-4">
+    <button
+      onClick={() => setOpenAccount(!openAccount)}
+      className="flex justify-between items-center w-full hover:text-[#f40607]"
+    >
+      My Account
+      {openAccount ? (
+        <ChevronUp className="h-4 w-4" />
+      ) : (
+        <ChevronDown className="h-4 w-4" />
+      )}
+    </button>
+
+    {openAccount && (
+      <div className="ml-3 mt-3 flex flex-col gap-3 text-base font-medium text-gray-700">
+        <button
+          onClick={() => {
+            navigate("/settings/profile");
+            onClose();
+          }}
+          className="flex items-center gap-2 hover:text-[#f40607]"
+        >
+          <User size={16} />
+          Edit Profile
+        </button>
+
+        <button
+          onClick={() => {
+            navigate("/settings/security");
+            onClose();
+          }}
+          className="flex items-center gap-2 hover:text-[#f40607]"
+        >
+          <Lock size={16} />
+          Change Password
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
 
 
 

@@ -24,6 +24,8 @@ import LandingPage from "./pages/landing-page/LandingPage";
 import EditorShorts from "./pages/editor/EditorShorts";
 import NewsDetail from "./pages/news-detail/NewsDetail";
 import AdsPage from "./pages/admin/AdsPage";
+import EditProfile from "./pages/profile/EditProfile";
+import ChangePassword from "./pages/profile/ChangePassword";
 
 function App() {
   return (
@@ -45,6 +47,9 @@ function App() {
             <Route path="/shorts" element={<ShortsReel />} />
             <Route element={<PrivateRoute />}>
               <Route path="/my-profile" element={<ProfilePage />} />
+              <Route path="/settings/profile" element={<EditProfile />} />
+              <Route path="/settings/security" element={<ChangePassword />} />
+
             </Route>
             
           </Route>

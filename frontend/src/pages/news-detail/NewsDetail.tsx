@@ -8,6 +8,7 @@ import api from "@/lib/axios";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import profile from "@/assets/profile.webp"
 
 
 export default function NewsDetail() {
@@ -219,7 +220,7 @@ export default function NewsDetail() {
           {/* Editor Info */}
           <div className="flex items-center gap-4 mt-4">
             <Avatar className="h-12 w-12 ">
-              <AvatarImage src="" alt={news.editor?.name} className=""/>
+              <AvatarImage src={currentUser?.avatar || profile } alt={news.editor?.name} className=""/>
               <AvatarFallback className="bg-gray-300">
                 {news.editor?.name?.charAt(0).toUpperCase()}
               </AvatarFallback>

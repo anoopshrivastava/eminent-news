@@ -168,7 +168,8 @@ const Footer2: React.FC = () => {
     </div>
 
     {/* ======== COPYRIGHT ======== */}
-    <div className="border-t border-white/90 py-4 mt-4">
+    <div className="flex flex-col border-t border-white/90 py-4 mt-4">
+      <p className="text-center ">⁠Powered by Kubza Pvt Ltd</p>
       <p className="text-center text-sm">
         © {new Date().getFullYear()} Eminentnews.com — All rights reserved
       </p>

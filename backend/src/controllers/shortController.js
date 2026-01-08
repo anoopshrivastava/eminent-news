@@ -25,7 +25,7 @@ exports.uploadShort = async (req, res) => {
       {
         resource_type: "video",
         folder: "shorts",
-        transformation: [{ quality: "auto" }],   // 🔥 compression
+        transformation: [{ quality: "auto" }],   // compression
         eager: [
           { width: 720, height: 1280, crop: "limit", format: "mp4", quality: "auto" },
           { width: 480, height: 854, crop: "limit", format: "mp4", quality: "auto" }

@@ -13,17 +13,23 @@ interface AddNewsModalProps {
 }
 
 function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsModalProps) {
+
+  const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100MB
+
   const [formData, setFormData] = useState({
     editorId: "",
     title: "",
     description: "",
-    videoUrl: "",
     category: "National",
     subCategories: [] as string[],
   });
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
 
   // reset subCategories when category changes (extra safety)
   useEffect(() => {
@@ -85,7 +91,6 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       data.append("editorId", formData.editorId);
       data.append("title", formData.title);
       data.append("description", formData.description);
-      data.append("videoUrl", formData.videoUrl);
       data.append("category", formData.category);
 
       // append subCategories as multiple values (multipart array)
@@ -93,12 +98,20 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
       images.forEach((img) => data.append("images", img));
 
+      if (videoFile) {
+        data.append("video", videoFile); 
+      }
+
       const response = await api.post(
         "/news/create",
         data,
         {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (evt) => {
+            const pct = Math.round((evt.loaded * 100) / (evt.total ?? 1));
+            setUploadProgress(pct);
+          },
         }
       );
 
@@ -121,7 +134,6 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
         title: "",
         description: "",
         category: "National",
-        videoUrl: "",
         subCategories: [],
       });
       setImages([]);
@@ -134,6 +146,25 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       setLoading(false);
     }
   };
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return setVideoFile(null);
+
+    if (!file.type.startsWith("video/")) {
+      setError("Please select a valid video file");
+      return;
+    }
+
+    if (file.size > MAX_VIDEO_BYTES) {
+      setError("Video size must be less than 20MB");
+      return;
+    }
+
+    setVideoFile(file);
+  };
+
 
   const availableSubCategories = subCategoriesMap[formData.category] ?? [];
 
@@ -242,16 +273,35 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
         />
 
         <div className="w-full">
-          <label htmlFor="videoUrl">Video Url</label>
+          <label>
+            Upload Video <span className="text-xs text-gray-500">(max 20MB)</span>
+          </label>
           <input
-            type="text"
-            name="videoUrl"
-            placeholder="Video Url"
+            type="file"
+            accept="video/*"
             disabled={loading}
-            className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700"
-            value={formData.videoUrl}
-            onChange={handleChange}
+            onChange={handleVideoChange}
+            className="w-full p-2 border rounded mb-2 bg-transparent cursor-pointer"
           />
+
+          {videoFile && (
+            <p className="text-xs text-gray-600">
+              Selected: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
+            </p>
+          )}
+
+          {loading && uploadProgress > 0 && (
+            <div className="mt-2">
+              <div className="text-xs mb-1">Uploading video: {uploadProgress}%</div>
+              <div className="w-full bg-gray-200 rounded h-2">
+                <div
+                  className="bg-[#f40607] h-2 rounded"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
         </div>
 
         {admin && (

@@ -459,3 +459,26 @@ exports.followUser = catchAsyncError(async (req, res, next) => {
     });
   }
 });
+
+exports.deleteMyProfile = catchAsyncError(async (req, res, next) =>{
+
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(
+      new Errorhandler(`User does not exists with id ${req.params.id}`, 404)
+    );
+  }
+
+  if(user.role === "admin"){
+   return next(
+      new Errorhandler(`Cannot delete Admin !!`, 400)
+    );
+  }
+
+  await User.findByIdAndDelete(user.id);
+  res.status(200).json({
+    success: true,
+    message: "Account Deleted Successfully",
+  });
+
+})

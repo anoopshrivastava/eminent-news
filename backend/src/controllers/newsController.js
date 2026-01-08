@@ -4,28 +4,155 @@ const catchAsyncError = require('../middleware/catchAsyncErrors')
 const ApiFeatures = require('../utils/apiFeatures')
 const cloudinary = require('../config/cloudinary')
 
-exports.createNews = catchAsyncError(async(req,res) =>{
+const uploadImage = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      { folder: "social_media_task" },
+      (err, res) => (err ? reject(err) : resolve(res))
+    ).end(buffer);
+  });
 
-    // assigning value of req.body.user as the id of loggedin user (i.e id of logged in user will be req.user.id)
-    const editor = req.user.id;
-    const { title, description, category, videoUrl, subCategories } = req.body;
+const uploadVideo = (buffer) =>
+  new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        resource_type: "video",
+        folder: "news/videos",
+        transformation: [{ quality: "auto" }],
+          eager: [
+            {
+              width: 720,
+              height: 1280,
+              crop: "limit",
+              format: "mp4",
+              quality: "auto",
+            },
+            {
+              width: 480,
+              height: 854,
+              crop: "limit",
+              format: "mp4",
+              quality: "auto",
+            },
+          ],
+          eager_async: true,
+      },
+      (err, res) => (err ? reject(err) : resolve(res))
+    ).end(buffer);
+  });
 
-    const images = req.files ? req.files.map((file) => file.path) : [];
+exports.createNews = async (req, res) => {
+  const editor = req.user.id;
+  const { title, description, category, subCategories } = req.body;
 
-    if (!title || !description || !category ) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'All fields are required including at least one image.'
-        });
-    }
+  const imageUploads = await Promise.all(
+    (req.files.images || []).map((img) => uploadImage(img.buffer))
+  );
 
-    const news = await News.create({ title, description, videoUrl, editor, images, category, subCategories: subCategories || [], comments: []});
+  let videoUrl = null;
+  let videoPublicId = null;
 
-    res.status(201).json({
-        success:true,
-        news
-    });
-})
+  if (req.files.video?.[0]) {
+    const videoRes = await uploadVideo(req.files.video[0].buffer);
+    videoUrl = videoRes.secure_url;
+    videoPublicId = videoRes.public_id;
+  }
+
+  const news = await News.create({
+    title,
+    description,
+    category,
+    editor,
+    images: imageUploads.map((i) => i.secure_url),
+    videoUrl,
+    videoPublicId,
+    subCategories: subCategories || [],
+  });
+
+  res.json({ success: true, news });
+};
+
+
+// exports.createNews = catchAsyncError(async (req, res) => {
+//   const editor = req.user.id;
+//   console.log("r",req.body);
+//   const { title, description, category, subCategories } = req.body;
+
+//   // images (multiple)
+//   const images = req.files?.images ? req.files.images.map((file) => file.path) : [];
+
+//   if (!title || !description || !category) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Title, description and category are required",
+//     });
+//   }
+
+//   let uploadedVideoUrl = null;
+//   let videoPublicId = null;
+
+//   // Upload video if present
+//   if (req.files?.video?.[0]) {
+//     console.log("reached2")
+//     await new Promise((resolve, reject) => {
+//       const uploadStream = cloudinary.uploader.upload_stream(
+//         {
+//           resource_type: "video",
+//           folder: "news/videos",
+//           transformation: [{ quality: "auto" }],
+//           eager: [
+//             {
+//               width: 720,
+//               height: 1280,
+//               crop: "limit",
+//               format: "mp4",
+//               quality: "auto",
+//             },
+//             {
+//               width: 480,
+//               height: 854,
+//               crop: "limit",
+//               format: "mp4",
+//               quality: "auto",
+//             },
+//           ],
+//           eager_async: true,
+//         },
+//         (error, result) => {
+//           if (error) {
+//             reject(error);
+//           } else {
+//             uploadedVideoUrl = result.secure_url;
+//             videoPublicId = result.public_id;
+//             resolve();
+//           }
+//         }
+//       );
+
+//       uploadStream.end(req.files.video[0].buffer);
+//     });
+//   }
+//   console.log("reached3")
+
+//   //  Create news with uploaded video URL
+//   const news = await News.create({
+//     title,
+//     description,
+//     category,
+//     editor,
+//     images,
+//     videoUrl: uploadedVideoUrl,
+//     videoPublicId,
+//     subCategories: subCategories || [],
+//     comments: [],
+//   });
+
+//   res.status(201).json({
+//     success: true,
+//     message: "News created successfully",
+//     news,
+//   });
+// });
 
 // for getting all products
 exports.getAllNews = catchAsyncError(async(req,res) =>{
@@ -148,6 +275,16 @@ exports.deleteNews = catchAsyncError(async (req, res) => {
         });
 
         await Promise.all(deletePromises);
+    }
+
+    if (news.videoPublicId) {
+        try {
+
+        const destroyResult = await cloudinary.uploader.destroy(news.videoPublicId, { resource_type: "video" });
+        console.log("cloudinary destroy result:", destroyResult);
+        } catch (cloudErr) {
+        console.warn("Cloudinary delete failed:", cloudErr);
+        }
     }
 
     await News.findByIdAndDelete(req.params.id);

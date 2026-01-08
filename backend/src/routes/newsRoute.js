@@ -2,10 +2,13 @@ const express = require('express');
 const {createNews, getNewsDetails, getAllNews, getEditorNews, updateNews, deleteNews, likeNews, addComment, deleteComment} = require('../controllers/newsController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const router = express.Router();
-const upload = require('../middleware/fileUpload')
+const uploadBoth = require('../middleware/upload')
 
 // create product --> Admin access
-router.post('/news/create',isAuthenticatedUser,authorizeRoles("editor","admin"),upload.array("images", 10),createNews)
+router.post('/news/create',isAuthenticatedUser,authorizeRoles("editor","admin"),uploadBoth.fields([
+    { name: "images", maxCount: 10 },
+    { name: "video", maxCount: 1 },
+  ]), createNews)
 
 // get single Product details
 router.get('/news/:id',getNewsDetails);

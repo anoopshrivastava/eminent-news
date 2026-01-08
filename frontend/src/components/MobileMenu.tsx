@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { X, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
+import { X, ChevronDown, ChevronUp, ArrowRight, Trash2 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { categories, subCategoriesMap } from "@/types/news";
 import { User, Lock } from "lucide-react";
+import api from "@/lib/axios";
+import toast from "react-hot-toast";
 
 
 interface Props {
@@ -25,6 +27,30 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
     window.setSiteLanguage?.(lang);
     onClose()
   };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await api.delete("/me", { withCredentials: true });
+
+      toast.success("Account deleted successfully");
+
+      handleLogout?.(); // clear auth state, tokens, store
+      onClose();
+      navigate("/login");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(
+        err?.response?.data?.message || "Failed to delete account"
+      );
+    }
+  };
+
 
 
   return (
@@ -108,50 +134,59 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
           </div>
 
           {/* My Account (Authenticated Users Only) */}
-{currentUser && (
-  <div className="mt-4">
-    <button
-      onClick={() => setOpenAccount(!openAccount)}
-      className="flex justify-between items-center w-full hover:text-[#f40607]"
-    >
-      My Account
-      {openAccount ? (
-        <ChevronUp className="h-4 w-4" />
-      ) : (
-        <ChevronDown className="h-4 w-4" />
-      )}
-    </button>
+          {currentUser && (
+            <div className="mt-4">
+              <button
+                onClick={() => setOpenAccount(!openAccount)}
+                className="flex justify-between items-center w-full hover:text-[#f40607]"
+              >
+                My Account
+                {openAccount ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
 
-    {openAccount && (
-      <div className="ml-3 mt-3 flex flex-col gap-3 text-base font-medium text-gray-700">
-        <button
-          onClick={() => {
-            navigate("/settings/profile");
-            onClose();
-          }}
-          className="flex items-center gap-2 hover:text-[#f40607]"
-        >
-          <User size={16} />
-          Edit Profile
-        </button>
+              {openAccount && (
+                <div className="ml-3 mt-3 flex flex-col gap-3 text-base font-medium text-gray-700">
+                  <button
+                    onClick={() => {
+                      navigate("/settings/profile");
+                      onClose();
+                    }}
+                    className="flex items-center gap-2 hover:text-[#f40607]"
+                  >
+                    <User size={16} />
+                    Edit Profile
+                  </button>
 
-        <button
-          onClick={() => {
-            navigate("/settings/security");
-            onClose();
-          }}
-          className="flex items-center gap-2 hover:text-[#f40607]"
-        >
-          <Lock size={16} />
-          Change Password
-        </button>
-      </div>
-    )}
-  </div>
-)}
+                  <button
+                    onClick={() => {
+                      navigate("/settings/security");
+                      onClose();
+                    }}
+                    className="flex items-center gap-2 hover:text-[#f40607]"
+                  >
+                    <Lock size={16} />
+                    Change Password
+                  </button>
+                </div>
+              )}
 
-
-
+              {openAccount && (
+                <div className="ml-3 mt-3 flex flex-col gap-3 text-base font-medium text-gray-700">
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="flex items-center gap-2 text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 size={16} />
+                    Delete My Account
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Login / Logout */}
           {currentUser ? (

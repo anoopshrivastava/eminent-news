@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser } = require('../controllers/userController');
+const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser, deleteMyProfile } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const rateLimiter = require('../utils/rateLimit');
 const upload = require('../middleware/fileUpload');
@@ -29,6 +29,9 @@ router.put('/password/update',isAuthenticatedUser,updatePassword)
 
 // for updating user profile -->
 router.put('/me/update',isAuthenticatedUser,upload.array("images", 10),updateProfile)
+
+// for updating user profile -->
+router.delete('/me',isAuthenticatedUser,deleteMyProfile)
 
 // follow / unfollow a user (toggle)
 router.put('/user/:id/follow', isAuthenticatedUser, followUser);

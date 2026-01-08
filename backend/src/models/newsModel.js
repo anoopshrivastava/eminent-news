@@ -39,6 +39,9 @@ const newsSchema = new mongoose.Schema({
     videoUrl:{
         type:String,
     },
+    videoPublicId:{
+        type:String,
+    },
     likes: [
         {
           user: { type: mongoose.Schema.Types.ObjectId, ref: "User", }

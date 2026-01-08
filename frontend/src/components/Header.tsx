@@ -55,7 +55,7 @@ const Header = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const avatar = (currentUser.avatar && currentUser.avatar.trim() !== "sampleurl") ? currentUser.avatar : profile;
+  const avatar = (currentUser?.avatar && currentUser?.avatar.trim() !== "sampleurl") ? currentUser.avatar : profile;
 
   return (
     <header className="w-full fixed z-50 transition-all duration-200" style={{ top: googleBarVisible ? "40px" : "0px" }}>

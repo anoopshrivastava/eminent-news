@@ -18,8 +18,8 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
 
     try {
       const response = await api.delete(`/news/${news._id}`);
-
       const resData = response?.data ?? {};
+
       if (resData.success === true) {
         if (setNews) {
           setNews((prev) => prev.filter((n) => n._id !== news._id));
@@ -36,55 +36,65 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden w-80 md:w-72">
-        {/* Image block with edit/delete overlay */}
+      <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-80 hover:-translate-y-1">
+        {/* Image */}
         <div className="relative h-48 md:h-60 overflow-hidden bg-gray-100">
           <img
             src={news.images?.[0] ?? ""}
             alt={news.title}
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
 
-          {/* Edit & Delete buttons (top-right) */}
-          <div className="absolute top-2 right-2 flex gap-2 z-10">
-            {/* <button
-              onClick={() => setIsEditOpen(true)}
-              className="bg-yellow-400 p-1 rounded-full text-black hover:bg-yellow-500 shadow"
-              title="Edit"
-            >
-              <FiEdit />
-            </button> */}
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+
+          {/* Delete button */}
+          <div className="absolute top-3 right-3 z-10">
             <button
               onClick={handleDelete}
-              className="bg-rose-600 p-1 rounded-full text-white hover:bg-rose-700 shadow"
+              className="bg-white/90 backdrop-blur p-2 rounded-full text-rose-600 hover:bg-rose-600 hover:text-white transition shadow-md"
               title="Delete"
             >
-              <FiTrash />
+              <FiTrash size={14} />
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-3 pb-3 pt-2">
-          <h3 className="text-lg md:text-base font-semibold line-clamp-2 text-gray-900 leading-[1.1] mb-1">
-            Title : {news.title}
+        <div className="px-4 pb-4 pt-3 space-y-1.5">
+          <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
+            {news.title}
           </h3>
 
-          <p className="font-medium text-gray-700 text-sm md:text-xs line-clamp-2 leading-[1.2]">Description : {news.description}</p>
+          <p className="text-sm text-gray-600 line-clamp-2">
+            {news.description}
+          </p>
 
-          {/* Author + Follow */}
-          <div className="flex items-center justify-between pt-2 md:pt-1.5">
-            <div className="text-xs font-medium text-gray-700">
-            Editor : {" "}
-              <span className="text-gray-600">
-                {news.editor?.name ?? "unknown"}
+          <div className="flex items-center justify-between pt-2 text-xs text-gray-500">
+            <span>
+              Editor:{" "}
+              <span className="font-medium text-gray-700">
+                {news.editor?.name ?? "Unknown"}
               </span>
-            </div>
+            </span>
+            <span className="font-medium text-white bg-red-500 px-2 py-1 rounded-full">
+              {news.category ?? "Other"}
+            </span>
           </div>
 
-          <div className="pt-1 text-xs font-medium text-gray-700">
-            <span className="mr-3">Category : {news.category ?? "Other"}</span>
-          </div>
+          {/* Subcategories */}
+          {news.subCategories?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 pt-2">
+              {news.subCategories.map((cat) => (
+                <span
+                  key={cat}
+                  className="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 font-medium"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

@@ -39,7 +39,7 @@ const NewsPage: React.FC = () => {
 
   useEffect(() => {
     fetchNews();
-  }, [category]);
+  }, [category, subCategory]);
 
   if (loading)
     return (

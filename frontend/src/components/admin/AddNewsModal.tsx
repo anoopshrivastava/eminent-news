@@ -12,17 +12,24 @@ interface AddNewsModalProps {
   setNews?: React.Dispatch<React.SetStateAction<News[]>>;
 }
 
-function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsModalProps) {
-
-  const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100MB
+function AddNewsModal({
+  setIsOpen,
+  fetchNews,
+  admin = false,
+  setNews,
+}: AddNewsModalProps) {
+  const MAX_VIDEO_BYTES = 150 * 1024 * 1024; // 150MB
+  console.log(admin);
 
   const [formData, setFormData] = useState({
-    editorId: "",
+    // editorId: "",
     title: "",
+    videoUrl2: "",
     description: "",
     category: "National",
     subCategories: [] as string[],
   });
+  const [imageMode, setImageMode] = useState<"single" | "multiple">("single");
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,14 +37,17 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-
   // reset subCategories when category changes (extra safety)
   useEffect(() => {
-    setFormData(prev => ({ ...prev, subCategories: [] }));
+    setFormData((prev) => ({ ...prev, subCategories: [] }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.category]); // intentional: react will warn about missing setter, but this keeps behavior explicit
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
 
     // if category changes, also reset subCategories
@@ -50,11 +60,13 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
   };
 
   const toggleSubCategory = (sub: string) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const exists = prev.subCategories.includes(sub);
       return {
         ...prev,
-        subCategories: exists ? prev.subCategories.filter(s => s !== sub) : [...prev.subCategories, sub],
+        subCategories: exists
+          ? prev.subCategories.filter((s) => s !== sub)
+          : [...prev.subCategories, sub],
       };
     });
   };
@@ -64,15 +76,30 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
     if (!files) return;
 
     const fileArray = Array.from(files);
+
+    const maxImages = imageMode === "single" ? 1 : 6;
+
+    if (fileArray.length > maxImages) {
+      toast.error(
+        imageMode === "single"
+          ? "You can upload only 1 image"
+          : "You can upload a maximum of 6 images"
+      );
+      return;
+    }
     const compressedFiles: File[] = [];
 
     for (const file of fileArray) {
       const compressed: any = await compressFile(file);
 
       // convert compressed Blob → File (FormData needs File)
-      const compressedFile = new File([compressed], file.name.replace(/\.\w+$/, ".webp"), {
-        type: compressed.type || "image/webp",
-      });
+      const compressedFile = new File(
+        [compressed],
+        file.name.replace(/\.\w+$/, ".webp"),
+        {
+          type: compressed.type || "image/webp",
+        }
+      );
 
       compressedFiles.push(compressedFile);
     }
@@ -88,8 +115,11 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
     try {
       const data = new FormData();
-      data.append("editorId", formData.editorId);
+      // data.append("editorId", formData.editorId);
       data.append("title", formData.title);
+      if (formData.videoUrl2.trim() !== "") {
+        data.append("videoUrl2", formData.videoUrl2);
+      }
       data.append("description", formData.description);
       data.append("category", formData.category);
 
@@ -99,21 +129,17 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       images.forEach((img) => data.append("images", img));
 
       if (videoFile) {
-        data.append("video", videoFile); 
+        data.append("video", videoFile);
       }
 
-      const response = await api.post(
-        "/news/create",
-        data,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-          onUploadProgress: (evt) => {
-            const pct = Math.round((evt.loaded * 100) / (evt.total ?? 1));
-            setUploadProgress(pct);
-          },
-        }
-      );
+      const response = await api.post("/news/create", data, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (evt) => {
+          const pct = Math.round((evt.loaded * 100) / (evt.total ?? 1));
+          setUploadProgress(pct);
+        },
+      });
 
       const resData = response?.data ?? {};
       if (resData.success === false) {
@@ -130,8 +156,9 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       }
 
       setFormData({
-        editorId: "",
+        // editorId: "",
         title: "",
+        videoUrl2: "",
         description: "",
         category: "National",
         subCategories: [],
@@ -139,7 +166,10 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
       setImages([]);
       setIsOpen(false);
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? "Failed to create news. Please try again.");
+      setError(
+        err?.response?.data?.message ??
+          "Failed to create news. Please try again."
+      );
       console.error("Error creating news:", err);
       toast.error("Error creating news");
     } finally {
@@ -158,13 +188,12 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
     }
 
     if (file.size > MAX_VIDEO_BYTES) {
-      setError("Video size must be less than 20MB");
+      setError("Video size must be less than 150MB");
       return;
     }
 
     setVideoFile(file);
   };
-
 
   const availableSubCategories = subCategoriesMap[formData.category] ?? [];
 
@@ -200,31 +229,33 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
         />
 
         {/* <div className="flex flex-col md:flex-row justify-center md:gap-4"> */}
-          <div className="w-full">
-            <label htmlFor="category">Category:</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full p-2 mb-2 border rounded bg-white"
-              required
-            >
-              <option value="" disabled>
-                Select Category
+        <div className="w-full">
+          <label htmlFor="category">Category:</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-2 mb-2 border rounded bg-white"
+            required
+          >
+            <option value="" disabled>
+              Select Category
+            </option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
               </option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
+            ))}
+          </select>
+        </div>
 
-          <div className="w-full">
-            <label>Select SubCategories</label>
-            <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50">
+        <div className="w-full">
+          <label>Select SubCategories</label>
+          <div className="border rounded-lg p-2 max-h-40 overflow-y-auto bg-gray-50">
             {availableSubCategories.length === 0 ? (
-              <p className="text-sm text-gray-500">No subcategories available</p>
+              <p className="text-sm text-gray-500">
+                No subcategories available
+              </p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {availableSubCategories.map((sub) => {
@@ -254,11 +285,13 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
           {formData.subCategories.length > 0 && (
             <p className="text-xs text-gray-500 mt-1">
-              Selected: <span className="font-medium">{formData.subCategories.length}</span>
+              Selected:{" "}
+              <span className="font-medium">
+                {formData.subCategories.length}
+              </span>
             </p>
           )}
-
-          </div>
+        </div>
         {/* </div> */}
 
         <label htmlFor="description">Description</label>
@@ -272,9 +305,21 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
           required
         />
 
+        <label htmlFor="videoUrl2">Video Url</label>
+        <input
+          type="text"
+          name="videoUrl2"
+          placeholder="Video Url (optional)"
+          disabled={loading}
+          className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700"
+          value={formData.videoUrl2}
+          onChange={handleChange}
+        />
+
         <div className="w-full">
           <label>
-            Upload Video <span className="text-xs text-gray-500">(max 20MB)</span>
+            Upload Video{" "}
+            <span className="text-xs text-gray-500">(max 150mb)</span>
           </label>
           <input
             type="file"
@@ -285,14 +330,23 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
           />
 
           {videoFile && (
-            <p className="text-xs text-gray-600">
-              Selected: {videoFile.name} ({(videoFile.size / 1024 / 1024).toFixed(2)} MB)
+            <p className="text-xs text-gray-600 mt-1">
+              Video selected: {videoFile.name}
+              <button
+                type="button"
+                onClick={() => setVideoFile(null)}
+                className="ml-2 text-red-500 underline"
+              >
+                Remove
+              </button>
             </p>
           )}
 
           {loading && uploadProgress > 0 && (
             <div className="mt-2">
-              <div className="text-xs mb-1">Uploading video: {uploadProgress}%</div>
+              <div className="text-xs mb-1">
+                Uploading video: {uploadProgress}%
+              </div>
               <div className="w-full bg-gray-200 rounded h-2">
                 <div
                   className="bg-[#f40607] h-2 rounded"
@@ -301,10 +355,9 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
               </div>
             </div>
           )}
-
         </div>
 
-        {admin && (
+        {/* {admin && (
           <div>
             <label htmlFor="editorId">Editor Id (optional)</label>
             <input
@@ -317,10 +370,44 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
               onChange={handleChange}
             />
           </div>
-        )}
+        )} */}
+
+        <div className="mb-2">
+          <label className="block mb-1">Image Type</label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="imageMode"
+                value="single"
+                checked={imageMode === "single"}
+                onChange={() => {
+                  setImageMode("single");
+                  setImages([]); // reset images when switching
+                }}
+              />
+              Single Photo
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="imageMode"
+                value="multiple"
+                checked={imageMode === "multiple"}
+                onChange={() => {
+                  setImageMode("multiple");
+                  setImages([]);
+                }}
+              />
+              Multiple Photos (up to 6)
+            </label>
+          </div>
+        </div>
 
         <label>
-          Select Images <span className="text-xs text-slate-950">( less than 5mb )</span>
+          Select Images{" "}
+          <span className="text-xs text-slate-950">( max 5mb )</span>
         </label>
         <input
           type="file"
@@ -333,7 +420,7 @@ function AddNewsModal({ setIsOpen, fetchNews, admin = false, setNews }: AddNewsM
 
         <button
           type="submit"
-          className="w-full cursor-pointer bg-[#f40607] text-white p-2 rounded hover:bg-red-700 disabled:bg-gray-400 flex justify-center items-center gap-2"
+          className="w-full cursor-pointer bg-[#f40607] text-white p-2 rounded hover:bg-red-700 disabled:bg-gray-400 flex justify-center items-center gap-2 mt-4"
           disabled={loading}
         >
           {loading && <FiLoader className="animate-spin" />}{" "}

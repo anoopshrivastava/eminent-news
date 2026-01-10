@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { type Short } from "@/types/shorts";
 import { Heart, Share2, Pause, Play, RefreshCw, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
 type Props = {
   short: Short;
@@ -124,6 +125,19 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
     }
   };
 
+  const handleShare = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+
+    try {
+      const url = `${window.location.origin}/shorts`;
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy link");
+    }
+  };
+
+
   return (
     <div className="w-full h-full snap-center relative bg-gray-900 flex items-center justify-center">
       <div 
@@ -135,7 +149,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
           <video
             ref={videoRef}
             src={short.videoUrl}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain -mt-20"
             loop
             playsInline
             muted={muted}
@@ -236,6 +250,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
 
           <Button
             variant="ghost"
+            onClick={handleShare}
             size="icon"
             className="w-12 h-12 rounded-full bg-black/70 text-white hover:bg-white hover:text-black shadow-lg border-2 border-white "
             aria-label="Share"

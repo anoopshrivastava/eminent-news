@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Plus } from "lucide-react";
 import api from "@/lib/axios";
 
-const MAX_BYTES = 100 * 1024 * 1024;
+const MAX_BYTES = 50 * 1024 * 1024;
 
 type Props = {
   onUploaded: () => void;
@@ -27,7 +27,7 @@ export default function ShortUploadModal({ onUploaded }: Props) {
     const f = e.target.files?.[0] ?? null;
     if (!f) return setFile(null);
     if (!f.type.startsWith("video/")) return setError("Please select a video file.");
-    if (f.size > MAX_BYTES) return setError("File too large. Max 100 MB.");
+    if (f.size > MAX_BYTES) return setError("File too large. Max 50 MB.");
     setFile(f);
   }
 
@@ -94,11 +94,13 @@ export default function ShortUploadModal({ onUploaded }: Props) {
             onChange={(e) => setDescription(e.target.value)}
             required
           />
+
+          <label className="mt-2">Select Short (max 50mb)</label>
           <input
             type="file"
             accept="video/*"
             onChange={handleFile}
-            className="mt-2"
+            className="-mt-2"
           />
 
           {file && (

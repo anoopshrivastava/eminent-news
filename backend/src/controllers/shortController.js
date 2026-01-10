@@ -104,7 +104,7 @@ exports.getMyShorts = async (req, res, next) => {
 exports.deleteShort = async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.user && req.user.id;
+    const userId = req.user && req.user_.id;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });

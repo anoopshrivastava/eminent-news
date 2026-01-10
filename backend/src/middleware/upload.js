@@ -20,7 +20,7 @@ const uploadBoth = multer({
   storage: multer.memoryStorage(),
   fileFilter,
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB
+    fileSize: 150 * 1024 * 1024, // 150MB
   },
 });
 

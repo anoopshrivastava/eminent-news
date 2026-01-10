@@ -15,6 +15,16 @@ const Sidebar = () => {
       icon: "#",
       label: 'Shorts',
       href: '/editor/shorts',
+    },
+    {
+      icon: "#",
+      label: 'Videos',
+      href: '/editor/videos',
+    },
+    {
+      icon: "#",
+      label: 'Ads',
+      href: '/editor/ads',
     }
   ];
 

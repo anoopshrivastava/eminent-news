@@ -9,6 +9,7 @@ import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import profile from "@/assets/profile.webp"
+import { ImageSwiper } from "./ImageSwiper";
 
 
 export default function NewsDetail() {
@@ -179,19 +180,18 @@ export default function NewsDetail() {
     <div className="max-w-6xl mx-auto md:px-4 pt-6">
       
       {/* Back Button */}
-      <Button
-        variant="ghost"
-        className="flex items-center gap-2"
+      <button
+        className="hidden md:flex items-center gap-2 -mb-3 my-2"
         onClick={() => window.history.back()}
       >
-        <ArrowLeft className="h-6" /> Back
-      </Button>
+        <ArrowLeft className="w-8 ml-4" /> Back
+      </button>
 
       <div className="">
-        <div className="p-4 md:p-6 space-y-6">
+        <div className="-mt-2 md:mt-0 p-4 md:p-6 space-y-6">
 
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl font-bold leading-snug">
+          <h1 className="text-2xl md:text-4xl font-bold leading-snug">
             #{news.title}
           </h1>
 
@@ -205,7 +205,7 @@ export default function NewsDetail() {
           </div>
 
           {/* Image */}
-          {news.images?.length > 0 ? (
+          {/* {news.images?.length > 0 ? (
             <img
               src={news.images[0]}
               alt="News"
@@ -215,6 +215,10 @@ export default function NewsDetail() {
             <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
               <span className="text-gray-500">No Image Available</span>
             </div>
+          )} */}
+
+          {news.images && news.images.length > 0 && (
+            <ImageSwiper images={news.images} />
           )}
 
           {/* Editor Info */}
@@ -267,16 +271,29 @@ export default function NewsDetail() {
             Published on: {new Date(news.createdAt).toLocaleDateString()}
           </span>
 
-          {news.videoUrl && 
-          <video
-            src={news.videoUrl}
-            className="w-full h-full object-contain"
-            loop
-            playsInline
-            controls={false}
-            autoPlay
-          />
-          }
+          {news.videoUrl && (
+            <div className="w-full aspect-video rounded-lg overflow-hidden bg-black">
+              <video
+                src={news.videoUrl}
+                controls
+                playsInline
+                className="w-full h-full object-contain"
+              />
+            </div>
+          )}
+
+          {/* External Video URL */}
+          {news.videoUrl2 && (
+            <div className="w-full aspect-video rounded-lg overflow-hidden bg-black">
+              <video
+                src={news.videoUrl2}
+                controls
+                playsInline
+                className="w-full h-full object-contain"
+              />
+            </div>
+          )}
+
 
           {/* Add Comment */}
           <div className="mt-6 space-y-2">

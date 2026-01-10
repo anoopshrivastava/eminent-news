@@ -8,6 +8,7 @@ import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
 import { Badge } from "./ui/badge";
+import { ImageCollage } from "./ImageCollage";
 
 const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   const newsId = news._id;
@@ -130,7 +131,7 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
     <div className="flex items-start gap-3 bg-white transition-all overflow-hidden w-full border-b pb-3 last:border-none">
       {/* Image */}
       <div>
-      <Link to={`/news/${news._id}`}>
+      {/* <Link to={`/news/${news._id}`}>
         <img
           src={
             news.images && news.images.length
@@ -140,7 +141,11 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
           alt={news.title}
           className="h-48 w-80 object-cover transition-transform duration-300 hover:scale-105 rounded-md"
         />
+        </Link> */}
+        <Link to={`/news/${news._id}`}>
+          <ImageCollage images={news.images} title={news.title} />
         </Link>
+
       </div>
 
       {/* Content */}

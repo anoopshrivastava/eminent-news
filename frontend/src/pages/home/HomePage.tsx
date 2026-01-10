@@ -93,6 +93,8 @@ const HomePage: React.FC = () => {
         world: news.filter((n) => n.category === "World"),
         trending: news.filter((n) => n.category === "Trending"),
         sports: news.filter((n) => n.category === "Sports"),
+        entertainment: news.filter((n) => n.category === "Entertainment"),
+        // examUpdates: news.filter((n) => n.category === "Exam Updates"),
       };
       setGroupedNews(grouped);
     }

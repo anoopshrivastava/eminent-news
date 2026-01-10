@@ -42,8 +42,8 @@ const uploadVideo = (buffer) =>
   });
 
 exports.createNews = async (req, res) => {
-  const editor = req.user.id;
-  const { title, description, category, subCategories } = req.body;
+  const editor = req.user._id;
+  const { title, description, category, subCategories, videoUrl2 } = req.body;
 
   const imageUploads = await Promise.all(
     (req.files.images || []).map((img) => uploadImage(img.buffer))
@@ -66,6 +66,7 @@ exports.createNews = async (req, res) => {
     images: imageUploads.map((i) => i.secure_url),
     videoUrl,
     videoPublicId,
+    videoUrl2,
     subCategories: subCategories || [],
   });
 
@@ -74,7 +75,7 @@ exports.createNews = async (req, res) => {
 
 
 // exports.createNews = catchAsyncError(async (req, res) => {
-//   const editor = req.user.id;
+//   const editor = req.user._id;
 //   console.log("r",req.body);
 //   const { title, description, category, subCategories } = req.body;
 
@@ -298,7 +299,7 @@ exports.deleteNews = catchAsyncError(async (req, res) => {
 // toggle like / unlike for a news post
 exports.likeNews = catchAsyncError(async (req, res, next) => {
     const newsId = req.params.id;
-    const userId = req.user.id; // requires isAuthenticatedUser to set req.user
+    const userId = req.user._id; // requires isAuthenticatedUser to set req.user
   
     // find news
     const news = await News.findById(newsId);
@@ -337,7 +338,7 @@ exports.addComment = catchAsyncError(async (req, res, next) => {
 
     const { id: newsId } = req.params;
     const { comment } = req.body;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     if (!comment || !comment.trim()) {
         return next(new Errorhandler("Comment cannot be empty", 400));
@@ -366,7 +367,7 @@ exports.addComment = catchAsyncError(async (req, res, next) => {
 
 exports.deleteComment = catchAsyncError(async (req, res, next) => {
     const { id: newsId, commentId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user._id;
 
     const news = await News.findById(newsId);
     if (!news) {

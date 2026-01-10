@@ -18,6 +18,7 @@
     category: ICategory,
     subCategories: string[],
     videoUrl:string,
+    videoUrl2?:string,
     images: string[];
     likes:string[];
     editor?: Editor | null;

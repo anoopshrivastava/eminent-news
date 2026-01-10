@@ -6,7 +6,7 @@ const uploadBoth = require('../middleware/upload')
 
 // create product --> Admin access
 router.post('/news/create',isAuthenticatedUser,authorizeRoles("editor","admin"),uploadBoth.fields([
-    { name: "images", maxCount: 10 },
+    { name: "images", maxCount: 6 },
     { name: "video", maxCount: 1 },
   ]), createNews)
 

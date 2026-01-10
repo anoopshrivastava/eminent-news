@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
+import { ImageCollage } from "./ImageCollage";
 
 const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   const newsId = news._id;
@@ -124,7 +125,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden lg:w-64 2xl:w-72">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden ">
       {/* Content */}
       <div className="px-3 pb-3 pt-1">
         {/* Author + Follow */}
@@ -161,12 +162,12 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
         </div>
 
         {/* Title */}
-        <h2 className="text-base md:text-sm font-medium line-clamp-2 text-gray-900 leading-[1.1] mb-2 md:mb-0">
+        <h2 className="text-base md:text-sm font-medium line-clamp-2 md:line-clamp-1 text-gray-900 leading-[1.1] mb-2 md:mb-0">
           # {news.title}
         </h2>
 
         {/* Description */}
-        <p className="text-gray-600 text-sm md:text-xs line-clamp-2 leading-[1.1]">
+        <p className="text-gray-600 text-sm md:text-xs line-clamp-2 md:line-clamp-1 leading-[1.1]">
           {news.description}
         </p>
 
@@ -174,8 +175,8 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       </div>
 
       {/* Image */}
-      <div className="overflow-hidden">
-        <img
+      <div className="overflow-hidden ml-3">
+        {/* <img
           src={
             news.images && news.images.length
               ? news.images[0]
@@ -183,7 +184,10 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
           }
           alt={news.title}
           className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
-        />
+        /> */}
+        <Link to={`/news/${news._id}`}>
+          <ImageCollage images={news.images} title={news.title} />
+        </Link>
       </div>
       <div className="flex items-center justify-between p-3">
         <div className="flex gap-5 items-center">

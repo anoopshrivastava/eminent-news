@@ -28,9 +28,14 @@ const Sidebar = () => {
     },
     {
       icon: "#",
+      label: 'Videos',
+      href: '/admin/videos',
+    },
+    {
+      icon: "#",
       label: 'Advertisement',
       href: '/admin/ads',
-    }
+    },
   ];
 
   const navigate = useNavigate();

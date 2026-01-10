@@ -3,10 +3,11 @@
     _id: string;
     title: string;
     description: string;
-    category: ICategory,
-    url:string,
+    category: ICategory;
+    url:string;
     images: string[];
-    createdAt:string
+    createdAt:string;
+    isApproved:boolean;
   }
   export type ICategory = "Banner" | "Highlights";
   export const categories = ["Banner", "Highlights"];

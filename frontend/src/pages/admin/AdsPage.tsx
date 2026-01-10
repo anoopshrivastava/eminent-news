@@ -4,6 +4,7 @@ import api from "@/lib/axios";
 import { categories, type Ads } from "@/types/ads";
 import AdsCard from "@/components/admin/AdsCard";
 import CreateAdModal from "@/components/admin/CreateAdModal";
+import { useSelector } from "react-redux";
 
 const AdsPage: React.FC = () => {
   const [ads, setAds] = useState<Ads[]>([]);
@@ -11,10 +12,15 @@ const AdsPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [category, setCategory] = useState<string>("all");
 
+  const { currentUser } = useSelector((state: any) => state.user);
+  const isAdmin = currentUser?.role === "admin";
+
   const fetchAds = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/ads?category=${encodeURIComponent(category)}`);
+      const response = await api.get(
+        `/my-ads?category=${encodeURIComponent(category)}`
+      );
 
       const data = response?.data ?? {};
       if (data.success === true) {
@@ -41,21 +47,21 @@ const AdsPage: React.FC = () => {
         <h1 className="text-3xl font-bold text-black">All Ads</h1>
 
         <div className="flex flex-col w-40 gap-1">
-        <select
+          <select
             id="category"
             className="rounded-lg border p-2 w-full bg-white"
             onChange={(e) => setCategory(e.target.value)}
             value={category}
-        >
+          >
             <option value="all" disabled>
-            Select Category
+              Select Category
             </option>
             {categories.map((cat) => (
-            <option key={cat} value={cat}>
+              <option key={cat} value={cat}>
                 {cat}
-            </option>
+              </option>
             ))}
-        </select>
+          </select>
         </div>
 
         <button
@@ -85,7 +91,12 @@ const AdsPage: React.FC = () => {
       ) : (
         <div className="flex flex-wrap items-center gap-8">
           {ads.map((item) => (
-            <AdsCard key={item._id} ads={item} setAds={setAds} />
+            <AdsCard
+              key={item._id}
+              ads={item}
+              setAds={setAds}
+              isAdmin={isAdmin}
+            />
           ))}
         </div>
       )}

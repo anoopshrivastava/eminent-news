@@ -4,6 +4,8 @@ import { FiTrash } from "react-icons/fi";
 import EditNewsModal from "./EditNewsModal";
 import type { News } from "@/types/news";
 import api from "@/lib/axios";
+import { ImageCollage } from "../ImageCollage";
+import { Link } from "react-router-dom";
 
 interface NewsCardProps {
   news: News;
@@ -36,14 +38,17 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
 
   return (
     <>
-      <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-80 hover:-translate-y-1">
+      <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-72 hover:-translate-y-1">
         {/* Image */}
-        <div className="relative h-48 md:h-60 overflow-hidden bg-gray-100">
-          <img
+        <Link to={`/news/${news._id}`} className="relative h-48 overflow-hidden bg-gray-100">
+          {/* <img
             src={news.images?.[0] ?? ""}
             alt={news.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
+          /> */}
+           {/* <Link to={`/news/${news._id}`}> */}
+          <ImageCollage images={news.images} title={news.title} />
+        {/* </Link> */}
 
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -58,15 +63,15 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
               <FiTrash size={14} />
             </button>
           </div>
-        </div>
+        </Link>
 
         {/* Content */}
         <div className="px-4 pb-4 pt-3 space-y-1.5">
-          <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-2">
+          <h3 className="text-base font-semibold text-gray-900 leading-snug line-clamp-1">
             {news.title}
           </h3>
 
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-gray-600 line-clamp-1">
             {news.description}
           </p>
 

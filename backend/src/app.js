@@ -10,6 +10,7 @@ const news = require("../src/routes/newsRoute")
 const users = require("../src/routes/userRoute")
 const shorts = require("../src/routes/shortRoute")
 const ads = require('../src/routes/adsRoute')
+const videos = require('../src/routes/videoRoute')
 
 const app = express();
 const bodyparser = require('body-parser');
@@ -44,6 +45,7 @@ app.use('/api/v1',news);
 app.use('/api/v1',users);
 app.use('/api/v1',shorts);
 app.use('/api/v1',ads);
+app.use('/api/v1',videos);
 
 // middleware for errors
 app.use(errorMiddleware)

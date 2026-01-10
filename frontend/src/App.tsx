@@ -26,6 +26,8 @@ import NewsDetail from "./pages/news-detail/NewsDetail";
 import AdsPage from "./pages/admin/AdsPage";
 import EditProfile from "./pages/profile/EditProfile";
 import ChangePassword from "./pages/profile/ChangePassword";
+import VideosManager from "./pages/admin/videos";
+import VideosReel from "./pages/videos/videos";
 
 function App() {
   return (
@@ -45,6 +47,7 @@ function App() {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/news/:id" element={<NewsDetail />} />
             <Route path="/shorts" element={<ShortsReel />} />
+            <Route path="/videos" element={<VideosReel />} />
             <Route element={<PrivateRoute />}>
               <Route path="/my-profile" element={<ProfilePage />} />
               <Route path="/settings/profile" element={<EditProfile />} />
@@ -63,6 +66,7 @@ function App() {
             <Route path="/admin/editors" element={<AllEditors />} />
             <Route path="/admin/users" element={<AllUsers />} />
             <Route path="/admin/shorts" element={<ShortsManager />} />
+            <Route path="/admin/videos" element={<VideosManager />} />
             <Route path="/admin/ads" element={<AdsPage />} />
             
           </Route>
@@ -73,6 +77,8 @@ function App() {
           <Route element={<EditorLayout />}>
             <Route path="/editor/news" element={<EditorDashboard />} />
             <Route path="/editor/shorts" element={<EditorShorts />} />
+            <Route path="/editor/videos" element={<VideosManager />} />
+            <Route path="/editor/ads" element={<AdsPage />} />
           </Route>
         </Route>
 

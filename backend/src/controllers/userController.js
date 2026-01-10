@@ -177,7 +177,7 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 
 // get user details
 exports.getUserDetails = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
   res.status(200).json({
     success: true,
     user,
@@ -189,7 +189,7 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
 
   //finding the login user details
-  const user = await User.findById(req.user.id).select("+password");
+  const user = await User.findById(req.user._id).select("+password");
 
   //comparing password entered -->
   const passComp = await bcrypt.compare(oldPassword, user.password);
@@ -223,7 +223,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   });
 
   // Fetch current user
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
 
   if (!user) {
     return next(new Errorhandler("User not found", 404));
@@ -232,7 +232,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   if (updates.username && updates.username !== user.username) {
     const usernameExists = await User.findOne({
       username: updates.username,
-      _id: { $ne: req.user.id },
+      _id: { $ne: req.user._id },
     });
 
     if (usernameExists) {
@@ -265,7 +265,7 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   const forbiddenFields = ["password", "role", "verified", "email"];
   forbiddenFields.forEach((field) => delete updates[field]);
 
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, updates, {
     new: true,
     runValidators: true,
   });
@@ -403,7 +403,7 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
 // toggle follow / unfollow a user
 exports.followUser = catchAsyncError(async (req, res, next) => {
   const targetUserId = req.params.id;
-  const currentUserId = req.user.id;
+  const currentUserId = req.user._id;
 
   // prevent following self
   if (targetUserId === currentUserId) {
@@ -462,7 +462,7 @@ exports.followUser = catchAsyncError(async (req, res, next) => {
 
 exports.deleteMyProfile = catchAsyncError(async (req, res, next) =>{
 
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id);
   if (!user) {
     return next(
       new Errorhandler(`User does not exists with id ${req.params.id}`, 404)

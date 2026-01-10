@@ -11,12 +11,16 @@ import {
 } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
 import zoho from "@/assets/zoho.png"
+import { useLocation } from "react-router-dom";
 // import { categories } from "@/types/news";
 
 const Footer2: React.FC = () => {
   const quickLinks = [
     // { label: "Home", to: "/home" },
     { label: "About Us", to: "/" },
+    { label: "Contact Us", to: "/" },
+    { label: "Privacy Policy", to: "#" },
+    { label: "Disclaimer", to: "#" },
     // { label: "Admin Login", to: "/admin/news" },
   ];
   
@@ -57,7 +61,9 @@ const Footer2: React.FC = () => {
       bg: "bg-white",
     }
   ];
-  
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   return (
     // <div>
@@ -121,7 +127,7 @@ const Footer2: React.FC = () => {
           </div>
         </div>
 
-        <ul className="space-y-2 ml-1 mt-2">
+        <ul className="space-y-0.5 ml-1 mt-2">
           {quickLinks.map((link) => (
             <li key={link.to} className="hover:text-[#f40607] hover:underline cursor-pointer">
               <Link to={link.to}>{link.label}</Link>
@@ -169,7 +175,7 @@ const Footer2: React.FC = () => {
     </div>
 
     {/* ======== COPYRIGHT ======== */}
-    <div className="flex flex-col border-t border-white/90 py-4 mt-4 pb-20 md:pb-4">
+    <div className={`flex flex-col border-t border-white/90 py-4 mt-4 ${!isHome ? "pb-20 md:pb-4" : ""}`}>
       <p className="text-center ">⁠Powered by Kubza Pvt Ltd</p>
       <p className="text-center text-sm">
         © {new Date().getFullYear()} Eminentnews.com — All rights reserved

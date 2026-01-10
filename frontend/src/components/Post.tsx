@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
+import { ImageCollage } from "./ImageCollage";
 
 const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
   const newsId = news._id
@@ -123,13 +124,17 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden">
       {/* Image */}
-      <div className="overflow-hidden">
-        <img
+      <div className="overflow-hidden ml-3">
+        {/* <img
           src={news.images && news.images.length ? news.images[0] : "/placeholder.png"}
           alt={news.title}
           className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
-        />
+        /> */}
+        <Link to={`/news/${news._id}`}>
+          <ImageCollage images={news.images} title={news.title} />
+        </Link>
       </div>
+        
 
       {/* Content */}
       <div className="px-3 pb-3 pt-1">

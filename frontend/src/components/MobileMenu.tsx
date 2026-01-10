@@ -4,8 +4,7 @@ import { X, ChevronDown, ChevronUp, ArrowRight, Trash2 } from "lucide-react";
 import logo from "../assets/logo.png";
 import { categories, subCategoriesMap } from "@/types/news";
 import { User, Lock } from "lucide-react";
-import api from "@/lib/axios";
-import toast from "react-hot-toast";
+import { deleteAccount } from "@/lib/accountAction";
 
 
 interface Props {
@@ -28,30 +27,12 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
     onClose()
   };
 
-  const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await api.delete("/me", { withCredentials: true });
-
-      toast.success("Account deleted successfully");
-
-      handleLogout?.(); // clear auth state, tokens, store
-      onClose();
-      navigate("/login");
-    } catch (err: any) {
-      console.error(err);
-      toast.error(
-        err?.response?.data?.message || "Failed to delete account"
-      );
-    }
-  };
-
-
+const handleDeleteAccount = async () => {
+  await deleteAccount(handleLogout, () => {
+    onClose();
+    navigate("/login");
+  });
+};
 
   return (
     <div
@@ -79,7 +60,15 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
               onClose();
               navigate("/shorts")
             }} 
-            className="hidden cursor-pointer md:flex items-center gap-2 hover:text-[#f40607] hover:underline">Shorts <ArrowRight size={22} className="mt-0.5"/></span>
+            className="hidden cursor-pointer md:flex items-center gap-2 hover:text-[#f40607] hover:underline">Shorts <ArrowRight size={22} className="mt-0.5"/>
+          </span>
+          <span 
+            onClick={()=>{
+              onClose();
+              navigate("/videos")
+            }} 
+            className="hidden cursor-pointer md:flex items-center gap-2 hover:text-[#f40607] hover:underline">Videos <ArrowRight size={22} className="mt-0.5"/>
+          </span>
           {categories.map((category) => {
             const isOpen = openCategory === category;
             return (
@@ -105,7 +94,8 @@ const MobileMenu = ({ open, onClose, currentUser, handleLogout }: Props) => {
                     {subCategoriesMap[category].map((sub) => (
                       <Link
                         key={sub}
-                        to={`/category/${category.toLowerCase()}/${sub.toLowerCase()}`}
+                        
+                        to={`/news?category=${encodeURIComponent(category)}&subCategory=${encodeURIComponent(sub)}`}
                         onClick={onClose}
                         className="hover:text-[#f40607]"
                       >

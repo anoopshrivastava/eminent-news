@@ -22,6 +22,11 @@ const adsSchema = new mongoose.Schema({
     },
     url:{
         type:String,
-    }
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 },{timestamps:true})
 module.exports = mongoose.model('Ads',adsSchema)

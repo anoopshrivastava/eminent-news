@@ -195,16 +195,20 @@ const HomePage: React.FC = () => {
                     .map((item, index) => (
                       <>
                       <Post3 key={item._id} news={item} fetchNews={fetchNews} />
-                      {(index === 4 || index === 9) && highlightAds.length > 0 && (
-                        <div className="my-6 rounded-lg overflow-hidden border">
-                          <img
-                            src={getHighlightAd(index).images[0]}
-                            alt="Advertisement"
-                            className="w-full h-40 object-cover"
-                          />
-                        </div>
-                      )}
+                      {(index === 4 || index === 9) && (() => {
+                        const ad = getHighlightAd(index);
+                        if (!ad || !ad.images || ad.images.length === 0) return null;
 
+                        return (
+                          <div className="my-6 rounded-lg overflow-hidden border">
+                            <img
+                              src={ad.images[0]}
+                              alt="Advertisement"
+                              className="w-full h-40 object-cover"
+                            />
+                          </div>
+                        );
+                      })()}
                       </>
                     ))}
                   </div>

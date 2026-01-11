@@ -13,6 +13,7 @@ const NewsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const subCategory = searchParams.get("subCategory");
+  const search = searchParams.get("search");
 
   const fetchNews = async () => {
     setLoading(true);
@@ -20,6 +21,7 @@ const NewsPage: React.FC = () => {
       const response = await api.get(`/news`, {
         params: {
           category: category ?? undefined,
+          searchKey: search ?? undefined
         },
       });
 
@@ -39,7 +41,7 @@ const NewsPage: React.FC = () => {
 
   useEffect(() => {
     fetchNews();
-  }, [category, subCategory]);
+  }, [category, subCategory, search]);
 
   if (loading)
     return (

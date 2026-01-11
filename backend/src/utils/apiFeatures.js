@@ -13,6 +13,9 @@ class ApiFeatures{
                 { name: 
                     { $regex: searchKey, $options: "i" } 
                 },
+                { title: 
+                    { $regex: searchKey, $options: "i" } 
+                },
                 { description:
                     { $regex: searchKey, $options:"i",} 
                 },

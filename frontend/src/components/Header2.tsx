@@ -97,11 +97,9 @@ const Header2 = () => {
           </button>
           {currentUser ? (
             <div
-              // onClick={handleLogout}
               onClick={()=>navigate("/my-profile")}
               className="flex items-center gap-2 cursor-pointer"
             >
-              {/* <span className="hidden sm:inline">Profile</span> */}
               <img src={avatar} alt="" className="h-8 rounded-full"/>
             </div>
           ) : (

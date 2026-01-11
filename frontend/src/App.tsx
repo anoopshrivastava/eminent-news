@@ -28,6 +28,7 @@ import EditProfile from "./pages/profile/EditProfile";
 import ChangePassword from "./pages/profile/ChangePassword";
 import VideosManager from "./pages/admin/videos";
 import VideosReel from "./pages/videos/videos";
+import UserAds from "./pages/user-ads/UserAds";
 
 function App() {
   return (
@@ -49,7 +50,8 @@ function App() {
             <Route path="/shorts" element={<ShortsReel />} />
             <Route path="/videos" element={<VideosReel />} />
             <Route element={<PrivateRoute />}>
-              <Route path="/my-profile" element={<ProfilePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/profile/my-ads" element={<UserAds />} />
               <Route path="/settings/profile" element={<EditProfile />} />
               <Route path="/settings/security" element={<ChangePassword />} />
 

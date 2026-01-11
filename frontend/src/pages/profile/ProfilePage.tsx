@@ -1,6 +1,6 @@
-import React from "react";
-import { Edit2, Mail, MapPin, LogOut } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { Edit2, Mail, MapPin, LogOut, Megaphone } from "lucide-react";
+import { useDispatch } from "react-redux";
 import {
   signOutFailure,
   signOutStart,
@@ -12,6 +12,7 @@ import api from "@/lib/axios";
 import toast from "react-hot-toast";
 import { Trash2, Lock } from "lucide-react";
 import { deleteAccount } from "@/lib/accountAction";
+import { FiLoader } from "react-icons/fi";
 
 type User = {
   _id?: string;
@@ -21,7 +22,6 @@ type User = {
   email?: string;
   avatar?: string;
   bio?: string;
-  location?: string;
   role?: string;
   phone?: string;
   followers?: Array<any>;
@@ -36,28 +36,16 @@ const formatDate = (iso?: string) => {
 };
 
 const ProfilePage: React.FC = () => {
-  const { currentUser } = useSelector((state: any) => state.user || {});
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log("current", currentUser);
-
-  // fallback profile when currentUser is not yet available
-  const user: User = currentUser || {
-    _id: "",
-    name: "Unknown",
-    email: "unknown@gmail.com",
-    avatar: profile,
-    role: "user",
-    phone: "",
-    followers: [],
-    following: [],
-    createdAt: new Date().toISOString(),
-  };
 
   const handleLogout = async () => {
     try {
       dispatch(signOutStart());
-      const response = await api.get("/logout");
+      const response = await api.post("/logout");
       if (response.data.success === false) {
         dispatch(signOutFailure(response.data.message));
         toast.error(response.data.message);
@@ -74,57 +62,112 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const followersCount = (user.followers && user.followers.length) || 0;
-  const followingCount = (user.following && user.following.length) || 0;
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get("/me");
+
+        if (res.data?.success) {
+          setUser(res.data.user);
+        } else {
+          toast.error("Failed to load profile");
+        }
+      } catch (err: any) {
+        console.error(err);
+        toast.error(err?.response?.data?.message || "Failed to load profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMe();
+  }, []);
+
+  const followersCount = (user?.followers && user.followers.length) || 0;
+  const followingCount = (user?.following && user.following.length) || 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <FiLoader className="animate-spin text-indigo-600 text-3xl" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="text-center text-gray-500 mt-20">
+        Failed to load user profile
+      </div>
+    );
+  }
 
   const avatar =
-    currentUser.avatar && currentUser.avatar.trim() !== "sampleurl"
-      ? currentUser.avatar
-      : profile;
+    user.avatar && user.avatar.trim() !== "sampleurl" ? user.avatar : profile;
 
- const AccountActions = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={`flex ${mobile ? "flex-col gap-3" : "flex-row gap-2"}`}>
-      <button
-        onClick={() => navigate("/settings/profile")}
-        className={`flex items-center gap-2 ${
-          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-        } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
-      >
-        <Edit2 size={18} />
-        Edit Profile
-      </button>
+const AccountActions = ({ mobile = false }: { mobile?: boolean }) => (
+  <div className={`flex ${mobile ? "flex-col gap-3" : "flex-row gap-2"}`}>
+    
+    {/* Run My Ads */}
+    <button
+      onClick={() => navigate("/profile/my-ads")}
+      className={`flex items-center gap-2 ${
+        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+      } bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg
+      hover:from-rose-600 hover:to-rose-700 transition-all duration-200
+      font-medium shadow-md hover:shadow-lg`}
+    >
+      <Megaphone size={18} />
+      Run My Ads
+    </button>
 
-      <button
-        onClick={() => navigate("/settings/security")}
-        className={`flex items-center gap-2 ${
-          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-        } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
-      >
-        <Lock size={18} />
-        Change Password
-      </button>
+    {/* Edit Profile */}
+    <button
+      onClick={() => navigate("/settings/profile")}
+      className={`flex items-center gap-2 ${
+        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+      } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
+    >
+      <Edit2 size={18} />
+      Edit Profile
+    </button>
 
-      <button
-        onClick={handleLogout}
-        className={`flex items-center gap-2 ${
-          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-        } bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg`}
-      >
-        <LogOut size={18} />
-        Logout
-      </button>
+    {/* Change Password */}
+    <button
+      onClick={() => navigate("/settings/security")}
+      className={`flex items-center gap-2 ${
+        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+      } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
+    >
+      <Lock size={18} />
+      Change Password
+    </button>
 
-      <button
-        onClick={() => deleteAccount(handleLogout, () => navigate("/login"))}
-        className={`flex items-center gap-2 ${
-          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-        } bg-white border-2 border-red-300 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all duration-200 font-medium shadow-sm`}
-      >
-        <Trash2 size={18} />
-        Delete Account
-      </button>
-    </div>
-  );
+    {/* Logout */}
+    <button
+      onClick={handleLogout}
+      className={`flex items-center gap-2 ${
+        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+      } bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg`}
+    >
+      <LogOut size={18} />
+      Logout
+    </button>
+
+    {/* Delete Account */}
+    <button
+      onClick={() => deleteAccount(handleLogout, () => navigate("/login"))}
+      className={`flex items-center gap-2 ${
+        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+      } bg-white border-2 border-red-300 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all duration-200 font-medium shadow-sm`}
+    >
+      <Trash2 size={18} />
+      Delete Account
+    </button>
+  </div>
+);
+
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">

@@ -61,7 +61,7 @@ const EditProfile: React.FC = () => {
       toast.success("Profile updated successfully");
 
       // Navigate back to profile
-      navigate("/my-profile");
+      navigate("/profile");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Update failed");
     } finally {

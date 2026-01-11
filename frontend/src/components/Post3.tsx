@@ -130,7 +130,7 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   return (
     <div className="flex items-start gap-3 bg-white transition-all overflow-hidden w-full border-b pb-3 last:border-none">
       {/* Image */}
-      <div>
+      <div className="overflow-hidden mx-2">
       {/* <Link to={`/news/${news._id}`}>
         <img
           src={

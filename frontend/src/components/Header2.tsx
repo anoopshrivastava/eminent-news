@@ -97,7 +97,7 @@ const Header2 = () => {
           </button>
           {currentUser ? (
             <div
-              onClick={()=>navigate("/my-profile")}
+              onClick={()=>navigate("/profile")}
               className="flex items-center gap-2 cursor-pointer"
             >
               <img src={avatar} alt="" className="h-8 rounded-full"/>

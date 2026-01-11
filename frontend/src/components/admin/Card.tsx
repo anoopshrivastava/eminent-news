@@ -40,7 +40,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
     <>
       <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-72 hover:-translate-y-1">
         {/* Image */}
-        <Link to={`/news/${news._id}`} className="relative h-48 overflow-hidden bg-gray-100">
+        <Link to={`/news/${news._id}`} className="relative h-48 overflow-hidden bg-gray-100 mx-2">
           {/* <img
             src={news.images?.[0] ?? ""}
             alt={news.title}

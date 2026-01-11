@@ -4,7 +4,7 @@ export const ImageCollage = ({ images, title }: { images: string[]; title: strin
       <img
         src="/placeholder.png"
         alt="placeholder"
-        className="h-48 w-80 object-cover rounded-md"
+        className="h-48 w-80 object-cover rounded-md px-2"
       />
     );
   }
@@ -15,7 +15,7 @@ export const ImageCollage = ({ images, title }: { images: string[]; title: strin
       <img
         src={images[0]}
         alt={title}
-        className="h-48 w-80 object-cover rounded-md"
+        className="w-full md:h-48 md:w-80 object-cover rounded-md"
       />
     );
   }

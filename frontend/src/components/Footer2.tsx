@@ -65,6 +65,13 @@ const Footer2: React.FC = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
 
+  const hideFooterRoutes = ["/shorts", "/videos"];
+  const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
+
+  if (shouldHideFooter) {
+    return null;
+  }
+
   return (
     // <div>
     //   {/* <svg

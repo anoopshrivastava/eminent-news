@@ -150,10 +150,10 @@ const handleSearch = () => {
           </div>
           {currentUser ? (
             <div
-              onClick={() => navigate("/my-profile")}
-              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => navigate("/profile")}
+              className="flex items-center gap-2 cursor-pointer "
             >
-              <img src={avatar} alt="" className="h-10 w-10 rounded-full" />
+              <img src={avatar} alt="" className="h-10 w-10 rounded-full border-2 border-white" />
             </div>
           ) : (
             <Link

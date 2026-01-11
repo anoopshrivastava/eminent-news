@@ -149,7 +149,7 @@ export default function VideoReelCard({
           <video
             ref={videoRef}
             src={video.videoUrl}
-            className="w-full h-full object-contain -mt-20"
+            className="w-full h-full object-contain -mt-24"
             playsInline
             muted={muted}
             controls={false}
@@ -201,7 +201,7 @@ export default function VideoReelCard({
         </div>
 
         {/* Info */}
-        <div className="absolute left-4 bottom-28 text-white max-w-[75%]">
+        <div className="absolute left-4 bottom-36 text-white max-w-[75%]">
           <h3 className="text-lg font-semibold line-clamp-2">{video.title}</h3>
           {video.description && (
             <p className="text-sm opacity-80 line-clamp-2 mt-1">

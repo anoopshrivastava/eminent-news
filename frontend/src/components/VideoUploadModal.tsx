@@ -41,7 +41,7 @@ export default function VideoUploadModal({ onUploaded }: Props) {
   const [loading, setLoading] = useState(false);
 
   const MAX_DURATION = 180; // 3 minutes
-  const MAX_SIZE_MB = 200;
+  const MAX_SIZE_MB = 150;
 
   const handleVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

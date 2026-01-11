@@ -53,16 +53,31 @@ const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds, isAdmin = false }) => {
     }
   };
 
+  const isVideoAd = ads.category === "VideoShorts";
+
   return (
     <>
       <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden w-80 md:w-72">
         {/* Image block with edit/delete overlay */}
         <div className="relative h-48 md:h-60 overflow-hidden bg-gray-100">
-          <img
+          {/* <img
             src={ads.images?.[0] ?? ""}
             alt={ads.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          />
+          /> */}
+          {isVideoAd ? (
+            <video
+              src={ads.video?.url}
+              controls
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <img
+              src={ads.images?.[0]}
+              alt={ads.title}
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            />
+          )}
 
           <div className="absolute bottom-2 left-2 z-10">
             <span
@@ -71,7 +86,7 @@ const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds, isAdmin = false }) => {
         ads.isApproved ? "bg-green-600 text-white" : "bg-yellow-500 text-black"
       }`}
             >
-              {ads.isApproved ? "Approved" : "Pending"}
+              {ads.isApproved ? "Approved" : "Approval Pending"}
             </span>
           </div>
 
@@ -119,6 +134,10 @@ const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds, isAdmin = false }) => {
           <div className="pt-1 text-xs font-medium text-gray-700">
             <span className="mr-3">Category : {ads.category ?? "Other"}</span>
           </div>
+
+          {isAdmin && <div className="pt-1 text-xs font-medium text-gray-700">
+            <span className="mr-3">CreatedBy : {ads?.createdBy?.name ?? "Unknown"}</span>
+          </div>}
         </div>
       </div>
     </>

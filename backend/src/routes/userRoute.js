@@ -19,7 +19,7 @@ router.post('/password/forgot',rateLimiter,forgotPassword)
 router.put('/password/reset/:token',rateLimiter,resetPassword)
 
 // for user logout -->
-router.get('/logout',logout)
+router.post('/logout',logout)
 
 // for user details -->
 router.get('/me',isAuthenticatedUser,getUserDetails)

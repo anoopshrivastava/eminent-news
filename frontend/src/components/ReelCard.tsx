@@ -149,7 +149,7 @@ export default function ReelCard({ short, onLike, onVideoTap, isActive, onRefres
           <video
             ref={videoRef}
             src={short.videoUrl}
-            className="w-full h-full object-contain -mt-20"
+            className="w-full h-full object-contain -mt-24"
             loop
             playsInline
             muted={muted}

@@ -124,7 +124,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all overflow-hidden">
       {/* Image */}
-      <div className="overflow-hidden ml-3">
+      <div className="overflow-hidden mx-2">
         {/* <img
           src={news.images && news.images.length ? news.images[0] : "/placeholder.png"}
           alt={news.title}

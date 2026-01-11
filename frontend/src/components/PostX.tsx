@@ -175,7 +175,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       </div>
 
       {/* Image */}
-      <div className="overflow-hidden ml-3">
+      <div className="overflow-hidden mx-2">
         {/* <img
           src={
             news.images && news.images.length

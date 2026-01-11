@@ -33,7 +33,7 @@ const MobileHeader = () => {
     { label: "Shorts", to: "/shorts", icon: <Clapperboard className="h-6 w-6" /> },
     { label: "Videos", to: "/videos", icon: <Video className="h-6 w-6" /> },
 
-    { label: "Profile", to: "/my-profile", icon: <UserRound className="h-6 w-6" /> },
+    { label: "Profile", to: "/profile", icon: <UserRound className="h-6 w-6" /> },
   ];
   
 

@@ -10,11 +10,16 @@ const adsSchema = new mongoose.Schema({
     },
     category:{
         type:String,
+        enum: ["Banner", "Highlights", "FullPageShorts", "VideoShorts"],
         required:true,
     },
     images:{
         type:[String],
         default:[]
+    },
+    video: {
+      url: String,
+      publicId: String,
     },
     isApproved:{
         type:Boolean,

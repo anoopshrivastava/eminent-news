@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { X, ChevronDown, ChevronUp, ArrowRight, Trash2 } from "lucide-react";
+import { X, ChevronDown, ChevronUp, ArrowRight, Trash2, Megaphone } from "lucide-react";
 import logo from "../assets/logo.png";
 import { categories, subCategoriesMap } from "@/types/news";
 import { User, Lock } from "lucide-react";
@@ -140,6 +140,17 @@ const handleDeleteAccount = async () => {
 
               {openAccount && (
                 <div className="ml-3 mt-3 flex flex-col gap-3 text-base font-medium text-gray-700">
+                  <button
+                    onClick={() => {
+                      navigate("/profile/my-ads");
+                      onClose();
+                    }}
+                    className="flex items-center gap-2 hover:text-[#f40607]"
+                  >
+                    <Megaphone size={16} />
+                    Run My Ads
+                  </button>
+                  
                   <button
                     onClick={() => {
                       navigate("/settings/profile");

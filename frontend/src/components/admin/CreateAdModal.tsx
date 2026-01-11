@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiX, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { compressFile } from "@/lib/compression";
 import api from "@/lib/axios";
 import { categories, type Ads } from "@/types/ads";
+import { Input } from "../ui/input";
 
 interface props {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,37 +20,76 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     category: "Banner",
   });
   const [images, setImages] = useState<File[]>([]);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (formData.category === "VideoShorts") return;
+
     const files = e.target.files;
-    if (!files) return;
-  
+    if (!files || files.length === 0) return;
+
     const fileArray = Array.from(files);
-  
     const compressedFiles: File[] = [];
-  
+
     for (const file of fileArray) {
-      const compressed: any = await compressFile(file);
-  
-      // convert compressed Blob → File (FormData needs File)
-      const compressedFile = new File([compressed], file.name.replace(/\.\w+$/, '.webp'), {
-        type: compressed.type || 'image/webp'
-      });
-  
+      if (!file.type.startsWith("image/")) {
+        toast.error("Only image files are allowed");
+        continue;
+      }
+
+      const compressedBlob: any = await compressFile(file);
+
+      const compressedFile = new File(
+        [compressedBlob],
+        file.name.replace(/\.\w+$/, ".webp"),
+        {
+          type: compressedBlob.type || "image/webp",
+        }
+      );
+
       compressedFiles.push(compressedFile);
     }
-  
+
+    if (compressedFiles.length === 0) {
+      toast.error("No valid images selected");
+      return;
+    }
+
     setImages(compressedFiles);
-    toast.success("Images compressed successfully (under 1MB)");
+    toast.success("Images compressed successfully");
   };
-  
+
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    if (formData.category !== "VideoShorts") return;
+    const MAX_SIZE_MB = 150;
+
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      toast.error("Please select a valid video file");
+      return;
+    }
+
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      toast.error(`Video must be under ${MAX_SIZE_MB}MB`);
+      return;
+    }
+
+    setVideoFile(file);
+  };
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,20 +98,22 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
 
     try {
       const data = new FormData();
+
       data.append("title", formData.title);
       data.append("description", formData.description);
-      data.append("url", formData.url);
       data.append("category", formData.category);
+      data.append("url", formData.url);
 
-      images.forEach((img) => data.append("images", img));
+      if (formData.category === "VideoShorts" && videoFile) {
+        data.append("video", videoFile);
+      } else {
+        images.forEach((img) => data.append("images", img));
+      }
 
-      const response = await api.post("/ads/create",
-        data,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await api.post("/ads/create", data, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       const resData = response?.data ?? {};
       if (resData.success === false) {
@@ -88,11 +130,19 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
         setAds((prev) => [resData.ads, ...prev]);
       }
 
-      setFormData({ title: "", description: "", category: "National", url: "" });
+      setFormData({
+        title: "",
+        description: "",
+        category: "National",
+        url: "",
+      });
       setImages([]);
       setIsOpen(false);
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? "Failed to create ads. Please try again.");
+      setError(
+        err?.response?.data?.message ??
+          "Failed to create ads. Please try again."
+      );
       console.error("Error creating ads:", err);
       toast.error("Error creating ads");
     } finally {
@@ -100,14 +150,21 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     }
   };
 
+  useEffect(() => {
+    setImages([]);
+    setVideoFile(null);
+  }, [formData.category]);
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 ">
       <form
         onSubmit={handleCreatePost}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 md:w-[450px]"
+        className="bg-white p-6 rounded-lg shadow-lg w-[95%] md:w-[450px]"
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-blue-600">Add An Advertisement</h2>
+          <h2 className="text-xl font-bold text-rose-600">
+            Add An Advertisement
+          </h2>
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -177,21 +234,32 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
           />
         </div>
 
-        <label>
-          Select Images <span className="text-xs text-slate-950">( less than 5mb )</span>
-        </label>
-        <input
-          type="file"
-          accept="image/*"
-          disabled={loading}
-          multiple
-          onChange={handleFileChange}
-          className="w-full p-2 border rounded mb-2 bg-transparent text-gray-700 cursor-pointer"
-        />
+        {formData.category === "VideoShorts" ? (
+          <>
+            <label>Upload Video (≤ 3 min)</label>
+            <Input
+              type="file"
+              accept="video/*"
+              disabled={loading}
+              onChange={handleVideoChange}
+            />
+          </>
+        ) : (
+          <>
+            <label>Select Images</label>
+            <Input
+              type="file"
+              accept="image/*"
+              multiple
+              disabled={loading}
+              onChange={handleFileChange}
+            />
+          </>
+        )}
 
         <button
           type="submit"
-          className="w-full cursor-pointer bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:bg-gray-400 flex justify-center items-center gap-2"
+          className="w-full cursor-pointer bg-rose-600 text-white p-2 rounded hover:bg-rose-700 disabled:bg-gray-400 flex justify-center items-center gap-2 mt-6"
           disabled={loading}
         >
           {loading && <FiLoader className="animate-spin" />}{" "}

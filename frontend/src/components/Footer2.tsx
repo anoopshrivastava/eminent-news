@@ -65,7 +65,7 @@ const Footer2: React.FC = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
 
-  const hideFooterRoutes = ["/shorts", "/videos"];
+  const hideFooterRoutes = ["/shorts"];
   const shouldHideFooter = hideFooterRoutes.includes(location.pathname);
 
   if (shouldHideFooter) {

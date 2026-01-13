@@ -1,19 +1,20 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Video } from "@/types/video";
-import VideoReelCard from "@/components/VideoReelCard";
 import api from "@/lib/axios";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import VideoCard from "./VideoCard";
+import { useSelector } from "react-redux";
 
-export default function VideosReel() {
+export default function VideosPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+  const { currentUser } = useSelector((state: any) => state.user);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
 
-  const fetchVideos = useCallback(async () => {
+  const fetchVideos = async () => {
     setLoading(true);
     try {
       const res = await api.get("/videos");
@@ -23,77 +24,25 @@ export default function VideosReel() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchVideos();
-  }, [fetchVideos]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const options: IntersectionObserverInit = {
-      root: null,
-      threshold: [0.6], // play when 60% visible
-    };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const video = entry.target.querySelector("video") as HTMLVideoElement | null;
-        if (!video) return;
-
-        if (entry.isIntersecting) {
-          const videoId = entry.target.getAttribute("data-video-id");
-          if (videoId) setActiveVideoId(videoId);
-
-          video.play().catch(() => {});
-        } else {
-          try {
-            video.pause();
-          } catch {}
-        }
-      });
-    }, options);
-
-    const items = container.querySelectorAll(".snap-item");
-    items.forEach((item) => observerRef.current?.observe(item));
-
-    return () => {
-      observerRef.current?.disconnect();
-      observerRef.current = null;
-    };
-  }, [videos]);
-
-  const handleLike = async (id: string) => {
-    try {
-      await api.post(`/videos/${id}/like`);
-    } catch (err) {
-      console.error("like failed", err);
-    }
-  };
-
-  const handleVideoTap = (id: string) => {
-    setActiveVideoId((prev) => (prev === id ? null : id));
-  };
+  }, []);
 
   if (loading) {
     return (
-      <div className="md:hidden w-full h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-sm text-gray-400">Loading...</div>
+      <div className="flex justify-center items-center h-64">
+        <span className="text-gray-500">Loading videos...</span>
       </div>
     );
   }
 
   if (!videos.length) {
     return (
-      <div className="md:hidden w-full h-screen flex flex-col items-center justify-center gap-4 p-4 bg-gray-900">
-        <div className="text-gray-400">No videos yet.</div>
-        <Button
-          onClick={fetchVideos}
-          variant="outline"
-          className="text-white border-gray-600"
-        >
+      <div className="flex flex-col items-center gap-4 py-20">
+        <p className="text-gray-500">No videos available</p>
+        <Button onClick={fetchVideos} variant="outline">
           <RefreshCw className="mr-2" /> Refresh
         </Button>
       </div>
@@ -101,25 +50,24 @@ export default function VideosReel() {
   }
 
   return (
-    <div className="w-full mx-auto h-screen bg-gray-900">
-      <div
-        ref={containerRef}
-        className="max-w-md mx-auto w-full h-full overflow-y-auto snap-y snap-mandatory touch-pan-y scrollbar-hide"
-      >
+    <div className="max-w-7xl mx-auto px-4 md:px-16 py-6 pb-10 md:pb-6">
+      <h1 className="text-2xl font-bold mb-6 md:mt-2">Latest Videos</h1>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {videos.map((video) => (
-          <div
+          <VideoCard
             key={video._id}
-            data-video-id={video._id}
-            className="snap-item snap-start w-full h-screen bg-gray-900"
-          >
-            <VideoReelCard
-              video={video}
-              onLike={handleLike}
-              onVideoTap={() => handleVideoTap(video._id)}
-              isActive={activeVideoId === video._id}
-              onRefresh={fetchVideos}
-            />
-          </div>
+            video={video}
+            currentUserId={currentUser?._id}
+            onLike={async (id) => {
+              await api.put(`/videos/${id}/like`);
+            }}
+            onOpen={() =>
+              navigate(`/videos/${video._id}`, {
+                state: { video },
+              })
+            }
+          />
         ))}
       </div>
     </div>

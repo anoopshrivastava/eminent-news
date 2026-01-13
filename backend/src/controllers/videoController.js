@@ -1,6 +1,7 @@
 const Video = require("../models/videoModel");
 const cloudinary = require("../config/cloudinary");
 const Errorhandler = require("../utils/errorhander");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 // Upload video (≤ 3 min)
 exports.uploadVideo = async (req, res) => {
@@ -145,3 +146,53 @@ exports.deleteVideo = async (req, res) => {
     message: "Video deleted successfully",
   });
 };
+
+// toggle like / unlike for a news post
+exports.likeVideos = catchAsyncErrors(async (req, res, next) => {
+    const videosId = req.params.id;
+    const userId = req.user._id; // requires isAuthenticatedUser to set req.user
+  
+    // find news
+    const videos = await Video.findById(videosId);
+    if (!videos) {
+      return next(new Errorhandler("video not found", 404));
+    }
+  
+    // check if already liked by this user
+    const alreadyLiked = videos.likes.some(l => l.user.toString() === userId.toString());
+  
+    if (alreadyLiked) {
+      // unlike: remove the like entry
+      videos.likes = videos.likes.filter(l => l.user.toString() !== userId.toString());
+      await videos.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "Video unliked",
+        likesCount: videos.likes.length,
+      });
+    } else {
+      // like: add the like entry
+      videos.likes.push({ user: userId });
+      await videos.save();
+  
+      return res.status(200).json({
+        success: true,
+        message: "Video liked",
+        likesCount: videos.likes.length,
+      });
+    }
+  });
+
+  // Get news details
+  exports.getVideoDetails=catchAsyncErrors(async(req,res,next)=>{
+      let video = await Video.findById(req.params.id).populate('editor');
+      
+      if(!video){
+          return next(new Errorhandler("Video Not Found",404));
+      }
+      res.status(200).json({
+          success:true,
+          video,
+      })
+  })

@@ -8,5 +8,5 @@ function videoFilter(req, file, cb) {
 module.exports = multer({
   storage: multer.memoryStorage(),
   fileFilter: videoFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  limits: { fileSize: 150 * 1024 * 1024 }, // 150MB
 });

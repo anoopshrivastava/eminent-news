@@ -33,7 +33,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       dispatch(signOutStart());
-      const response = await api.get("/logout");
+      const response = await api.post("/logout");
       if (response.data.success === false) {
         dispatch(signOutFailure(response.data.message));
         toast.error(response.data.message);

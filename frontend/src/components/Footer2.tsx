@@ -144,7 +144,7 @@ const Footer2: React.FC = () => {
 
         <div className="flex flex-col ml-1 mt-3">
           <span className="">contact@eminentnews.com</span>
-          <span className="">+91 1234567890</span>
+          {/* <span className="">+91 1234567890</span> */}
         </div>
         
       </div>

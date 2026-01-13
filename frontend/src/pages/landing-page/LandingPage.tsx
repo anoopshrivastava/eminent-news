@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import logo from '@/assets/logo.png'
-import mobile from '@/assets/mobile.png'
-import mobile1 from '@/assets/mobile1.png'
-import mobile2 from '@/assets/mobile2.png'
-import mobile3 from '@/assets/mobile3.png'
+import mobile from '@/assets/landing-page/1.png'
+import mobile1 from '@/assets/landing-page/2.png'
+import mobile2 from '@/assets/landing-page/3.png'
+import mobile3 from '@/assets/landing-page/4.png'
+import laptop1 from '@/assets/landing-page/8.png'
+import laptop2 from '@/assets/landing-page/9.png'
+import laptop3 from '@/assets/landing-page/10.png'
+import contactUs from '@/assets/landing-page/contactUs4.avif'
 import appStore from '@/assets/appStore.png'
 import playStore from '@/assets/playStore.png'
 import award from '@/assets/award.png'
@@ -17,6 +21,7 @@ import andLogo from '@/assets/andlogo.png'
 import publisher from '@/assets/publisher.png'
 import { Link } from "react-router-dom";
 import Footer2 from "@/components/Footer2";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 const LandingPage: React.FC = () => {
   // refs for the three slider sections
@@ -91,7 +96,7 @@ const LandingPage: React.FC = () => {
     <div className="w-full min-h-screen bg-white flex flex-col items-center">
 
       {/* Top Navbar */}
-      <header className="w-full flex items-center justify-between py-4 px-6 md:px-28 shadow-md">
+      <header className="w-full flex items-center justify-between py-4 px-6 md:px-28 shadow-md sticky top-0 bg-white z-40">
         <div className="flex items-center space-x-2">
           <img src={logo} alt="ten logo" className="h-8" />
         </div>
@@ -103,7 +108,8 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="flex flex-col md:flex-row items-center w-full max-w-7xl gap-12 px-6 md:px-40 mt-4 text-center md:text-left">
+      <section className="w-full bg-gradient-to-br from-white via-sky-50 to-sky-100">
+        <div className="flex flex-col md:flex-row items-center w-full max-w-7xl gap-2 md:gap-12 px-6 md:px-40 text-center md:text-left">
 
         {/* Left mobile mock */}
         <div className="w-full md:w-2/5 flex justify-center md:justify-start">
@@ -112,19 +118,20 @@ const LandingPage: React.FC = () => {
 
         {/* Right text */}
         <div className="w-full md:w-3/5 flex flex-col items-center md:items-start">
-          <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4 leading-snug">
-            Stay informed in <span className="text-blue-500">60 words.</span>
-          </h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+              Stay informed in <span className="text-[#f40607]">60 words</span> — <span className="text-blue-500">fast, smart, personalised.</span>
+            </h1>
 
-          <p className="text-gray-500 max-w-md text-base leading-relaxed">
-            We understand you don’t have time to go through long news articles everyday.
-            So we cut the clutter and deliver them in 60-word shorts.
-          </p>
+            <p className="text-gray-600 max-w-lg text-base leading-relaxed">
+              We know you don't have time for long articles. TEN cuts the clutter and delivers the news you need in concise, reliable 60-word briefs — tailored to your tastes.
+            </p>
+
 
           <div className="flex gap-4 mt-8 justify-center md:justify-start">
             <a href="#"><img src={appStore} className="h-10" /></a>
             <a href="#"><img src={playStore} className="h-10" /></a>
           </div>
+        </div>
         </div>
       </section>
 
@@ -223,6 +230,19 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Featured In */}
+      <section className="flex flex-col items-center w-full max-w-7xl gap-12 py-20 md:pt-2 md:pb-40 px-0">
+        <div className="mx-4 text-center">
+          <h3 className="text-2xl border-b border-red-300 text-[#f40607] text-center">Shorts, Videos & Detail News</h3>
+          <span className="text-gray-500 text-center">Access to vast News with detail infromation, along with Shorts and Videos.</span>
+        </div>
+        <div className="bg-gray-100 w-full flex flex-wrap justify-center gap-8 md:gap-10 py-10 md:py-20 px-4">
+          {[laptop1, laptop2, laptop3].map((img, i) => (
+            <img key={i} src={img} className="h-14 md:h-64" />
+          ))}
+        </div>
+      </section>
+
       {/* Business Section */}
       <section className="flex flex-col items-center w-full max-w-7xl gap-12 pb-20 px-0">
         <h3 className="text-2xl border-b border-red-300 text-[#f40607]">Best in the Business</h3>
@@ -253,8 +273,52 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+            {/* Contact Us Section (NEW) */}
+      <section className="w-full max-w-7xl px-6 md:px-12 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 items-center">
+
+          {/* Left: Contact Image */}
+          <div className="flex justify-center md:justify-end">
+            <img src={contactUs} alt="contact us" className="w-full md:w-[420px] object-cover" />
+          </div>
+
+          {/* Right: Contact Info */}
+          <div className="bg-white md:p-8">
+            <h3 className="text-3xl font-bold text-[#f40607] mb-4 text-center">Contact Us</h3>
+            <p className="text-gray-600 mb-6">Have feedback or want to partner with us? We'd love to hear from you. Reach out using any of the options below.</p>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Mail/>
+                <div>
+                  <div className="text-sm text-gray-500">Email</div>
+                  <a href="mailto:support@tennews.app" className="text-gray-800 font-medium">support@tennews.app</a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <Phone/>
+                <div>
+                  <div className="text-sm text-gray-500">Phone</div>
+                  <a href="tel:+1234567890" className="text-gray-800 font-medium">+1 (234) 567-890</a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+               <MapPin/>
+                <div>
+                  <div className="text-sm text-gray-500">Address</div>
+                  <div className="text-gray-800 font-medium">123 News Lane, Media City</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final Download */}
-      <section className="flex flex-col items-center w-full max-w-7xl gap-6 pb-20 md:pb-28 px-4 text-center">
+      <section className="flex flex-col items-center w-full max-w-7xl gap-6 pb-20 pt-8 md:pb-28 px-4 text-center">
         <h3 className="text-lg font-bold text-gray-600">Download the easiest way to stay informed</h3>
         <div className="flex gap-4 justify-center">
           <a href="#"><img src={appStore} className="h-10" /></a>
@@ -268,3 +332,5 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
+{/* <img src={support} alt="" className="h-52 w-52" /> */}

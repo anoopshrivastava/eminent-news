@@ -67,7 +67,7 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
             <img
               src={post?.images?.[0] || "/placeholder.jpg"}
               alt={post.title || "News image"}
-              className="w-full h-48 object-cover"
+              className="w-full h-64 md:h-[64vh] object-cover object-top"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent p-6 flex flex-col justify-end">

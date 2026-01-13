@@ -21,7 +21,7 @@ import andLogo from '@/assets/andlogo.png'
 import publisher from '@/assets/publisher.png'
 import { Link } from "react-router-dom";
 import Footer2 from "@/components/Footer2";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 const LandingPage: React.FC = () => {
   // refs for the three slider sections
@@ -108,7 +108,7 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-white via-sky-50 to-sky-100">
+      <section className="w-full bg-gradient-to-br from-white via-gray-50 to-gray-100">
         <div className="flex flex-col md:flex-row items-center w-full max-w-7xl gap-2 md:gap-12 px-6 md:px-40 text-center md:text-left">
 
         {/* Left mobile mock */}
@@ -119,11 +119,11 @@ const LandingPage: React.FC = () => {
         {/* Right text */}
         <div className="w-full md:w-3/5 flex flex-col items-center md:items-start">
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
-              Stay informed in <span className="text-[#f40607]">60 words</span> — <span className="text-blue-500">fast, smart, personalised.</span>
+              Learn, Leap and Lead in Life along with - <span className="text-[#f40607]">The Eminent News </span>
             </h1>
 
             <p className="text-gray-600 max-w-lg text-base leading-relaxed">
-              We know you don't have time for long articles. TEN cuts the clutter and delivers the news you need in concise, reliable 60-word briefs — tailored to your tastes.
+               We Provide almost 100% accurate news for everyone Especially Youth Aspirants of world.
             </p>
 
 
@@ -273,7 +273,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-            {/* Contact Us Section (NEW) */}
+      {/* Contact Us Section (NEW) */}
       <section className="w-full max-w-7xl px-6 md:px-12 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-20 items-center">
 
@@ -292,15 +292,15 @@ const LandingPage: React.FC = () => {
                 <Mail/>
                 <div>
                   <div className="text-sm text-gray-500">Email</div>
-                  <a href="mailto:support@tennews.app" className="text-gray-800 font-medium">support@tennews.app</a>
+                  <a href="mailto:contact@eminentnews.com" className="text-gray-800 font-medium">contact@eminentnews.com</a>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone/>
+                <Mail/>
                 <div>
-                  <div className="text-sm text-gray-500">Phone</div>
-                  <a href="tel:+1234567890" className="text-gray-800 font-medium">+1 (234) 567-890</a>
+                  <div className="text-sm text-gray-500">Email 2</div>
+                  <a href="mailto:support@eminentnews.com" className="text-gray-800 font-medium">support@eminentnews.com</a>
                 </div>
               </div>
 
@@ -308,7 +308,7 @@ const LandingPage: React.FC = () => {
                <MapPin/>
                 <div>
                   <div className="text-sm text-gray-500">Address</div>
-                  <div className="text-gray-800 font-medium">123 News Lane, Media City</div>
+                  <div className="text-gray-800 font-medium">Gorakhpur, UP, India 273413</div>
                 </div>
               </div>
 

@@ -28,7 +28,7 @@ import EditProfile from "./pages/profile/EditProfile";
 import ChangePassword from "./pages/profile/ChangePassword";
 import VideosManager from "./pages/admin/videos";
 import UserAds from "./pages/user-ads/UserAds";
-import VideosPage from "./pages/videos/Videos";
+import VideosPage from "./pages/videos/videos";
 import VideoDetail from "./pages/videos/VideoDetailPage";
 import Disclaimer from "./pages/disclaimer/Disclaimer";
 import PrivacyPolicy from "./pages/privacy-policy/PrivacyPolicy";

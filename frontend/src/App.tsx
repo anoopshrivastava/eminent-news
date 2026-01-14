@@ -28,8 +28,11 @@ import EditProfile from "./pages/profile/EditProfile";
 import ChangePassword from "./pages/profile/ChangePassword";
 import VideosManager from "./pages/admin/videos";
 import UserAds from "./pages/user-ads/UserAds";
-import VideosPage from "./pages/videos/videos";
+import VideosPage from "./pages/videos/Videos";
 import VideoDetail from "./pages/videos/VideoDetailPage";
+import Disclaimer from "./pages/disclaimer/Disclaimer";
+import PrivacyPolicy from "./pages/privacy-policy/PrivacyPolicy";
+import TermsAndConditions from "./pages/terms-condition/TermsAndCondition";
 
 function App() {
   return (
@@ -51,6 +54,10 @@ function App() {
             <Route path="/shorts" element={<ShortsReel />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/videos/:id" element={<VideoDetail />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-condition" element={<TermsAndConditions />} />
+
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/profile/my-ads" element={<UserAds />} />

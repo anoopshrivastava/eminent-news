@@ -19,8 +19,9 @@ const Footer2: React.FC = () => {
     // { label: "Home", to: "/home" },
     { label: "About Us", to: "/" },
     { label: "Contact Us", to: "/" },
-    { label: "Privacy Policy", to: "#" },
-    { label: "Disclaimer", to: "#" },
+    { label: "Privacy Policy", to: "/privacy-policy" },
+    { label: "Disclaimer", to: "/disclaimer" },
+    { label: "Terms & Conditions", to: "/terms-condition" },
     // { label: "Admin Login", to: "/admin/news" },
   ];
   

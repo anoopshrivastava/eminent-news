@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import img from "../../assets/loginImg.png";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const SignupPage = () => {
   const { role } = useParams();
@@ -24,6 +25,7 @@ const SignupPage = () => {
     address: "",
   });
   const [loading, setLoading] = useState(false);
+  const [check, setCheck] = useState(false);
 
   const handleChange = (e:any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,6 +33,10 @@ const SignupPage = () => {
 
   const handleSubmit = async (e:any) => {
     e.preventDefault();
+
+    if(!check){
+      return toast.error("Please Accept Terms and Conditions.")
+    }
     
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     if (!usernameRegex.test(formData.username)) {
@@ -75,7 +81,7 @@ const SignupPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center md:bg-gray-100">
-      <div className="flex md:items-center justify-center bg-white gap-3 p-4 md:p-8 rounded-lg md:shadow-sm w-[700px] md:w-[900px] h-screen md:h-[500px]">
+      <div className="flex md:items-center justify-center bg-white gap-3 p-4 md:p-8 rounded-lg md:shadow-sm w-[700px] md:w-[900px] h-screen md:h-[530px]">
         <div className="w-full md:w-1/2 flex flex-col">
           <h2 className="text-2xl font-bold mb-6 pt-16 md:pt-0 text-center text-[#f40607]">
             {role === "editor" ? "Editor Signup" : "User Signup"}
@@ -139,6 +145,10 @@ const SignupPage = () => {
                 className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+              <div className="flex gap-2 items-center text-sm mb-2">
+                <Checkbox checked={check} className="" onCheckedChange={(value) => setCheck(!!value)}/>
+                <span>By Continuing, you agree to TEN <Link to="/terms-condition" className="font-semibold hover:underline text-blue-500">Terms & Conditions</Link> and acknowledge that you've read our <Link to="/privacy-policy" className="font-semibold hover:underline text-blue-500">Privacy Policy</Link>.</span>
+              </div>
             {/* </div> */}
             <button
               type="submit"
@@ -148,7 +158,7 @@ const SignupPage = () => {
               {loading ? "Signing up..." : "Sign Up"}
             </button>
             <p className="text-black mt-3 text-sm">Already have an account? <Link to='/login' className="text-blue-500 font-semibold">Login</Link></p>
-          {role==="user" ? <p className="text-black mt-3 text-sm">Signup As Editor? <Link to='/signup/editor' className="text-blue-500 font-semibold">Signup Editor</Link></p> : <p className="text-black mt-3 text-sm">Signup As User? <Link to='/signup/user' className="text-blue-500 font-semibold pb-10 md:pb-0">Signup User</Link></p>}
+          {role==="user" ? <span className="text-black mt-3 text-sm">Signup As Editor? <Link to='/signup/editor' className="text-blue-500 font-semibold">Signup Editor</Link></span> : <span className="text-black mt-3 text-sm">Signup As User? <Link to='/signup/user' className="text-blue-500 font-semibold pb-10 md:pb-0">Signup User</Link></span>}
           </form>
           
           

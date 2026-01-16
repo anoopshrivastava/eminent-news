@@ -23,6 +23,9 @@ const SignupPage = () => {
     password: "",
     phone: "",
     address: "",
+    linkedInLink: "",
+    twitterLink: "",
+    youtubeLink: ""
   });
   const [loading, setLoading] = useState(false);
   const [check, setCheck] = useState(false);
@@ -68,7 +71,7 @@ const SignupPage = () => {
 
       dispatch(signInSuccess(response.data.user));
       toast.success("Signup Successful");
-      navigate(role === "editor" ? "/editor/news" : "/home");
+      navigate(role === "editor" ? "/login" : "/home");
     } catch (err:any) {
       toast.error(err.response?.data?.message || "An error occurred");
       dispatch(
@@ -87,7 +90,7 @@ const SignupPage = () => {
             {role === "editor" ? "Editor Signup" : "User Signup"}
           </h2>
           <form onSubmit={handleSubmit}>
-            {/* <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}> */}
+            <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
               <Input
                 type="text"
                 name="name"
@@ -106,6 +109,9 @@ const SignupPage = () => {
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+              </div>
+
+              <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
               <Input
                 type="number"
                 name="phone"
@@ -115,9 +121,8 @@ const SignupPage = () => {
                 className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
-            {/* </div> */}
+            
 
-            {/* <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}> */}
               <Input
                 type="email"
                 name="email"
@@ -127,6 +132,8 @@ const SignupPage = () => {
                 className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+              </div>
+               <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
               <Input
                 type="text"
                 name="address"
@@ -136,6 +143,38 @@ const SignupPage = () => {
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+             
+              <Input
+                type="text"
+                name="linkedInLink"
+                placeholder="LinkedIn Url"
+                value={formData.linkedInLink}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                required
+              />
+              </div> 
+              <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
+              <Input
+                type="text"
+                name="youtubeLink"
+                placeholder="Youtube Url"
+                value={formData.youtubeLink}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                required
+              />
+              <Input
+                type="text"
+                name="twitterLink"
+                placeholder="Twitter Link"
+                value={formData.twitterLink}
+                onChange={handleChange}
+                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
+                required
+              />
+              </div>
+
               <Input
                 type="password"
                 name="password"

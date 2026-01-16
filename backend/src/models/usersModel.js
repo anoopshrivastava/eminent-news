@@ -56,6 +56,15 @@ const UsersSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    twitterLink:{
+        type: String
+    },
+    youtubeLink:{
+        type: String
+    },
+    linkedInLink:{
+        type: String
+    },
     followers: [
         {
             user: {

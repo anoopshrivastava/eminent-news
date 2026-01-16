@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
 import api from "@/lib/axios";
-// import UpdateUserModal from "./UpdateUserModal"; // ensure correct import
+import SocialLinkCell from "./SocialLinkCell";
 
 // ---------- TYPES ----------
 export interface Editor {
@@ -13,9 +13,13 @@ export interface Editor {
   username: string;
   email: string;
   phone: string;
-  followers:string[];
-  following:string[];
+  followers: string[];
+  following: string[];
   createdAt: string;
+  linkedInLink?: string;
+  twitterLink?: string;
+  youtubeLink?: string;
+  verified: boolean;
 }
 
 interface FetchEditorsResponse {
@@ -27,7 +31,6 @@ function AllEditors() {
   const [editors, setEditors] = useState<Editor[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [deleting, setDeleting] = useState<string | null>(null);
-  // const [editingEditor, setEditingEditor] = useState<Editor | null>(null);
   const [search, setSearch] = useState<string>("");
 
   const debouncedSearch = useDebounce(search, 500);
@@ -36,7 +39,9 @@ function AllEditors() {
   const fetchEditors = async () => {
     setLoading(true);
     try {
-      const response = await api.get<FetchEditorsResponse>(`/admin/editors?searchKey=${search}`);
+      const response = await api.get<FetchEditorsResponse>(
+        `/admin/editors?searchKey=${search}`
+      );
 
       if (response.data?.success) {
         setEditors(response.data.users);
@@ -66,6 +71,26 @@ function AllEditors() {
       toast.error("Error deleting editor. Try again.");
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const handleStatusToggle = async (id: string, currentStatus: boolean) => {
+    try {
+      const res = await api.put(`/admin/user/${id}`, {
+        verified: !currentStatus,
+      });
+
+      if (res.data?.success) {
+        setEditors((prev) =>
+          prev.map((editor) =>
+            editor._id === id ? { ...editor, verified: !currentStatus } : editor
+          )
+        );
+        toast.success("Status updated successfully");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update status");
     }
   };
 
@@ -106,6 +131,10 @@ function AllEditors() {
                 <th className="py-3 px-2 text-left">Phone</th>
                 <th className="py-3 px-2 text-left">Following</th>
                 <th className="py-3 px-2 text-left">Followers</th>
+                <th className="py-3 px-2 text-left">LinkedIn</th>
+                <th className="py-3 px-2 text-left">Twitter</th>
+                <th className="py-3 px-2 text-left">Youtube</th>
+                <th className="py-3 px-2 text-left">Status</th>
                 <th className="py-3 px-2 text-left">Joined On</th>
                 <th className="py-3 px-2 text-center">Actions</th>
               </tr>
@@ -121,19 +150,54 @@ function AllEditors() {
 
                   <td className="py-3 px-2">{editor.following.length}</td>
                   <td className="py-3 px-2">{editor.followers.length}</td>
+                  <td className="py-3 px-2 hidden md:table-cell">
+                    <SocialLinkCell url={editor.linkedInLink} />
+                  </td>
 
-                  <td className="py-3 px-2">{editor.createdAt.split("T")[0]}</td>
+                  <td className="py-3 px-2 hidden md:table-cell">
+                    <SocialLinkCell url={editor.twitterLink} />
+                  </td>
+
+                  <td className="py-3 px-2 hidden md:table-cell">
+                    <SocialLinkCell url={editor.youtubeLink} />
+                  </td>
+                  <td className="py-3 px-2">
+                    <div className="flex items-center gap-3">
+                      {/* Badge */}
+                      <span
+                        className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                          editor.verified
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {editor.verified ? "Approved" : "Pending"}
+                      </span>
+
+                      {/* Toggle */}
+                      <button
+                        onClick={() =>
+                          handleStatusToggle(editor._id, editor.verified)
+                        }
+                        className={`w-10 h-5 flex items-center rounded-full p-1 transition ${
+                          editor.verified ? "bg-green-500" : "bg-gray-300"
+                        }`}
+                        title="Toggle Status"
+                      >
+                        <div
+                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${
+                            editor.verified ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </td>
+
+                  <td className="py-3 px-2">
+                    {editor.createdAt.split("T")[0]}
+                  </td>
 
                   <td className="py-3 px-2 text-center flex justify-center gap-4">
-                    {/* Edit */}
-                    {/* <button
-                      onClick={() => setEditingEditor(editor)}
-                      className="text-blue-500 hover:text-blue-700"
-                      title="Edit Editor"
-                    >
-                      <FiEdit />
-                    </button> */}
-
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(editor._id)}
@@ -166,15 +230,6 @@ function AllEditors() {
           </table>
         </div>
       )}
-
-      {/* Update modal */}
-      {/* {editingEditor && (
-        <UpdateUserModal
-          user={editingEditor}
-          onClose={() => setEditingEditor(null)}
-          onUpdate={fetchEditors}
-        />
-      )} */}
     </div>
   );
 }

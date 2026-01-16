@@ -11,8 +11,7 @@ const cloudinary = require('../config/cloudinary')
 
 // creating a user --> Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
-  const { name, username, email, password, phone, address, avatar, role } =
-    req.body;
+  const { name, username, email, password, phone, address, avatar, role, twitterLink, youtubeLink, linkedInLink } = req.body;
 
   if (!["user", "editor"].includes(role)) {
     return next(
@@ -64,9 +63,14 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
     address,
     avatar: avatar,
     role,
+    twitterLink,
+    youtubeLink,
+    linkedInLink
   });
 
-  sendToken(user, 201, res);
+  if(role === "user"){
+    sendToken(user, 201, res);
+  }
 });
 
 // user login
@@ -82,6 +86,10 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
   if (!user) {
     // if user not found with this mail
     return next(new Errorhandler("Invalid Email Or Password !!!", 401));
+  }
+
+  if(user.role === "editor" && user.verified === false){
+    return next(new Errorhandler("Your Verification is Pending, please wait for Approval", 403));
   }
 
   const passwordComp = await bcrypt.compare(password, user.password);
@@ -361,7 +369,7 @@ exports.getSingleUser = catchAsyncError(async (req, res, next) => {
 
 // update user role,profile and password - Admin -->
 exports.updateUserRole = catchAsyncError(async (req, res, next) => {
-  const { name, role, phone, password } = req.body;
+  const { name, role, phone, password, verified } = req.body;
   const user = await User.findById(req.params.id);
 
   if (!user) {
@@ -375,6 +383,7 @@ exports.updateUserRole = catchAsyncError(async (req, res, next) => {
   if (role) user.role = role;
   if (phone) user.phone = phone;
   if (password) user.password = password;
+  if (verified) user.verified = verified;
 
   await user.save();
 

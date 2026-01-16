@@ -62,6 +62,18 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const forceLogout = async () => {
+    try {
+      dispatch(signOutStart());
+      await api.post("/logout"); // optional but good practice
+    } catch (err) {
+      console.warn("Logout API failed, clearing state anyway");
+    } finally {
+      dispatch(signOutSuccess());
+      navigate("/login", { replace: true });
+    }
+  };
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -75,6 +87,15 @@ const ProfilePage: React.FC = () => {
         }
       } catch (err: any) {
         console.error(err);
+
+        const status = err?.response?.status;
+
+        if (status === 400 || status === 401) {
+          toast.error("Session expired. Please login again.");
+          await forceLogout();
+          return;
+        }
+
         toast.error(err?.response?.data?.message || "Failed to load profile");
       } finally {
         setLoading(false);
@@ -106,68 +127,66 @@ const ProfilePage: React.FC = () => {
   const avatar =
     user.avatar && user.avatar.trim() !== "sampleurl" ? user.avatar : profile;
 
-const AccountActions = ({ mobile = false }: { mobile?: boolean }) => (
-  <div className={`flex ${mobile ? "flex-col gap-3" : "flex-row gap-2"}`}>
-    
-    {/* Run My Ads */}
-    <button
-      onClick={() => navigate("/profile/my-ads")}
-      className={`flex items-center gap-2 ${
-        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-      } bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg
+  const AccountActions = ({ mobile = false }: { mobile?: boolean }) => (
+    <div className={`flex ${mobile ? "flex-col gap-3" : "flex-row gap-2"}`}>
+      {/* Run My Ads */}
+      <button
+        onClick={() => navigate("/profile/my-ads")}
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg
       hover:from-rose-600 hover:to-rose-700 transition-all duration-200
       font-medium shadow-md hover:shadow-lg`}
-    >
-      <Megaphone size={18} />
-      Run My Ads
-    </button>
+      >
+        <Megaphone size={18} />
+        Run My Ads
+      </button>
 
-    {/* Edit Profile */}
-    <button
-      onClick={() => navigate("/settings/profile")}
-      className={`flex items-center gap-2 ${
-        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-      } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
-    >
-      <Edit2 size={18} />
-      Edit Profile
-    </button>
+      {/* Edit Profile */}
+      <button
+        onClick={() => navigate("/settings/profile")}
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
+      >
+        <Edit2 size={18} />
+        Edit Profile
+      </button>
 
-    {/* Change Password */}
-    <button
-      onClick={() => navigate("/settings/security")}
-      className={`flex items-center gap-2 ${
-        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-      } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
-    >
-      <Lock size={18} />
-      Change Password
-    </button>
+      {/* Change Password */}
+      <button
+        onClick={() => navigate("/settings/security")}
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-white border-2 border-gray-200 rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 font-medium text-gray-700 hover:text-indigo-600 shadow-sm`}
+      >
+        <Lock size={18} />
+        Change Password
+      </button>
 
-    {/* Logout */}
-    <button
-      onClick={handleLogout}
-      className={`flex items-center gap-2 ${
-        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-      } bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg`}
-    >
-      <LogOut size={18} />
-      Logout
-    </button>
+      {/* Logout */}
+      <button
+        onClick={handleLogout}
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg`}
+      >
+        <LogOut size={18} />
+        Logout
+      </button>
 
-    {/* Delete Account */}
-    <button
-      onClick={() => deleteAccount(handleLogout, () => navigate("/login"))}
-      className={`flex items-center gap-2 ${
-        mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
-      } bg-white border-2 border-red-300 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all duration-200 font-medium shadow-sm`}
-    >
-      <Trash2 size={18} />
-      Delete Account
-    </button>
-  </div>
-);
-
+      {/* Delete Account */}
+      <button
+        onClick={() => deleteAccount(handleLogout, () => navigate("/login"))}
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-white border-2 border-red-300 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all duration-200 font-medium shadow-sm`}
+      >
+        <Trash2 size={18} />
+        Delete Account
+      </button>
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 min-h-[80vh]">

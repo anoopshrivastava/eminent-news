@@ -15,8 +15,14 @@ const videos = require('../src/routes/videoRoute')
 const app = express();
 const bodyparser = require('body-parser');
 
-app.use(cors({
-    origin:process.env.FRONTEND_URL,
+const allowedOrigins = process.env.CORS_ORIGINS
+  ?.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+  app.use(
+  cors({
+    origin: allowedOrigins,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
         "Content-Type",
@@ -25,8 +31,9 @@ app.use(cors({
         "Expires",
         "Pragma",
       ],
-    credentials: true
-}))
+    credentials: true,
+  })
+);
 
 // to access req.body
 app.use(bodyparser.json()); 

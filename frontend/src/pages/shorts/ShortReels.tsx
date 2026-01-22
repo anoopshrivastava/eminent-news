@@ -4,6 +4,7 @@ import ReelCard from "@/components/ReelCard";
 import api from "@/lib/axios";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
 
 export default function ShortsReel() {
   const [shorts, setShorts] = useState<Short[]>([]);
@@ -11,6 +12,7 @@ export default function ShortsReel() {
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const { currentUser } = useSelector((state: any) => state.user);
 
   const fetchShorts = useCallback(async () => {
     setLoading(true);
@@ -92,15 +94,15 @@ export default function ShortsReel() {
 
   if (loading) {
     return (
-      <div className="md:hidden w-full h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-sm text-gray-400">Loading...</div>
+      <div className="w-full h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-lg text-gray-300">Loading...</div>
       </div>
     );
   }
 
   if (!shorts.length) {
     return (
-      <div className="md:hidden w-full h-screen flex flex-col items-center justify-center gap-4 p-4 bg-gray-900">
+      <div className="w-full h-screen flex flex-col items-center justify-center gap-4 p-4 bg-gray-900">
         <div className="text-gray-400">No shorts yet.</div>
         <Button onClick={fetchShorts} variant="outline" className="text-white border-gray-600">
           <RefreshCw className="mr-2" /> Refresh
@@ -129,6 +131,7 @@ export default function ShortsReel() {
               onVideoTap={() => handleVideoTap(short._id)}
               isActive={activeVideoId === short._id}
               onRefresh={()=>fetchShorts()}
+              currentUser={currentUser}
             />
           </div>
         ))}

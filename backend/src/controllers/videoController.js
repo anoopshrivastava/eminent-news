@@ -147,12 +147,12 @@ exports.deleteVideo = async (req, res) => {
   });
 };
 
-// toggle like / unlike for a news post
+// toggle like / unlike for a videos post
 exports.likeVideos = catchAsyncErrors(async (req, res, next) => {
     const videosId = req.params.id;
     const userId = req.user._id; // requires isAuthenticatedUser to set req.user
   
-    // find news
+    // find videos
     const videos = await Video.findById(videosId);
     if (!videos) {
       return next(new Errorhandler("video not found", 404));
@@ -184,15 +184,75 @@ exports.likeVideos = catchAsyncErrors(async (req, res, next) => {
     }
   });
 
-  // Get news details
-  exports.getVideoDetails=catchAsyncErrors(async(req,res,next)=>{
-      let video = await Video.findById(req.params.id).populate('editor');
-      
-      if(!video){
-          return next(new Errorhandler("Video Not Found",404));
-      }
-      res.status(200).json({
-          success:true,
-          video,
-      })
-  })
+// Get videos details
+exports.getVideoDetails=catchAsyncErrors(async(req,res,next)=>{
+    let video = await Video.findById(req.params.id).populate('editor').populate("comments.user", "name avatar");
+    
+    if(!video){
+        return next(new Errorhandler("Video Not Found",404));
+    }
+    res.status(200).json({
+        success:true,
+        video,
+    })
+})
+
+exports.addComment = catchAsyncErrors(async (req, res, next) => {
+
+    const { id: videoId } = req.params;
+    const { comment } = req.body;
+    const userId = req.user._id;
+
+    if (!comment || !comment.trim()) {
+        return next(new Errorhandler("Comment cannot be empty", 400));
+    }
+
+    const videos = await Video.findById(videoId);
+    if (!videos) {
+        return next(new Errorhandler("videos not found", 404));
+    }
+
+    const newComment = {
+        user: userId,
+        comment,
+    };
+
+    videos.comments.push(newComment);
+    await videos.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Comment added successfully",
+        comment: videos.comments[videos.comments.length - 1],
+    });
+});
+
+
+exports.deleteComment = catchAsyncErrors(async (req, res, next) => {
+    const { id: videoId, commentId } = req.params;
+    const userId = req.user._id;
+
+    const videos = await Video.findById(videoId);
+    if (!videos) {
+        return next(new Errorhandler("videos not found", 404));
+    }
+
+    const comment = videos.comments.id(commentId);
+
+    if (!comment) {
+        return next(new Errorhandler("Comment not found", 404));
+    }
+
+    // allow only owner of comment
+    if (comment.user.toString() !== userId.toString()) {
+        return next(new Errorhandler("You can delete only your own comment", 403));
+    }
+
+    comment.deleteOne(); // mongoose subdocument delete
+    await videos.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Comment deleted successfully",
+    });
+});

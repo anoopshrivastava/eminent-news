@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import logo from "@/assets/logo.png";
-import mobile from "@/assets/landing-page/1.png";
+// import mobile from "@/assets/landing-page/1.png";
+import img1 from "@/assets/img1.jpeg";
 import mobile1 from "@/assets/landing-page/2.png";
 import mobile2 from "@/assets/landing-page/3.png";
 import mobile3 from "@/assets/landing-page/4.png";
@@ -109,11 +110,11 @@ const LandingPage: React.FC = () => {
       <section className="w-full bg-gradient-to-br from-white via-gray-50 to-gray-100">
         <div className="flex flex-col md:flex-row items-center w-full max-w-7xl gap-2 md:gap-12 px-6 md:px-40 text-center md:text-left">
           {/* Left mobile mock */}
-          <div className="w-full md:w-2/5 flex justify-center md:justify-start">
+          <div className="w-full md:w-2/5 flex justify-center md:justify-start py-10 md:py-20 md:px-10 ">
             <img
-              src={mobile}
+              src={img1}
               alt="News preview"
-              className="w-[250px] md:w-[250px]"
+              className="w-[370px] md:w-320 rounded-md"
             />
           </div>
 
@@ -163,7 +164,7 @@ const LandingPage: React.FC = () => {
           transition: "opacity 700ms ease-out, transform 700ms ease-out",
           transform: `translateY(${(1 - opacities[0]) * 12}px)`,
         }}
-        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 md:py-40 px-6 text-center md:text-left"
+        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-10 md:py-40 px-6 text-center md:text-left"
       >
         <div className="w-full">
           <div className="font-semibold text-2xl text-[#f40607] mb-6">
@@ -177,6 +178,8 @@ const LandingPage: React.FC = () => {
         <img src={mobile1} alt="" className="w-60 md:w-64" />
       </section>
 
+      <div className="md:hidden px-4 pb-4 text-center text-lg text-gray-500"> We welcome all UPSC , StatePcs ,SSC ,CGL , CDS, NDA, banking sectors etc Aspirants to join us to Learn ,leap and lead in Life</div>
+
       {/* Slider 2 */}
       <section
         ref={slider2Ref}
@@ -186,7 +189,7 @@ const LandingPage: React.FC = () => {
           transition: "opacity 700ms ease-out, transform 700ms ease-out",
           transform: `translateY(${(1 - opacities[1]) * 12}px)`,
         }}
-        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 px-6 text-center md:text-left"
+        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 md:py-20 px-6 text-center md:text-left"
       >
         <img src={mobile2} alt="" className="w-60 md:w-64" />
 
@@ -210,7 +213,7 @@ const LandingPage: React.FC = () => {
           transition: "opacity 700ms ease-out, transform 700ms ease-out",
           transform: `translateY(${(1 - opacities[2]) * 12}px)`,
         }}
-        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-20 px-6 text-center md:text-left"
+        className="flex flex-col md:flex-row items-center gap-10 md:gap-20 md:px-40 py-10 md:py-20 px-6 text-center md:text-left"
       >
         <div className="w-full">
           <div className="font-semibold text-2xl text-[#f40607] mb-6">
@@ -218,9 +221,7 @@ const LandingPage: React.FC = () => {
             <h3>one app TEN .</h3>
           </div>
           <p className="max-w-96 text-lg text-gray-500 mx-auto md:mx-0">
-            We pick-up articles from all your favourite sources and present them
-            in 60-word shorts. Read full articles for shorts that interest you,
-            within the app.
+             Read accurate and detailed analysis of news , done by eminent one with Post, image ,shorts and Video to make you valuable one with right knowledge at right plateform.
           </p>
         </div>
         <img src={mobile3} alt="" className="w-60 md:w-60" />
@@ -242,7 +243,7 @@ const LandingPage: React.FC = () => {
       </section> */}
 
       {/* Featured In */}
-      <section className="flex flex-col items-center w-full max-w-7xl gap-12 py-20 md:pt-2 md:pb-40 px-0">
+      <section className="flex flex-col items-center w-full max-w-7xl gap-12 py-10 md:pt-2 md:pb-40 px-0">
         <div className="mx-4 text-center">
           <h3 className="text-2xl border-b border-red-300 text-[#f40607] text-center">
             Shorts, Videos & Detail News

@@ -1,3 +1,5 @@
+import type { IComment } from "./news";
+
 export type Video = {
   _id: string;
   title: string;
@@ -14,4 +16,5 @@ export type Video = {
     avatar?:string;
   } | string;
   createdAt: string;
+  comments:IComment[]
 };

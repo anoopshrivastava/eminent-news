@@ -3,6 +3,7 @@
     username: string
     name: string;
     email:string;
+    avatar: string;
     followers: string[]
   }
 

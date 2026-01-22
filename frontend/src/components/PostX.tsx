@@ -8,6 +8,8 @@ import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
 import { ImageCollage } from "./ImageCollage";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import profile from "@/assets/profile.webp"
 
 const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   const newsId = news._id;
@@ -130,7 +132,10 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       <div className="px-3 pb-3 pt-1">
         {/* Author + Follow */}
         <div className="flex items-center justify-between pb-2 pt-1">
-          <div className="text-lg md:text-base text-gray-500">
+          <div className="flex gap-1 items-center text-lg md:text-base text-gray-500">
+            <Avatar className="h-6 w-6 ">
+              <AvatarImage src={news.editor?.avatar || profile } alt={news.editor?.name} className=""/>
+            </Avatar>
             <span className="font-medium text-gray-700">
               {news.editor?.name || "Editor"}
             </span>

@@ -1,3 +1,4 @@
+import type { IComment } from "./news";
 
 export interface Short {
     _id: string;
@@ -15,5 +16,6 @@ export interface Short {
     } | string;
     createdAt: string;
     updatedAt: string;
+    comments:IComment[]
   }
   

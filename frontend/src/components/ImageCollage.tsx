@@ -4,7 +4,7 @@ export const ImageCollage = ({ images, title }: { images: string[]; title: strin
       <img
         src="/placeholder.png"
         alt="placeholder"
-        className="h-48 w-80 object-cover rounded-md px-2"
+        className="w-full md:h-48 md:w-80 object-cover rounded-md px-2"
       />
     );
   }
@@ -24,7 +24,7 @@ export const ImageCollage = ({ images, title }: { images: string[]; title: strin
   const remaining = images.length - 4;
 
   return (
-    <div className="relative grid grid-cols-2 grid-rows-2 gap-1 h-48 w-80 rounded-md overflow-hidden">
+    <div className="relative grid grid-cols-2 grid-rows-2 gap-1 w-full md:h-48 md:w-80 rounded-md overflow-hidden">
       {displayImages.map((img, idx) => (
         <div key={idx} className="relative">
           <img

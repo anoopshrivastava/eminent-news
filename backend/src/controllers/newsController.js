@@ -222,7 +222,7 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
 
 // Get news details
 exports.getNewsDetails=catchAsyncError(async(req,res,next)=>{
-    let news = await News.findById(req.params.id).populate('editor').populate("comments.user", "name avatar");;
+    let news = await News.findById(req.params.id).populate('editor').populate("comments.user", "name avatar");
     
     if(!news){
         return next(new Errorhandler("News Not Found",404));

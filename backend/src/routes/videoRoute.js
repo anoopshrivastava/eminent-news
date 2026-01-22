@@ -8,6 +8,8 @@ const {
   deleteVideo,
   likeVideos,
   getVideoDetails,
+  addComment,
+  deleteComment,
 } = require("../controllers/videoController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -23,5 +25,11 @@ router.put('/videos/:id/like', isAuthenticatedUser, likeVideos);
 
 router.get("/videos/:id",getVideoDetails);
 router.delete("/videos/:id",isAuthenticatedUser,authorizeRoles("editor", "admin"),deleteVideo);
+
+// comment on videos
+router.post('/videos/:id/comment',isAuthenticatedUser,addComment);
+
+// delete own comment
+router.delete('/videos/:id/comment/:commentId',isAuthenticatedUser,deleteComment);
 
 module.exports = router;

@@ -224,7 +224,7 @@ export default function NewsDetail() {
           {/* Editor Info */}
           <div className="flex items-center gap-4 mt-4">
             <Avatar className="h-12 w-12 ">
-              <AvatarImage src={currentUser?.avatar || profile } alt={news.editor?.name} className=""/>
+              <AvatarImage src={news.editor?.avatar || profile } alt={news.editor?.name} className=""/>
               <AvatarFallback className="bg-gray-300">
                 {news.editor?.name?.charAt(0).toUpperCase()}
               </AvatarFallback>

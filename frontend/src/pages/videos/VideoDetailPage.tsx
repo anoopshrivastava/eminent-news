@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Heart, Share2 } from "lucide-react";
+import { ArrowLeft, Heart, Share2, Trash2 } from "lucide-react";
 import type { Video } from "@/types/video";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -20,6 +20,11 @@ export default function VideoDetail() {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [loadingLike, setLoadingLike] = useState(false);
+
+  const [commentText, setCommentText] = useState("");
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+
 
   /* Fetch video */
   const fetchVideo = async () => {
@@ -96,6 +101,58 @@ export default function VideoDetail() {
       toast.success("Link copied to clipboard!");
     } catch {
       toast.error("Failed to copy link");
+    }
+  };
+
+    const handleAddComment = async () => {
+    if (!currentUser) {
+      toast.error("Please Login First !!");
+      return;
+    }
+
+    if (!commentText.trim()) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
+
+    try {
+      setCommentLoading(true);
+
+      const { data } = await api.post(`/videos/${video?._id}/comment`, {
+        comment: commentText,
+      });
+
+      // update UI instantly
+      setVideo((prev: any) => ({
+        ...prev,
+        comments: [...(prev?.comments || []), data.comment],
+      }));
+
+      setCommentText("");
+      toast.success("Comment added Successfully");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to add comment");
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      setDeleteLoading(commentId);
+
+      await api.delete(`/videos/${video?._id}/comment/${commentId}`);
+
+      setVideo((prev: any) => ({
+        ...prev,
+        comments: prev.comments.filter((c: any) => c._id !== commentId),
+      }));
+
+      toast.success("Comment deleted Successfully");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to delete comment");
+    } finally {
+      setDeleteLoading(null);
     }
   };
 
@@ -203,6 +260,72 @@ export default function VideoDetail() {
             <Share2 size={16} /> Share
           </Button>
         </div>
+
+          {/* Add Comment */}
+          <div className="mt-6 space-y-2">
+            <h3 className="font-semibold">Comments</h3>
+
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              className="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#f40607] bg-white"
+              rows={3}
+            />
+
+            <Button
+              onClick={handleAddComment}
+              disabled={commentLoading}
+              className="bg-[#f40607] hover:bg-red-600"
+            >
+              {commentLoading ? "Posting..." : "Post Comment"}
+            </Button>
+          </div>
+
+          {/* Comments List */}
+          <div className="mt-4 space-y-4">
+            {video.comments && video.comments.length > 0 ? (
+              video.comments.map((c: any) => (
+                <div
+                  key={c._id}
+                  className="flex gap-3 p-3 border rounded-md"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {c.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold">
+                        {c.user?.name || "User"} {currentUser?._id === c.user?._id && <span>(You)</span>}
+                      </p>
+
+                      {/* Delete only own comment */}
+                      {currentUser?._id === c.user?._id && (
+                        <button
+                          onClick={() => handleDeleteComment(c._id)}
+                          className="flex items-center gap-1 text-xs text-red-500 hover:underline"
+                          disabled={deleteLoading === c._id}
+                        >
+                          {deleteLoading === c._id ? "Deleting..." : ""}
+                          <Trash2 size={13}/>
+                        </button>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-gray-700">{c.comment}</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(c.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">No comments yet.</p>
+            )}
+          </div>
       </div>
     </div>
   );

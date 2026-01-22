@@ -1,6 +1,7 @@
 const Short = require("../models/shortsModel");
 const cloudinary = require("../config/cloudinary");
 const Errorhandler = require("../utils/errorhander");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 // Upload short 
 exports.uploadShort = async (req, res) => {
@@ -71,6 +72,7 @@ exports.getShorts = async (req, res) => {
    
     const shorts = await Short.find()
       .populate("editor", "name email")
+      .populate("comments.user", "name avatar")
       .sort({ createdAt: -1 });
 
     return res.json({ success: true, shorts });
@@ -91,6 +93,7 @@ exports.getMyShorts = async (req, res, next) => {
 
     const shorts = await Short.find({editor: userId})
       .populate("editor", "name email")
+      .populate("comments.user", "name avatar")
       .sort({ createdAt: -1 });
 
     return res.json({ success: true, shorts });
@@ -144,3 +147,63 @@ exports.deleteShort = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message || "Server Error" });
   }
 };
+
+exports.addComment = catchAsyncErrors(async (req, res, next) => {
+
+    const { id: shortsId } = req.params;
+    const { comment } = req.body;
+    const userId = req.user._id;
+
+    if (!comment || !comment.trim()) {
+        return next(new Errorhandler("Comment cannot be empty", 400));
+    }
+
+    const shorts = await Short.findById(shortsId);
+    if (!shorts) {
+        return next(new Errorhandler("shorts not found", 404));
+    }
+
+    const newComment = {
+        user: userId,
+        comment,
+    };
+
+    shorts.comments.push(newComment);
+    await shorts.save();
+
+    res.status(201).json({
+        success: true,
+        message: "Comment added successfully",
+        comment: shorts.comments[shorts.comments.length - 1],
+    });
+});
+
+
+exports.deleteComment = catchAsyncErrors(async (req, res, next) => {
+    const { id: shortsId, commentId } = req.params;
+    const userId = req.user._id;
+
+    const shorts = await Short.findById(shortsId);
+    if (!shorts) {
+        return next(new Errorhandler("Shorts not found", 404));
+    }
+
+    const comment = shorts.comments.id(commentId);
+
+    if (!comment) {
+        return next(new Errorhandler("Comment not found", 404));
+    }
+
+    // allow only owner of comment
+    if (comment.user.toString() !== userId.toString()) {
+        return next(new Errorhandler("You can delete only your own comment", 403));
+    }
+
+    comment.deleteOne(); // mongoose subdocument delete
+    await shorts.save();
+
+    res.status(200).json({
+        success: true,
+        message: "Comment deleted successfully",
+    });
+});

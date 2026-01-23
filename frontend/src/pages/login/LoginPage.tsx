@@ -44,7 +44,7 @@ const LoginPage = () => {
       toast.success("Login Successfull")
       const userRole = response.data.user.role;
       if (userRole === "admin") navigate('/admin/news');
-      else if (userRole === "editor") navigate('/editor/news');
+      // else if (userRole === "editor") navigate('/editor/news');
       else navigate('/home');
 
     } catch (err:any) {

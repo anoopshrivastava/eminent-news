@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Edit2, Mail, MapPin, LogOut, Megaphone } from "lucide-react";
+import { Edit2, Mail, MapPin, LogOut, Megaphone, LayoutDashboard } from "lucide-react";
 import { useDispatch } from "react-redux";
 import {
   signOutFailure,
@@ -172,17 +172,35 @@ const ProfilePage: React.FC = () => {
   const AccountActions = ({ mobile = false }: { mobile?: boolean }) => (
     <div className={`flex ${mobile ? "flex-col gap-3" : "flex-row gap-2"}`}>
       {/* Run My Ads */}
+      {user.role === "editor" || user.role === "admin" ? (
+      <button
+        onClick={() =>
+          navigate(
+            user.role === "admin" ? "/admin/news" : "/editor/news"
+          )
+        }
+        className={`flex items-center gap-2 ${
+          mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
+        } bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg
+        hover:from-rose-600 hover:to-rose-700 transition-all duration-200
+        font-medium shadow-md hover:shadow-lg`}
+      >
+        <LayoutDashboard size={18} />
+        My Dashboard
+      </button>
+    ) : (
       <button
         onClick={() => navigate("/profile/my-ads")}
         className={`flex items-center gap-2 ${
           mobile ? "w-full justify-center px-5 py-3.5" : "px-4 py-2"
         } bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg
-      hover:from-rose-600 hover:to-rose-700 transition-all duration-200
-      font-medium shadow-md hover:shadow-lg`}
+        hover:from-rose-600 hover:to-rose-700 transition-all duration-200
+        font-medium shadow-md hover:shadow-lg`}
       >
         <Megaphone size={18} />
         Run My Ads
       </button>
+    )}
 
       {/* Edit Profile */}
       <button

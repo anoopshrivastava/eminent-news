@@ -59,7 +59,7 @@ const EditorDashboard = () => {
 
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">
-      <div className="flex items-center gap-6 mb-8 pr-10">
+      <div className="flex flex-col md:flex-row items-center gap-6 mb-8 md:pr-10">
         <h1 className="text-3xl font-bold text-black">My News</h1>
 
         <SearchInput
@@ -69,7 +69,7 @@ const EditorDashboard = () => {
           isLoading={loading}
         />
 
-        <div className="flex flex-col w-40 gap-1">
+        <div className="flex flex-col w-full md:w-40 gap-1">
           <select
             id="category"
             className="rounded-lg border p-2 w-full bg-white"
@@ -88,7 +88,7 @@ const EditorDashboard = () => {
         </div>
 
         <button
-          className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-2 rounded-lg hover:opacity-90"
+          className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-2 rounded-lg hover:opacity-90"
           onClick={() => setIsOpen(true)}
         >
           Add News

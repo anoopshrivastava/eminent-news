@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from "@/redux/authSlice/index";
 import toast from "react-hot-toast";
 import api from "@/lib/axios";
+import { PasswordInput } from "@/components/PasswordInput";
 
 
 const LoginPage = () => {
@@ -104,13 +105,12 @@ const LoginPage = () => {
             </div>
             <div className="mb-6">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
+              <PasswordInput
+                name="password"
+                placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg focus:outline-none"
-                placeholder="Enter your password"
+                onChange={(e:any) => setPassword(e.target.value)}
+                className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
             </div>

@@ -11,6 +11,7 @@ import img from "../../assets/loginImg.png";
 import api from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const SignupPage = () => {
   const { role } = useParams();
@@ -175,8 +176,7 @@ const SignupPage = () => {
               />
               </div>
 
-              <Input
-                type="password"
+              <PasswordInput
                 name="password"
                 placeholder="Password"
                 value={formData.password}

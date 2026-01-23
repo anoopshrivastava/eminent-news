@@ -40,30 +40,25 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
     <>
       <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-72 hover:-translate-y-1">
         {/* Image */}
-        <Link to={`/news/${news._id}`} className="relative h-48 overflow-hidden bg-gray-100 mx-2">
-          {/* <img
-            src={news.images?.[0] ?? ""}
-            alt={news.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          /> */}
-           {/* <Link to={`/news/${news._id}`}> */}
-          <ImageCollage images={news.images} title={news.title} />
-        {/* </Link> */}
+        <div className="relative h-48 overflow-hidden bg-gray-100 mx-2">
+    
+    <Link to={`/news/${news._id}`} className="block h-full">
+      <ImageCollage images={news.images} title={news.title} />
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      {/* Gradient overlay (non-interactive) */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+    </Link>
 
-          {/* Delete button */}
-          <div className="absolute top-3 right-3 z-10">
-            <button
-              onClick={handleDelete}
-              className="bg-white/90 backdrop-blur p-2 rounded-full text-rose-600 hover:bg-rose-600 hover:text-white transition shadow-md"
-              title="Delete"
-            >
-              <FiTrash size={14} />
-            </button>
-          </div>
-        </Link>
+    {/* ✅ Delete button */}
+      <button
+        onClick={handleDelete}
+        className="absolute top-3 right-3 z-40 bg-white/90 backdrop-blur p-2 rounded-full
+          text-rose-600 hover:bg-rose-600 hover:text-white transition shadow-md"
+        title="Delete"
+      >
+        <FiTrash size={14} />
+      </button>
+    </div>
 
         {/* Content */}
         <div className="px-4 pb-4 pt-3 space-y-1.5">

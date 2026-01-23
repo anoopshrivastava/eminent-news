@@ -20,6 +20,21 @@ export const ImageCollage = ({ images, title }: { images: string[]; title: strin
     );
   }
 
+  if (images.length === 2) {
+    return (
+      <div className="grid grid-cols-2 gap-1 w-full md:h-48 md:w-80 rounded-md overflow-hidden">
+        {images.map((img, idx) => (
+          <img
+            key={idx}
+            src={img}
+            alt={title}
+            className="h-full w-full object-cover"
+          />
+        ))}
+      </div>
+    );
+  }
+
   const displayImages = images.slice(0, 4);
   const remaining = images.length - 4;
 

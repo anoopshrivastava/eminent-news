@@ -11,7 +11,7 @@ const cloudinary = require('../config/cloudinary')
 
 // creating a user --> Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
-  const { name, username, email, password, phone, address, avatar, role, twitterLink, youtubeLink, linkedInLink } = req.body;
+  const { name, username, email, password, phone, address, role, twitterLink, youtubeLink, linkedInLink } = req.body;
 
   if (!["user", "editor"].includes(role)) {
     return next(
@@ -61,16 +61,17 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
     password,
     phone,
     address,
-    avatar: avatar,
+    avatar: null,
     role,
     twitterLink,
     youtubeLink,
-    linkedInLink
+    linkedInLink,
   });
 
   if(role === "user"){
     sendToken(user, 201, res);
   }
+  res.status(201).json({message:"Signup Successfull"})
 });
 
 // user login

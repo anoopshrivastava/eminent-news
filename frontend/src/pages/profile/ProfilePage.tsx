@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 import { Trash2, Lock } from "lucide-react";
 import { deleteAccount } from "@/lib/accountAction";
 import { FiLoader } from "react-icons/fi";
+import { Avatar } from "@/components/ui/avatar";
+import type { Editor } from "@/types/news";
 
 type User = {
   _id?: string;
@@ -41,6 +43,10 @@ const ProfilePage: React.FC = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [editors, setEditors] = useState<Editor[]>([]);
+  const [editorsLoading, setEditorsLoading] = useState(false);
+  const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
 
   const handleLogout = async () => {
     try {
@@ -74,6 +80,26 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+   const fetchEditors = async () => {
+    setEditorsLoading(true);
+    try {
+      // Request a small set; change query params as your API supports.
+      const res = await api.get("/editors/suggestion?limit=5&verified=true");
+      const data = res?.data ?? {};
+      const list: Editor[] = data.users ?? data.editors ?? [];
+
+      // If backend already limits/sorts, we'll just take first 5; otherwise sort by createdAt desc
+      const top5 = list.slice().slice(0, 5);
+
+      setEditors(top5);
+    } catch (err) {
+      console.error("Error fetching editors:", err);
+      setEditors([]);
+    } finally {
+      setEditorsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchMe = async () => {
       try {
@@ -103,10 +129,26 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchMe();
+    fetchEditors();
   }, []);
 
   const followersCount = (user?.followers && user.followers.length) || 0;
   const followingCount = (user?.following && user.following.length) || 0;
+
+  const toggleFollow = (editorId: string) => {
+    setFollowingIds((prev) => {
+      const next = { ...prev, [editorId]: !prev[editorId] };
+      toast.success(next[editorId] ? "Followed" : "Unfollowed");
+      return next;
+    });
+  };
+
+  const renderInitials = (name?: string) => {
+    if (!name) return "?";
+    const parts = name.split(" ");
+    const initials = (parts[0]?.[0] || "") + (parts[1]?.[0] || "");
+    return initials.toUpperCase();
+  };
 
   if (loading) {
     return (
@@ -296,6 +338,71 @@ const ProfilePage: React.FC = () => {
       <div className="block md:hidden mt-6">
         <AccountActions mobile />
       </div>
+      {/* ===== Who to follow (shared with HomePage) ===== */}
+      <div className="mt-8">
+        <div className="md:flex md:justify-between md:items-start gap-6">
+          <div className="md:w-2/3">
+            {/* Place for user's posts or other content (left area) - keep your existing content here */}
+          </div>
+
+          <aside className="md:w-1/3 mt-6 md:mt-0">
+            <div className="rounded-lg bg-white shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-lg font-semibold">Follow Suggestions</h4>
+              </div>
+
+              {editorsLoading ? (
+                <p className="text-sm text-gray-500">Loading...</p>
+              ) : editors.length === 0 ? (
+                <p className="text-sm text-gray-500">No suggestions found.</p>
+              ) : (
+                <div className="space-y-3">
+                  {editors.map((ed) => (
+                    <div
+                      key={ed._id}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        {ed.avatar ? (
+                          <Avatar className="w-10 h-10">
+                            <img src={ed.avatar} alt={ed.name} />
+                          </Avatar>
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold">
+                            {renderInitials(ed.name)}
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {ed.name}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            @{ed.username}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleFollow(ed._id)}
+                          className={`px-3 py-1 text-sm rounded-full border font-medium ${
+                            followingIds[ed._id]
+                              ? "bg-[#f40607] text-white border-[#f40607]"
+                              : "text-[#f40607] border-[#f40607] bg-white"
+                          }`}
+                        >
+                          {followingIds[ed._id] ? "Following" : "Follow"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+      {/* ===== end Who to follow ===== */}
     </div>
   );
 };

@@ -40,6 +40,8 @@ router.put('/user/:id/follow', isAuthenticatedUser, followUser);
 router.get('/admin/users',isAuthenticatedUser,authorizeRoles("admin"),getAllUser)
 router.get('/admin/editors',isAuthenticatedUser,authorizeRoles("admin"),getAllEditor)
 
+router.get('/editors/suggestion',isAuthenticatedUser,getAllEditor)
+
 // for getting single user,updating role & deleting user by admin -->
 router.route('/admin/user/:id')
 .get(isAuthenticatedUser,authorizeRoles("admin"),getSingleUser)   // for getting single user

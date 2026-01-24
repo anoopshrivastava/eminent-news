@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const uploadVideo = require("../middleware/videoUpload");
 const {
   uploadVideo: uploadVideoController,
   getVideos,
@@ -14,7 +13,7 @@ const {
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
-router.post("/videos/upload",isAuthenticatedUser,authorizeRoles("editor", "admin"),uploadVideo.single("video"),  uploadVideoController);
+router.post("/videos/upload",isAuthenticatedUser,authorizeRoles("editor", "admin"),uploadVideoController);
 
 router.get("/videos", getVideos);
 router.get("/my-videos", isAuthenticatedUser, getMyVideos);

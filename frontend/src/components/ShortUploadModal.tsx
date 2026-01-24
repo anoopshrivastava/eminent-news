@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +19,11 @@ const MAX_BYTES = 50 * 1024 * 1024;
 type Props = {
   onUploaded: () => void;
 };
+
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`;
 
 export default function ShortUploadModal({ onUploaded }: Props) {
   const [open, setOpen] = useState(false);
@@ -26,45 +38,77 @@ export default function ShortUploadModal({ onUploaded }: Props) {
     setError(null);
     const f = e.target.files?.[0] ?? null;
     if (!f) return setFile(null);
-    if (!f.type.startsWith("video/")) return setError("Please select a video file.");
+    if (!f.type.startsWith("video/"))
+      return setError("Please select a video file.");
     if (f.size > MAX_BYTES) return setError("File too large. Max 50 MB.");
     setFile(f);
   }
 
   async function handleSubmit() {
     setError(null);
+
     if (!file) return setError("Choose a video file.");
     if (!title.trim()) return setError("Title is required.");
-
-    const form = new FormData();
-    form.append("video", file);
-    form.append("title", title);
-    form.append("description", description);
 
     try {
       setUploading(true);
       setProgress(0);
-      await api.post("/shorts/upload", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-        onUploadProgress: (evt) => {
-          const pct = Math.round((evt.loaded * 100) / (evt.total ?? 1));
-          setProgress(pct);
-        },
-      });
 
-      // success
-      setTitle("");
-      setDescription("");
-      setFile(null);
-      setOpen(false);
-      onUploaded();
+      // 1️⃣ Upload to Cloudinary
+      const cloudForm = new FormData();
+      cloudForm.append("file", file);
+      cloudForm.append("upload_preset", UPLOAD_PRESET);
+      cloudForm.append("folder", "shorts");
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", CLOUDINARY_URL);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          setProgress(Math.round((e.loaded * 100) / e.total));
+        }
+      };
+
+      xhr.onload = async () => {
+        const cloudData = JSON.parse(xhr.responseText);
+
+        if (!cloudData.secure_url) {
+          setError("Cloudinary upload failed");
+          setUploading(false);
+          return;
+        }
+
+        // 2️⃣ Send metadata to backend
+        await api.post("/shorts/upload", {
+          title,
+          description,
+          videoUrl: cloudData.secure_url,
+          publicId: cloudData.public_id,
+          duration: cloudData.duration,
+          videoMimeType: file.type,
+          thumbnail: cloudData.secure_url.replace(".mp4", ".jpg"),
+        });
+
+        // success
+        setTitle("");
+        setDescription("");
+        setFile(null);
+        setOpen(false);
+        onUploaded();
+        setUploading(false);
+        setProgress(0);
+      };
+
+      xhr.onerror = () => {
+        setError("Upload failed");
+        setUploading(false);
+      };
+
+      xhr.send(cloudForm);
     } catch (err: any) {
       console.error(err);
-      const msg = err?.response?.data?.message || err.message || "Upload failed";
-      setError(msg);
-    } finally {
+      setError(err.message || "Upload failed");
       setUploading(false);
-      setProgress(0);
     }
   }
 
@@ -115,7 +159,11 @@ export default function ShortUploadModal({ onUploaded }: Props) {
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={uploading}>
+          <Button
+            variant="ghost"
+            onClick={() => setOpen(false)}
+            disabled={uploading}
+          >
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={uploading}>

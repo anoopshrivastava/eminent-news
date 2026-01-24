@@ -6,7 +6,16 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 // Upload short 
 exports.uploadShort = async (req, res) => {
   try {
-    const { title, description = "" } = req.body;
+    const {
+      title,
+      description = "",
+      videoUrl,
+      publicId,
+      duration,
+      videoMimeType = "video/mp4",
+      thumbnail = "",
+    } = req.body;
+
     const editor = req.user?.id;
     const role = req.user?.role;
 
@@ -14,56 +23,47 @@ exports.uploadShort = async (req, res) => {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    if(!role || !role === "editor" || !role === "admin"){
-      return res.status(401).json({success:false, message: "only editor or admin can upload shorts video."})
+
+    if (!["editor", "admin"].includes(role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Only editor or admin can upload shorts",
+      });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "Video is required." });
+    if (!videoUrl) {
+      return res.status(400).json({
+        success: false,
+        message: "Video URL is required",
+      });
     }
 
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "video",
-        folder: "shorts",
-        transformation: [{ quality: "auto" }],   // compression
-        eager: [
-          { width: 720, height: 1280, crop: "limit", format: "mp4", quality: "auto" },
-          { width: 480, height: 854, crop: "limit", format: "mp4", quality: "auto" }
-        ],
-        eager_async: true,
-      },
-      async (error, result) => {
-        if (error) {
-          console.error("Cloudinary error", error);
-          return res.status(500).json({ success: false, message: "Cloudinary upload error" });
-        }
+    const short = await Short.create({
+      title,
+      description,
+      videoUrl,
+      publicId,
+      duration,
+      videoMimeType,
+      thumbnail,
+      editor,
+    });
 
-        const short = await Short.create({
-          title,
-          description,
-          videoUrl: result.secure_url,
-          publicId: result.public_id,
-          videoMimeType: req.file.mimetype,
-          editor,
-        });
-
-        return res.json({
-          success: true,
-          message: "Short uploaded successfully!",
-          short,
-        });
-      }
-    );
-
-    // Use buffer instead of path
-    uploadStream.end(req.file.buffer);
+    res.status(201).json({
+      success: true,
+      message: "Short uploaded successfully!",
+      short,
+    });
 
   } catch (error) {
     console.error("uploadShort error:", error);
-    return res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
+    });
   }
 };
+
 
 
 // Get all shorts 
@@ -107,7 +107,7 @@ exports.getMyShorts = async (req, res, next) => {
 exports.deleteShort = async (req, res) => {
   try {
     const id = req.params.id;
-    const userId = req.user && req.user_.id;
+    const userId = req.user && req.user.id;
 
     if (!userId) {
       return res.status(401).json({ success: false, message: "Unauthorized" });

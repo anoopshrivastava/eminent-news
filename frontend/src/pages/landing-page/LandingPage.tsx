@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/TEN-TM-LOGO (1).png";
 // import mobile from "@/assets/landing-page/1.png";
 import img1 from "@/assets/img1.jpeg";
 import mobile1 from "@/assets/landing-page/2.png";

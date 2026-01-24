@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const uploadVideo = require("../middleware/videoUpload");
+
 const { uploadShort, getShorts, deleteShort, getMyShorts, addComment, deleteComment } = require("../controllers/shortController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 
-router.post("/shorts/upload", isAuthenticatedUser, authorizeRoles("editor","admin"), uploadVideo.single("video"), uploadShort);
+router.post("/shorts/upload", isAuthenticatedUser, authorizeRoles("editor","admin"), uploadShort);
 
 // Get all shorts (public)
 router.get("/shorts", getShorts);

@@ -32,6 +32,11 @@ const getVideoDuration = (file: File): Promise<number> => {
   });
 };
 
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`;
+
 
 export default function VideoUploadModal({ onUploaded }: Props) {
   const [open, setOpen] = useState(false);
@@ -92,31 +97,64 @@ const handleUpload = async () => {
 
     const duration = await getVideoDuration(videoFile);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("video", videoFile);
-    formData.append("duration", Math.round(duration).toString());
+    if (duration > MAX_DURATION) {
+      toast.error("Video must be 3 minutes or less");
+      return;
+    }
 
-    await api.post("/videos/upload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    // 1️⃣ Upload to Cloudinary
+    const cloudForm = new FormData();
+    cloudForm.append("file", videoFile);
+    cloudForm.append("upload_preset", UPLOAD_PRESET);
+    cloudForm.append("folder", "videos");
 
-    toast.success("Video uploaded successfully!");
-    setOpen(false);
-    setTitle("");
-    setDescription("");
-    setVideoFile(null);
-    onUploaded?.();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", CLOUDINARY_URL);
+
+    xhr.onload = async () => {
+      const cloudData = JSON.parse(xhr.responseText);
+
+      if (!cloudData.secure_url) {
+        toast.error("Cloudinary upload failed");
+        setLoading(false);
+        return;
+      }
+
+      // 2️⃣ Save metadata in backend
+      await api.post("/videos/upload", {
+        title,
+        description,
+        videoUrl: cloudData.secure_url,
+        publicId: cloudData.public_id,
+        duration: Math.round(duration),
+        videoMimeType: videoFile.type,
+        thumbnail: cloudData.secure_url.replace(".mp4", ".jpg"),
+        size: videoFile.size,
+      });
+
+      toast.success("Video uploaded successfully!");
+      setOpen(false);
+      setTitle("");
+      setDescription("");
+      setVideoFile(null);
+      onUploaded?.();
+      setLoading(false);
+    };
+
+    xhr.onerror = () => {
+      toast.error("Upload failed");
+      setLoading(false);
+    };
+
+    xhr.send(cloudForm);
+
   } catch (err: any) {
     console.error(err);
-    toast.error(
-      err?.response?.data?.message || err.message || "Upload failed"
-    );
-  } finally {
+    toast.error(err?.response?.data?.message || "Upload failed");
     setLoading(false);
   }
 };
+
 
 
   return (

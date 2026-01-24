@@ -145,7 +145,7 @@ const SignupPage = () => {
                 required
               />
              
-              <Input
+              {role === "editor" && <Input
                 type="text"
                 name="linkedInLink"
                 placeholder="LinkedIn Url"
@@ -154,9 +154,10 @@ const SignupPage = () => {
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+              }
               </div> 
               <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
-              <Input
+              {role === "editor" &&  <Input
                 type="text"
                 name="youtubeLink"
                 placeholder="Youtube Url"
@@ -164,8 +165,8 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
-              />
-              <Input
+              />}
+              {role === "editor" && <Input
                 type="text"
                 name="twitterLink"
                 placeholder="Twitter Link"
@@ -173,7 +174,7 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
-              />
+              />}
               </div>
 
               <PasswordInput

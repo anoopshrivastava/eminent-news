@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/logo-white.png";
+import logo from "../assets/white-ten.png";
 import { Input } from "./ui/input";
 import { Search, Menu} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -111,7 +111,7 @@ const handleSearch = () => {
                 <img src={logo} alt="" className="h-7 md:h-9" />
               </Link>
 
-              <div className="flex flex-col text-white -ml-1 md:ml-0 border-l-2 border-white pl-2 md:pl-3">
+              <div className="hidden md:flex flex-col text-white -ml-1 md:ml-0 border-l-2 border-white pl-2 md:pl-3">
                 <h3 className="text-[16px] md:text-3xl font-bold">
                   The Eminent News
                 </h3>

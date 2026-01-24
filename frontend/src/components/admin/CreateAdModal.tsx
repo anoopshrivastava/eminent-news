@@ -12,6 +12,11 @@ interface props {
   setAds?: React.Dispatch<React.SetStateAction<Ads[]>>;
 }
 
+const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
+const ADS_VIDEO_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
+
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`;
+
 function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
   const [formData, setFormData] = useState({
     title: "",
@@ -71,7 +76,6 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
   };
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
     if (formData.category !== "VideoShorts") return;
     const MAX_SIZE_MB = 150;
 
@@ -97,57 +101,89 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     setError(null);
 
     try {
-      const data = new FormData();
+      let videoUrl = "";
+      let videoPublicId = "";
 
-      data.append("title", formData.title);
-      data.append("description", formData.description);
-      data.append("category", formData.category);
-      data.append("url", formData.url);
+      // 🔹 VIDEO SHORTS → Cloudinary
+      if (formData.category === "VideoShorts") {
+        if (!videoFile) {
+          toast.error("Please select a video");
+          return;
+        }
 
-      if (formData.category === "VideoShorts" && videoFile) {
-        data.append("video", videoFile);
+        const cloudForm = new FormData();
+        cloudForm.append("file", videoFile);
+        cloudForm.append("upload_preset", ADS_VIDEO_PRESET);
+        cloudForm.append("folder", "ads/videos");
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", CLOUDINARY_URL);
+
+        xhr.onload = async () => {
+          const cloudData = JSON.parse(xhr.responseText);
+
+          if (!cloudData.secure_url) {
+            toast.error("Video upload failed");
+            setLoading(false);
+            return;
+          }
+
+          videoUrl = cloudData.secure_url;
+          videoPublicId = cloudData.public_id;
+
+          await createAd(videoUrl, videoPublicId);
+        };
+
+        xhr.onerror = () => {
+          toast.error("Video upload failed");
+          setLoading(false);
+        };
+
+        xhr.send(cloudForm);
       } else {
-        images.forEach((img) => data.append("images", img));
+        // 🔹 IMAGE ADS
+        await createAd();
       }
-
-      const response = await api.post("/ads/create", data, {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      const resData = response?.data ?? {};
-      if (resData.success === false) {
-        toast.error("Error creating ads item");
-        setError(resData.message ?? "Error creating ads");
-        return;
-      }
-
-      toast.success("Ads Added Successfully");
-
-      if (fetchAds) await fetchAds();
-      else if (setAds && resData.ads) {
-        // if API returns created item(s)
-        setAds((prev) => [resData.ads, ...prev]);
-      }
-
-      setFormData({
-        title: "",
-        description: "",
-        category: "National",
-        url: "",
-      });
-      setImages([]);
-      setIsOpen(false);
     } catch (err: any) {
-      setError(
-        err?.response?.data?.message ??
-          "Failed to create ads. Please try again."
-      );
-      console.error("Error creating ads:", err);
       toast.error("Error creating ads");
-    } finally {
       setLoading(false);
     }
+  };
+
+  const createAd = async (videoUrl?: string, videoPublicId?: string) => {
+    const data = new FormData();
+
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("category", formData.category);
+    data.append("url", formData.url);
+
+    if (videoUrl && videoPublicId) {
+      data.append("videoUrl", videoUrl);
+      data.append("videoPublicId", videoPublicId);
+    } else {
+      images.forEach((img) => data.append("images", img));
+    }
+
+    const response = await api.post("/ads/create", data);
+
+    toast.success("Ads Added Successfully");
+
+    if (fetchAds) await fetchAds();
+    else if (setAds && response.data.ads) {
+      setAds((prev) => [response.data.ads, ...prev]);
+    }
+
+    setFormData({
+      title: "",
+      description: "",
+      category: "Banner",
+      url: "",
+    });
+    setImages([]);
+    setVideoFile(null);
+    setIsOpen(false);
+    setLoading(false);
   };
 
   useEffect(() => {

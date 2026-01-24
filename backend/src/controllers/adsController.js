@@ -44,25 +44,20 @@ const uploadVideo = (buffer) =>
   });
 
 exports.createAds = catchAsyncError(async (req, res) => {
-  const { title, description, category, url } = req.body;
+  const { title, description, category, url, videoUrl, videoPublicId } =
+    req.body;
 
   let imageUploads = [];
   let video = null;
 
-  // 🔹 VIDEO AD
+  // 🔹 VIDEO ADS (metadata only)
   if (category === "VideoShorts") {
-    const videoFile = req.files?.video?.[0];
-
-    if (!videoFile) {
+    if (!videoUrl || !videoPublicId) {
       return res.status(400).json({
         success: false,
         message: "Video is required for video ads",
       });
     }
-
-    const videoRes = await uploadVideo(videoFile.buffer);
-    videoUrl = videoRes.secure_url;
-    videoPublicId = videoRes.public_id;
 
     video = {
       url: videoUrl,
@@ -82,7 +77,7 @@ exports.createAds = catchAsyncError(async (req, res) => {
     }
 
     imageUploads = await Promise.all(
-      (req.files.images || []).map((img) => uploadImage(img.buffer))
+      imageFiles.map((img) => uploadImage(img.buffer))
     );
   }
 
@@ -138,13 +133,17 @@ exports.getMyAds = catchAsyncError(async (req, res) => {
     baseQuery.createdBy = req.user._id || "admin";
   }
 
-  const apiFeaturesForCount = new ApiFeatures(Ads.find(baseQuery), req.query, ["createdBy"])
+  const apiFeaturesForCount = new ApiFeatures(Ads.find(baseQuery), req.query, [
+    "createdBy",
+  ])
     .search()
     .filter();
 
   const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
 
-  const apiFeatures = new ApiFeatures(Ads.find(baseQuery), req.query, ["createdBy"])
+  const apiFeatures = new ApiFeatures(Ads.find(baseQuery), req.query, [
+    "createdBy",
+  ])
     .search() // search function
     .filter() // filter function on category,price,rating
     .sort()

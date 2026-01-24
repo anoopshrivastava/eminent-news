@@ -6,8 +6,7 @@ const { createAds, getAllAds, deleteAds, getMyAds, toggleAdsApproval } = require
 
 // create product --> Admin access
 router.post('/ads/create',isAuthenticatedUser,authorizeRoles("user","editor","admin"),uploadBoth.fields([
-    { name: "images", maxCount: 6 },
-    { name: "video", maxCount: 1 }
+    { name: "images", maxCount: 6 }
 ]),createAds)
 
 // getting all ads for users

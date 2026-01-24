@@ -154,7 +154,7 @@ export default function ReelCard({
     e?.stopPropagation();
 
     try {
-      const url = `${window.location.origin}/shorts/${short._id}`;
+      const url = `${window.location.origin}/shorts`;
       await navigator.clipboard.writeText(url);
       toast.success("Link copied to clipboard!");
     } catch (err) {

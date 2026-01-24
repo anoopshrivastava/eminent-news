@@ -231,7 +231,7 @@ export default function NewsDetail() {
             </Avatar>
             <div>
               <p className="font-semibold">{news.editor?.name}</p>
-              <p className="text-sm text-gray-500">@{news.editor?.name?.split(" ").join("").toLowerCase()}</p>
+              <p className="text-sm text-gray-500">@{news.editor?.username}</p>
             </div>
           </div>
 

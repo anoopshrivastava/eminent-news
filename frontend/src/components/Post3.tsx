@@ -3,7 +3,7 @@ import { Heart, Share2, UserPlus } from "lucide-react";
 import toast from "react-hot-toast";
 import type { News } from "@/types/news";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { FaCommentDots } from "react-icons/fa6";
@@ -25,9 +25,6 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
   const { currentUser } = useSelector((state: any) => state.user);
   const navigate = useNavigate();
-
-  const location = useLocation();
-  const fullPath = location.pathname + location.search;
 
   // try to determine current user and initial liked/followed state
   useEffect(() => {
@@ -120,14 +117,16 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
     }
   };
 
-  const handleShare = async () => {
+    const handleShare = async () => {
     try {
-      await navigator.clipboard.writeText(fullPath);
+      const fullUrl = `${window.location.origin}/news/${news?._id}`;
+      await navigator.clipboard.writeText(fullUrl);
       toast.success("Link copied to clipboard!");
     } catch {
       toast.error("Failed to copy link.");
     }
   };
+
 
   return (
     <div className="flex items-start gap-3 bg-white transition-all overflow-hidden w-full border-b pb-3 last:border-none">

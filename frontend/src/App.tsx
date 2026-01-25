@@ -33,6 +33,8 @@ import VideoDetail from "./pages/videos/VideoDetailPage";
 import Disclaimer from "./pages/disclaimer/Disclaimer";
 import PrivacyPolicy from "./pages/privacy-policy/PrivacyPolicy";
 import TermsAndConditions from "./pages/terms-condition/TermsAndCondition";
+import ForgotPassword from "./pages/forgot-password/ForgotPassword";
+import ResetPassword from "./pages/forgot-password/ResetPassword";
 
 function App() {
   return (
@@ -45,6 +47,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup/:role" element={<SignupPage />} />
         <Route path="/" element={<LandingPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/api/v1/password/reset/:token" element={<ResetPassword />} />
+
 
         {/* <Route element={<PrivateRoute />}> */}
           <Route element={<MainLayout />}>

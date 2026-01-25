@@ -19,7 +19,7 @@ const AdminDashboard: React.FC = () => {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/news?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}`);
+      const response = await api.get(`/news/admin?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}`);
 
       const data = response?.data ?? {};
       if (data.success === true) {
@@ -101,7 +101,7 @@ const AdminDashboard: React.FC = () => {
       ) : (
         <div className="flex flex-wrap items-center gap-8">
           {news.map((item) => (
-            <Card key={item._id} news={item} setNews={setNews} />
+            <Card key={item._id} news={item} setNews={setNews} isAdmin={true}/>
           ))}
         </div>
       )}

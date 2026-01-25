@@ -10,7 +10,7 @@ import {
   FaYoutube,
 } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
-import zoho from "@/assets/zoho.png"
+import arratai from "@/assets/Arattai_logo.png"
 import { useLocation } from "react-router-dom";
 // import { categories } from "@/types/news";
 
@@ -57,9 +57,9 @@ const Footer2: React.FC = () => {
       bg: "bg-red-600",
     },
     {
-      icon: () => <img src={zoho} alt="Zoho Mail" className="w-5 md:w-6 object-contain" />,
-      href: "#",
-      bg: "bg-white",
+      icon: () => <img src={arratai} alt="Arratai" className="w-5 md:w-6 object-contain" />,
+      href: "https://aratt.ai/@eminentnews",
+      bg: "bg-yellow-400",
     }
   ];
 

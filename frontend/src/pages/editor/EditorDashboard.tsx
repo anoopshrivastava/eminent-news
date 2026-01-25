@@ -118,6 +118,7 @@ const EditorDashboard = () => {
               key={news._id || index}
               news={news}
               setNews={setNews}
+              isAdmin={false}
             />
           ))}
         </div>

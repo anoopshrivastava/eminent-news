@@ -6,13 +6,15 @@ import type { News } from "@/types/news";
 import api from "@/lib/axios";
 import { ImageCollage } from "../ImageCollage";
 import { Link } from "react-router-dom";
+import { Switch } from "../ui/switch";
 
 interface NewsCardProps {
   news: News;
   setNews?: React.Dispatch<React.SetStateAction<News[]>>;
+  isAdmin : boolean
 }
 
-const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
+const NewsCard: React.FC<NewsCardProps> = ({ news, setNews, isAdmin }) => {
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
 
   const handleDelete = async () => {
@@ -36,6 +38,25 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
     }
   };
 
+  const handleToggleApprove = async () => {
+    try {
+      const res = await api.put(`/news/${news._id}/approve`);
+
+      if (res.data.success && setNews) {
+        setNews((prev) =>
+          prev.map((a) =>
+            a._id === news._id ? { ...a, isApproved: res.data.isApproved } : a
+          )
+        );
+      }
+
+      toast.success(res.data.isApproved ? "News Approved" : "News Unapproved");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update approval status");
+    }
+  };
+
   return (
     <>
       <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-80 md:w-72 hover:-translate-y-1">
@@ -52,12 +73,25 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews }) => {
     {/* ✅ Delete button */}
       <button
         onClick={handleDelete}
-        className="absolute top-3 right-3 z-40 bg-white/90 backdrop-blur p-2 rounded-full
+        className="absolute top-3 left-3 z-40 bg-white/90 backdrop-blur p-2 rounded-full
           text-rose-600 hover:bg-rose-600 hover:text-white transition shadow-md"
         title="Delete"
       >
         <FiTrash size={14} />
       </button>
+      {isAdmin && (
+              <button
+                onClick={handleToggleApprove}
+                className={`absolute top-3 right-3 z-40 flex items-center justify-center`}
+                title={news.isApproved ? "Unapprove News" : "Approve News"}
+              >
+                  <Switch
+                    checked={news.isApproved}
+                    onCheckedChange={handleToggleApprove}
+                    className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-400"
+                  />
+              </button>
+            )}
     </div>
 
         {/* Content */}

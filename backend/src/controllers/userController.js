@@ -126,9 +126,7 @@ exports.forgotPassword = catchAsyncError(async (req, res, next) => {
   const resetToken = user.getResetPasswordToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/password/reset/${resetToken}`;
+  const resetPasswordUrl = `${process.env.FRONTEND_URL}/api/v1/password/reset/${resetToken}`;
 
   const message = `Your Password reset token is :\n ${resetPasswordUrl}\n\nIf you have not requested this email please ignore it !!`;
 
@@ -320,6 +318,7 @@ exports.getAllUser = catchAsyncError(async (req, res, next) => {
     hasMore: currentPage < totalPages,
   });
 });
+
 exports.getAllEditor = catchAsyncError(async (req, res, next) => {
   const resultPerPage = req?.query?.limit || 20;
   const currentPage = Number(req.query.page) || 1;

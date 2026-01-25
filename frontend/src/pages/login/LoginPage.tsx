@@ -113,6 +113,9 @@ const LoginPage = () => {
                 className="w-full  px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
                 required
               />
+                <Link to="/forgot-password" className="mt-2 text-blue-500 hover:underline">
+                  Forgot Password?
+                </Link>
             </div>
             <button
               type="submit"

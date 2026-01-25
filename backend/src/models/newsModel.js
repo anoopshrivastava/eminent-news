@@ -33,6 +33,10 @@ const newsSchema = new mongoose.Schema({
     category:{
         type:String,
     },
+    isApproved:{
+        type:Boolean,
+        default: true,
+    },
     subCategories:{
         type:[String],
     },

@@ -25,6 +25,7 @@
     editor?: Editor | null;
     createdAt:string
     comments:IComment[]
+    isApproved:boolean;
   }
   export type ICategory = "National" | "World" | "Trending" | "Sports" | "Entertainment" | "Exam Update";
   export const categories = ["National" , "World" , "Trending" , "Sports" , "Entertainment" , "Exam Update"];

@@ -155,7 +155,45 @@ exports.createNews = async (req, res) => {
 //   });
 // });
 
-// for getting all products
+// for getting all news
+exports.getAllApprovedNews = catchAsyncError(async(req,res) =>{
+    
+    const resultPerPage = req?.query?.limit || 20;
+    const currentPage = Number(req.query.page) || 1;
+
+    req.query.isApproved = true;
+
+    if(req?.query?.category === 'all'){
+        req.query.category = { $in: ['National', 'World', 'Sports', 'Trending', 'Entertainment', 'Exam Update'] };
+    }
+
+    const apiFeaturesForCount = new ApiFeatures(News.find(), req.query,['editor'])
+        .search()
+        .filter();
+
+    const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
+
+    const apiFeatures = new ApiFeatures(News.find(),req.query,['editor'])
+    .search()     // search function
+    .filter()     // filter function on category,price,rating
+    .sort() 
+    .pagination(resultPerPage);    // total result to show in 1 page
+
+    // const products = await Product.find();  // now instead of this do below line due to search feature
+    const news = await apiFeatures.query;
+    const totalPages = Math.ceil(totalCount / resultPerPage);
+
+    res.status(200).json({
+        success:true,
+        news,
+        totalCount,
+        totalPages,
+        currentPage,
+        hasMore: currentPage < totalPages
+    });
+})
+
+// for getting all news
 exports.getAllNews = catchAsyncError(async(req,res) =>{
     
     const resultPerPage = req?.query?.limit || 20;
@@ -191,7 +229,7 @@ exports.getAllNews = catchAsyncError(async(req,res) =>{
     });
 })
 
-// get all products of seller
+// get all news of editor
 exports.getEditorNews = catchAsyncError(async (req, res, next) => {
     const { editorId } = req.params;
 
@@ -393,4 +431,26 @@ exports.deleteComment = catchAsyncError(async (req, res, next) => {
         message: "Comment deleted successfully",
     });
 });
+
+exports.toggleNewsApproval = async (req, res) => {
+  const news = await News.findById(req.params.id);
+
+  if (!news) {
+    return res.status(404).json({
+      success: false,
+      message: "News not found",
+    });
+  }
+
+  news.isApproved = !news.isApproved;
+  await news.save();
+
+  res.status(200).json({
+    success: true,
+    isApproved: news.isApproved,
+    message: news.isApproved
+      ? "News approved successfully"
+      : "News unapproved successfully",
+  });
+};
 

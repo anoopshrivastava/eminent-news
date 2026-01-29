@@ -7,7 +7,7 @@ type Props = {
 };
 
 export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
-  const slides = (ads || []).slice(0, 3);
+  const slides = (ads || []).slice(0, 10);
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
@@ -64,19 +64,38 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
             key={post._id}
             className="w-full shrink-0 relative block"
           >
-            <img
+            {/* <img
               src={post?.images?.[0] || "/placeholder.jpg"}
               alt={post.title || "News image"}
-              className="w-full h-64 md:h-[64vh] object-cover object-top"
-            />
+              className="w-full h-64 md:h-[64vh] object-contain"
+            /> */}
+            <div className="relative w-full h-64 md:h-[64vh] overflow-hidden">
+              {/* 🔹 Blurred background */}
+              <img
+                src={post?.images?.[0] || "/placeholder.jpg"}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl"
+              />
+
+              {/* 🔹 Dark overlay to improve contrast */}
+              <div className="absolute inset-0 bg-black/40" />
+
+              {/* 🔹 Foreground sharp image */}
+              <img
+                src={post?.images?.[0] || "/placeholder.jpg"}
+                alt={post.title || "News image"}
+                className="relative z-10 mx-auto w-full h-full object-contain"
+              />
+            </div>
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent p-6 flex flex-col justify-end">
-              <h3 className="text-xl md:text-3xl font-extrabold text-white leading-tight mt-1">
+              {/* <h3 className="text-xl md:text-3xl font-extrabold text-white leading-tight mt-1">
                 {post.title}
               </h3>
               <p className="hidden sm:block text-white/80 mt-2 text-sm md:text-base">
                 {post.description}
-              </p>
+              </p> */}
             </div>
           </div>
         ))}

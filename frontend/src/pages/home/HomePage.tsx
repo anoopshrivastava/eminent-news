@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import img4 from "@/assets/w1.jpeg";
 import HeroCarousel from "./components/HeroCarousel";
 import { Trophy } from "lucide-react";
 import FAQ from "@/components/FAQ";
@@ -13,18 +12,6 @@ import type { Ads } from "@/types/ads";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/avatar";
-
-const featured = {
-  _id: "ddlkfj",
-  title: "Startup Revolutionises Last-Mile Delivery",
-  description:
-    "A local startup has piloted an autonomous delivery network that reduces delivery times and cuts carbon emissions in dense cities.",
-  author: "Rahul Desai",
-  date: "November 9, 2025",
-  images: img4,
-  url: "https://example.com/news/trending/302",
-  likes: 33,
-};
 
 const HomePage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -74,7 +61,7 @@ const HomePage: React.FC = () => {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/ads`);
+      const response = await api.get(`/ads?limit=100`);
 
       const data = response?.data ?? {};
       if (data.success === true) {
@@ -161,6 +148,8 @@ const HomePage: React.FC = () => {
     const initials = (parts[0]?.[0] || "") + (parts[1]?.[0] || "");
     return initials.toUpperCase();
   };
+
+  const featured = groupedNews["trending"][0] ?? groupedNews["national"][0] ?? groupedNews["sports"][0] ?? groupedNews["entertainment"][0]
 
   return (
     <div className="min-h-screen md:py-2">
@@ -261,7 +250,7 @@ const HomePage: React.FC = () => {
                                   <img
                                     src={ad.images[0]}
                                     alt="Advertisement"
-                                    className="w-full h-40 object-cover"
+                                    className="w-full h-64 object-cover"
                                   />
                                 </div>
                               );
@@ -284,14 +273,14 @@ const HomePage: React.FC = () => {
                 <div className="mb-6 mt-8">
                   <div className="relative rounded-md overflow-hidden">
                     <img
-                      src={featured.images}
+                      src={featured.images[0]}
                       alt={featured.title}
                       className="w-full h-48 object-cover"
                     />
 
                     {/* Overlay Date + Title */}
                     <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent">
-                      <p className="text-white text-xs mb-1">{featured.date}</p>
+                      <p className="text-white text-xs mb-1">{featured.createdAt.split("T")[0]}</p>
                       <h2 className="text-lg font-semibold text-white leading-snug">
                         {featured.title}
                       </h2>

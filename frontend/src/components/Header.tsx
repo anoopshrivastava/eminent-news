@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../assets/white-ten.png";
+import logo from "../assets/logoTm.png";
 import { Input } from "./ui/input";
 import { Search, Menu} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";

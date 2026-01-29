@@ -6,6 +6,7 @@ import SearchInput from "@/components/SearchInput";
 import Card from "@/components/admin/Card";
 import { categories, type News } from "@/types/news";
 import api from "@/lib/axios";
+import { Pagination } from "@/components/Pagination";
 
 const AdminDashboard: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -14,17 +15,25 @@ const AdminDashboard: React.FC = () => {
   const [search, setSearch] = useState<string>("");
   const [category, setCategory] = useState<string>("all");
 
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
   const debouncedSearch = useDebounce(search, 500);
 
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/news/admin?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}`);
+      const response = await api.get(`/news/admin?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}&page=${page}&limit=${limit}`);
 
       const data = response?.data ?? {};
+      console.log(data)
       if (data.success === true) {
         const list: News[] = data.news ?? data.data ?? [];
         setNews(list);
+        setTotal(data.totalCount);
+        setTotalPages(data.totalPages)
       } else {
         setNews([]);
       }
@@ -39,7 +48,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     fetchNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch, category]);
+  }, [debouncedSearch, category, page, limit]);
 
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">
@@ -105,6 +114,15 @@ const AdminDashboard: React.FC = () => {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={limit}
+        onLimitChange={(val: number) => setLimit(val)}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };

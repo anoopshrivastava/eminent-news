@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { X, ChevronDown, ChevronUp, ArrowRight, Trash2, Megaphone } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../assets/logoTmRed.png";
 import { categories, subCategoriesMap } from "@/types/news";
 import { User, Lock } from "lucide-react";
 import { deleteAccount } from "@/lib/accountAction";
@@ -54,7 +54,7 @@ const handleDeleteAccount = async () => {
         </div>
 
         {/* Menu Links */}
-        <nav className="flex flex-col gap-4 text-lg font-semibold">
+        <nav className="flex flex-col gap-4 text-lg md:text-base font-semibold">
           <span 
             onClick={()=>{
               onClose();
@@ -90,7 +90,7 @@ const handleDeleteAccount = async () => {
 
                 {/* Subcategories */}
                 {isOpen && (
-                  <div className="ml-3 mt-2 flex flex-col gap-3 text-base font-medium text-gray-700">
+                  <div className="ml-3 mt-2 flex flex-col gap-3 text-base md:text-sm font-medium text-gray-700">
                     {subCategoriesMap[category].map((sub) => (
                       <Link
                         key={sub}

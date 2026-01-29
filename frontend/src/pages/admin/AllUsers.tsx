@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
 import api from "@/lib/axios";
+import { Pagination } from "@/components/Pagination";
 // import UpdateUserModal from "./UpdateUserModal"; // ensure correct import
 
 // ---------- TYPES ----------
@@ -13,14 +14,16 @@ export interface User {
   username: string;
   email: string;
   phone: string;
-  followers:string[];
-  following:string[];
+  followers: string[];
+  following: string[];
   createdAt: string;
 }
 
 interface FetchUsersResponse {
   success: boolean;
   users: User[];
+  totalResult: number;
+  totalPages: number;
 }
 
 function AllUsers() {
@@ -30,16 +33,25 @@ function AllUsers() {
   // const [editingEditor, setEditingEditor] = useState<Editor | null>(null);
   const [search, setSearch] = useState<string>("");
 
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
   const debouncedSearch = useDebounce(search, 500);
 
   // ---------- FETCH EDITORS ----------
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await api.get<FetchUsersResponse>(`/admin/users?searchKey=${search}`);
+      const response = await api.get<FetchUsersResponse>(
+        `/admin/users?searchKey=${search}&page=${page}&limit=${limit}`
+      );
 
       if (response.data?.success) {
         setUsers(response.data.users);
+        setTotal(response.data.totalResult);
+        setTotalPages(response.data.totalPages);
       }
     } catch (error) {
       console.error("Error fetching Users:", error);
@@ -71,7 +83,7 @@ function AllUsers() {
 
   useEffect(() => {
     fetchUsers();
-  }, [debouncedSearch]);
+  }, [debouncedSearch, page, limit]);
 
   return (
     <div className="flex-1 flex-col min-h-screen">
@@ -175,6 +187,15 @@ function AllUsers() {
           onUpdate={fetchEditors}
         />
       )} */}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={limit}
+        onLimitChange={(val: number) => setLimit(val)}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 }

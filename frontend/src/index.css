@@ -113,3 +113,9 @@ iframe[src*="googleusercontent"] {
 input, textarea{
   background-color: #ffffff;
 }
+
+.ProseMirror {
+  min-height: 160px;
+  outline: none;
+}
+

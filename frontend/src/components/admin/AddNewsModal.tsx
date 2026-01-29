@@ -4,6 +4,9 @@ import toast from "react-hot-toast";
 import { categories, subCategoriesMap, type News } from "@/types/news";
 import { compressFile } from "@/lib/compression";
 import api from "@/lib/axios";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+
 
 interface AddNewsModalProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,6 +39,17 @@ function AddNewsModal({
 
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  const editor = useEditor({
+  extensions: [StarterKit],
+  content: formData.description,
+  onUpdate: ({ editor }) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: editor.getHTML(),
+    }));
+  },
+});
 
   // reset subCategories when category changes (extra safety)
   useEffect(() => {
@@ -294,7 +308,7 @@ function AddNewsModal({
         </div>
         {/* </div> */}
 
-        <label htmlFor="description">Description</label>
+        {/* <label htmlFor="description">Description</label>
         <textarea
           name="description"
           placeholder="Description"
@@ -303,7 +317,16 @@ function AddNewsModal({
           value={formData.description}
           onChange={handleChange}
           required
-        />
+        /> */}
+        <label>Description</label>
+        <div className="border rounded-lg bg-white">
+          <EditorContent
+            editor={editor}
+            className="min-h-[160px] p-2"
+          />
+        </div>
+
+
 
         <label htmlFor="videoUrl2">Video Url</label>
         <input

@@ -158,7 +158,7 @@ exports.createNews = async (req, res) => {
 // for getting all news
 exports.getAllApprovedNews = catchAsyncError(async(req,res) =>{
     
-    const resultPerPage = req?.query?.limit || 20;
+    const resultPerPage = req?.query?.limit || 10;
     const currentPage = Number(req.query.page) || 1;
 
     req.query.isApproved = true;
@@ -232,6 +232,8 @@ exports.getAllNews = catchAsyncError(async(req,res) =>{
 // get all news of editor
 exports.getEditorNews = catchAsyncError(async (req, res, next) => {
     const { editorId } = req.params;
+    const resultPerPage = req?.query?.limit || 20;
+    const currentPage = Number(req.query.page) || 1;
 
     if (!editorId) {
         return next(new Errorhandler("editor ID is required", 400));
@@ -241,19 +243,28 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
         req.query.category = { $in: ['National', 'World', 'Sports', 'Trending', 'Entertainment', 'Exam Update'] };
     }
 
-    const newsCount = await News.countDocuments({ editor: editorId });
+    const apiFeaturesForCount = new ApiFeatures(News.find({ editor: editorId }), req.query,['editor'])
+        .search()
+        .filter();
+
+    const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
 
     const apiFeatures = new ApiFeatures(News.find({ editor: editorId }), req.query,['editor'])
         .search()    // Apply search function
         .filter()   // Apply filters (category, price, rating)
         .sort() 
+        .pagination(resultPerPage);
 
     const news = await apiFeatures.query;
+    const totalPages = Math.ceil(totalCount / resultPerPage);
 
     res.status(200).json({
         success: true,
         news,
-        newsCount
+        totalCount,
+        totalPages,
+        currentPage,
+        hasMore: currentPage < totalPages
     });
 });
 

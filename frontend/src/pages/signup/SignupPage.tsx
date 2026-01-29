@@ -91,7 +91,7 @@ const SignupPage = () => {
             {role === "editor" ? "Editor Signup" : "User Signup"}
           </h2>
           <form onSubmit={handleSubmit}>
-            <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
+            <div className={`flex flex-col md:flex-row gap-2`}>
               <Input
                 type="text"
                 name="name"
@@ -112,7 +112,7 @@ const SignupPage = () => {
               />
               </div>
 
-              <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
+              <div className={`flex flex-col md:flex-row gap-2`}>
               <Input
                 type="number"
                 name="phone"
@@ -134,7 +134,7 @@ const SignupPage = () => {
                 required
               />
               </div>
-               <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
+               <div className={`flex flex-col md:flex-row gap-2`}>
               <Input
                 type="text"
                 name="address"
@@ -145,36 +145,36 @@ const SignupPage = () => {
                 required
               />
              
-              {role === "editor" && <Input
+              <Input
                 type="text"
                 name="linkedInLink"
-                placeholder="LinkedIn Url"
+                placeholder={role === "editor" ? "LinkedIn Url" : "LinkedIn Url (optional)"}
                 value={formData.linkedInLink}
                 onChange={handleChange}
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                required
+                required={role === "editor" ? true : false}
               />
-              }
+              
               </div> 
-              <div className={`flex flex-col ${role === "editor" && "md:flex-row"} gap-2`}>
-              {role === "editor" &&  <Input
+              <div className={`flex flex-col md:flex-row gap-2`}>
+              <Input
                 type="text"
                 name="youtubeLink"
-                placeholder="Youtube Url"
+                placeholder={role === "editor" ? "Youtube Url" : "Youtube Url (optional)"}
                 value={formData.youtubeLink}
                 onChange={handleChange}
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                required
-              />}
-              {role === "editor" && <Input
+                required={role === "editor" ? true : false}
+              />
+              <Input
                 type="text"
                 name="twitterLink"
-                placeholder="Twitter Link"
+                placeholder={role === "editor" ? "Twitter Link" : "Twitter Link (optional)"}
                 value={formData.twitterLink}
                 onChange={handleChange}
                 className="w-full px-3 py-2 text-gray-700 border bg-transparent rounded-lg mb-3 focus:outline-none"
-                required
-              />}
+                required={role === "editor" ? true : false}
+              />
               </div>
 
               <PasswordInput

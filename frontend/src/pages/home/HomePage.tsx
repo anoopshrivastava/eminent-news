@@ -40,11 +40,15 @@ const HomePage: React.FC = () => {
     world: News[];
     trending: News[];
     sports: News[];
+    entertainment: News[]
+    // examupdates: News[]
   }>({
     national: [],
     world: [],
     trending: [],
     sports: [],
+    entertainment: []
+    // examupdates: []
   });
 
   const fetchNews = async () => {

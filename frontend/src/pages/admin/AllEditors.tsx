@@ -5,6 +5,7 @@ import SearchInput from "../../components/SearchInput";
 import useDebounce from "@/lib/useDebounce";
 import api from "@/lib/axios";
 import SocialLinkCell from "./SocialLinkCell";
+import { Pagination } from "@/components/Pagination";
 
 // ---------- TYPES ----------
 export interface Editor {
@@ -25,6 +26,8 @@ export interface Editor {
 interface FetchEditorsResponse {
   success: boolean;
   users: Editor[];
+  totalResult: number;
+  totalPages: number;
 }
 
 function AllEditors() {
@@ -35,16 +38,23 @@ function AllEditors() {
 
   const debouncedSearch = useDebounce(search, 500);
 
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
   // ---------- FETCH EDITORS ----------
   const fetchEditors = async () => {
     setLoading(true);
     try {
       const response = await api.get<FetchEditorsResponse>(
-        `/admin/editors?searchKey=${search}`
+        `/admin/editors?searchKey=${search}&page=${page}&limit=${limit}`
       );
 
       if (response.data?.success) {
         setEditors(response.data.users);
+        setTotal(response.data.totalResult);
+        setTotalPages(response.data.totalPages);
       }
     } catch (error) {
       console.error("Error fetching editors:", error);
@@ -96,7 +106,7 @@ function AllEditors() {
 
   useEffect(() => {
     fetchEditors();
-  }, [debouncedSearch]);
+  }, [debouncedSearch, page, limit]);
 
   return (
     <div className="flex-1 flex-col min-h-screen">
@@ -230,6 +240,15 @@ function AllEditors() {
           </table>
         </div>
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={limit}
+        onLimitChange={(val: number) => setLimit(val)}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 }

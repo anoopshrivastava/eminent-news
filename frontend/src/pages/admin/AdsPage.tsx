@@ -5,6 +5,7 @@ import { categories, type Ads } from "@/types/ads";
 import AdsCard from "@/components/admin/AdsCard";
 import CreateAdModal from "@/components/admin/CreateAdModal";
 import { useSelector } from "react-redux";
+import { Pagination } from "@/components/Pagination";
 
 const AdsPage: React.FC = () => {
   const [ads, setAds] = useState<Ads[]>([]);
@@ -15,17 +16,24 @@ const AdsPage: React.FC = () => {
   const { currentUser } = useSelector((state: any) => state.user);
   const isAdmin = currentUser?.role === "admin";
 
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+
   const fetchAds = async () => {
     setLoading(true);
     try {
       const response = await api.get(
-        `/my-ads?category=${encodeURIComponent(category)}`
+        `/my-ads?category=${encodeURIComponent(category)}&page=${page}&limit=${limit}`
       );
 
       const data = response?.data ?? {};
       if (data.success === true) {
         const list: Ads[] = data.ads ?? data.data ?? [];
         setAds(list);
+        setTotalPages(data.totalPages)
+        setTotal(data.totalCount)
       } else {
         setAds([]);
       }
@@ -39,7 +47,7 @@ const AdsPage: React.FC = () => {
 
   useEffect(() => {
     fetchAds();
-  }, [category]);
+  }, [category, page, limit]);
 
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">
@@ -100,6 +108,15 @@ const AdsPage: React.FC = () => {
           ))}
         </div>
       )}
+
+      <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={total}
+              pageSize={limit}
+              onLimitChange={(val: number) => setLimit(val)}
+              onPageChange={(p) => setPage(p)}
+            />
     </div>
   );
 };

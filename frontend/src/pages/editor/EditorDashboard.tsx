@@ -8,6 +8,7 @@ import useDebounce from "@/lib/useDebounce";
 import AddNewsModal from "@/components/admin/AddNewsModal";
 import { categories, type News } from "@/types/news";
 import api from "@/lib/axios";
+import { Pagination } from "@/components/Pagination";
 
 const EditorDashboard = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -18,6 +19,11 @@ const EditorDashboard = () => {
 
   const debouncedSearch = useDebounce(search, 500);
   const navigate = useNavigate();
+
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const currentUser = useSelector((state: any) => state.user.currentUser);
 
@@ -35,12 +41,16 @@ const EditorDashboard = () => {
 
     setLoading(true);
     try {
-      const response = await api.get(`/editor/news/${editorId}?searchKey=${debouncedSearch}&category=${category}`);
+      const response = await api.get(
+        `/editor/news/${editorId}?searchKey=${debouncedSearch}&category=${category}&page=${page}&limit=${limit}`
+      );
 
       const data = response?.data ?? {};
       if (data.success === true) {
         const list: News[] = data.news ?? data.data ?? [];
         setNews(list);
+        setTotal(data.totalCount);
+        setTotalPages(data.totalPages);
       } else {
         setNews([]);
       }
@@ -123,6 +133,15 @@ const EditorDashboard = () => {
           ))}
         </div>
       )}
+
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={total}
+        pageSize={limit}
+        onLimitChange={(val: number) => setLimit(val)}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };

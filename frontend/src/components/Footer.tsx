@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {  Rss } from "lucide-react";
-import logo from "../assets/logo-white.png";
+import logo from "../assets/logoTm.png";
 import {
   FaXTwitter,
   FaTelegram,

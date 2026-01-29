@@ -236,9 +236,13 @@ export default function NewsDetail() {
           </div>
 
           {/* Description */}
-          <p className="text-gray-700 leading-relaxed text-sm">
+          {/* <p className="text-gray-700 leading-relaxed text-sm">
             {news.description}
-          </p>
+          </p> */}
+          <div
+            className="prose max-w-none"
+            dangerouslySetInnerHTML={{ __html: news.description }}
+          />
 
           {/* Buttons */}
           <div className="flex gap-2 mt-4">

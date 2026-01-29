@@ -12,6 +12,32 @@ interface props {
   setAds?: React.Dispatch<React.SetStateAction<Ads[]>>;
 }
 
+const ADS_INFO: Record<
+  string,
+  {
+    placement: string;
+    spec: string;
+  }
+> = {
+  Banner: {
+    placement: "Shown at the top of the homepage in the sliders.",
+    spec: "Recommended image ratio: 16:9 (e.g. 1200×675). Image only.",
+  },
+  Highlights: {
+    placement: "Shown between news highlights on the homepage in desktop.",
+    spec: "Recommended image ratio: 16:9 (e.g. 1200×675). Image only.",
+  },
+  FullPageShorts:{
+    placement: "Appears in shorts section as full page ad.",
+    spec: "Recommended image ratio: 9:16 (vertical). Image only.",
+  },
+  VideoShorts: {
+    placement: "Appears in shorts section.",
+    spec: "Video only. Recommended ratio: 9:16 (vertical). Max 3 minutes.",
+  },
+};
+
+
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 const ADS_VIDEO_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
 
@@ -191,11 +217,13 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     setVideoFile(null);
   }, [formData.category]);
 
+  const currentAdInfo = ADS_INFO[formData.category];
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 ">
       <form
         onSubmit={handleCreatePost}
-        className="bg-white p-6 rounded-lg shadow-lg w-[95%] md:w-[450px]"
+        className="bg-white p-6 rounded-lg shadow-lg w-[95%] md:w-[450px] max-h-[95%] overflow-y-scroll"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-rose-600">
@@ -246,6 +274,17 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
             </select>
           </div>
         </div>
+
+        {currentAdInfo && (
+          <div className="mt-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+            <p className="font-semibold mb-1">📍 Where this ad will appear</p>
+            <p className="mb-2">{currentAdInfo.placement}</p>
+
+            <p className="font-semibold mb-1">📐 Upload guidelines</p>
+            <p>{currentAdInfo.spec}</p>
+          </div>
+        )}
+
 
         <label htmlFor="description">Description (optional)</label>
         <textarea

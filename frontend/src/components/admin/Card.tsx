@@ -7,6 +7,7 @@ import api from "@/lib/axios";
 import { ImageCollage } from "../ImageCollage";
 import { Link } from "react-router-dom";
 import { Switch } from "../ui/switch";
+import { htmlToPlainText } from "@/lib/htmlToText";
 
 interface NewsCardProps {
   news: News;
@@ -101,7 +102,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, setNews, isAdmin }) => {
           </h3>
 
           <p className="text-sm text-gray-600 line-clamp-1">
-            {news.description}
+             {htmlToPlainText(news.description)}
           </p>
 
           <div className="flex items-center justify-between pt-2 text-xs text-gray-500">

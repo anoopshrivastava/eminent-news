@@ -11,6 +11,7 @@ import { Badge } from "./ui/badge";
 import { ImageCollage } from "./ImageCollage";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import profile from "@/assets/profile.webp"
+import { htmlToPlainText } from "@/lib/htmlToText";
 
 const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   const newsId = news._id;
@@ -195,7 +196,10 @@ const Post3 = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
         </h3>
 
         <div className="flex-1">
-          <span className="text-sm text-gray-500 ml-1 line-clamp-3">{news.description}</span>
+          <p className="text-sm text-gray-500 ml-1 line-clamp-3">
+            {htmlToPlainText(news.description)}
+          </p>
+          {/* <span className="text-sm text-gray-500 ml-1 line-clamp-3">{news.description}</span> */}
           {/* Read More */}
           <Link
             to={`/news/${news._id}`}

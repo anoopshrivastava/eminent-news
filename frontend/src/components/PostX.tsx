@@ -10,6 +10,7 @@ import { FaCommentDots } from "react-icons/fa6";
 import { ImageCollage } from "./ImageCollage";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import profile from "@/assets/profile.webp"
+import { htmlToPlainText } from "@/lib/htmlToText";
 
 const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
   const newsId = news._id;
@@ -132,7 +133,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       <div className="px-3 pb-3 pt-1">
         {/* Author + Follow */}
         <div className="flex items-center justify-between pb-2 pt-1">
-          <div className="flex gap-1 items-center text-lg md:text-base text-gray-500">
+          <div className="flex gap-1 items-center text-base text-gray-500">
             <Avatar className="h-6 w-6 ">
               <AvatarImage src={news.editor?.avatar || profile } alt={news.editor?.name} className=""/>
             </Avatar>
@@ -173,7 +174,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
 
         {/* Description */}
         <p className="text-gray-600 text-sm md:text-xs line-clamp-2 md:line-clamp-1 leading-[1.1]">
-          {news.description}
+           {htmlToPlainText(news.description)}
         </p>
 
         {/* Like + Share */}

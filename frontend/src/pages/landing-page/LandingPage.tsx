@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import logo from "@/assets/TEN-TM-LOGO (1).png";
+import logo from "@/assets/logoTmRed.png"
 // import mobile from "@/assets/landing-page/1.png";
 import img1 from "@/assets/img1.jpeg";
 import mobile1 from "@/assets/landing-page/2.png";
@@ -95,7 +95,7 @@ const LandingPage: React.FC = () => {
           <img src={logo} alt="ten logo" className="h-8" />
         </div>
 
-        <nav className="flex space-x-8 text-gray-400 text-sm">
+        <nav className="flex space-x-8 text-black text-sm">
           <Link
             to="/home"
             className="hover:text-[#f40607] cursor-pointer hover:underline"
@@ -125,7 +125,7 @@ const LandingPage: React.FC = () => {
               <span className="text-[#f40607]">The Eminent News </span>
             </h1>
 
-            <p className="text-gray-600 max-w-lg text-base leading-relaxed">
+            <p className="text-black max-w-lg text-base leading-relaxed">
               We Provide almost 100% accurate news for everyone Especially Youth
               Aspirants of world.
             </p>
@@ -171,14 +171,14 @@ const LandingPage: React.FC = () => {
             <h3>Your Personal App,</h3>
             <h3>Your Personalised Shorts.</h3>
           </div>
-          <p className="max-w-96 text-lg text-gray-500 mx-auto md:mx-0">
+          <p className="max-w-96 text-lg text-black mx-auto md:mx-0">
             Our AI engine intuitively understands what you like reading.
           </p>
         </div>
         <img src={mobile1} alt="" className="w-60 md:w-64" />
       </section>
 
-      <div className="md:hidden px-4 pb-4 text-center text-lg text-gray-500"> We welcome all UPSC , StatePcs ,SSC ,CGL , CDS, NDA, banking sectors etc Aspirants to join us to Learn ,leap and lead in Life</div>
+      <div className="md:hidden px-4 pb-4 text-center text-lg text-black"> We welcome all UPSC , StatePcs ,SSC ,CGL , CDS, NDA, banking sectors etc Aspirants to join us to Learn ,leap and lead in Life</div>
 
       {/* Slider 2 */}
       <section
@@ -198,7 +198,7 @@ const LandingPage: React.FC = () => {
             <h3>Explore an array of news</h3>
             <h3>categories, all in one place.</h3>
           </div>
-          <p className="max-w-96 text-lg text-gray-500 mx-auto md:mx-0">
+          <p className="max-w-96 text-lg text-black mx-auto md:mx-0">
             Browse categories and see trending news instantly.
           </p>
         </div>
@@ -220,7 +220,7 @@ const LandingPage: React.FC = () => {
             <h3>Your favourite sources in</h3>
             <h3>one app TEN .</h3>
           </div>
-          <p className="max-w-96 text-lg text-gray-500 mx-auto md:mx-0">
+          <p className="max-w-96 text-lg text-black mx-auto md:mx-0">
              Read accurate and detailed analysis of news , done by eminent one with Post, image ,shorts and Video to make you valuable one with right knowledge at right plateform.
           </p>
         </div>
@@ -248,7 +248,7 @@ const LandingPage: React.FC = () => {
           <h3 className="text-2xl border-b border-red-300 text-[#f40607] text-center">
             Shorts, Videos & Detail News
           </h3>
-          <span className="text-gray-500 text-center">
+          <span className="text-black text-center">
             Access to vast News with detail infromation, along with Shorts and
             Videos.
           </span>
@@ -272,7 +272,7 @@ const LandingPage: React.FC = () => {
             <h3 className="text-[#f40607] font-semibold mt-4">
               Loved by Users
             </h3>
-            <p className="text-gray-500">Rating of 4.6 on Playstore</p>
+            <p className="text-black">Rating of 4.6 on Playstore</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
@@ -280,7 +280,7 @@ const LandingPage: React.FC = () => {
             <h3 className="text-[#f40607] font-semibold mt-4">
               Loved by app stores
             </h3>
-            <p className="text-gray-500">Featured by Apple & Google</p>
+            <p className="text-black">Featured by Apple & Google</p>
           </div>
 
           <div className="flex flex-col items-center text-center max-w-xs">
@@ -288,7 +288,7 @@ const LandingPage: React.FC = () => {
             <h3 className="text-[#f40607] font-semibold mt-4">
               Loved by publishers
             </h3>
-            <p className="text-gray-500">30+ global content partners</p>
+            <p className="text-black">30+ global content partners</p>
           </div>
         </div>
       </section>
@@ -310,7 +310,7 @@ const LandingPage: React.FC = () => {
             <h3 className="text-3xl font-bold text-[#f40607] mb-4 text-center">
               Contact Us
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-black mb-6">
               Have feedback or want to partner with us? We'd love to hear from
               you. Reach out using any of the options below.
             </p>
@@ -319,7 +319,7 @@ const LandingPage: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Mail />
                 <div>
-                  <div className="text-sm text-gray-500">Email</div>
+                  <div className="text-sm text-black">Email</div>
                   <a
                     href="mailto:contact@eminentnews.com"
                     className="text-gray-800 font-medium"
@@ -332,7 +332,7 @@ const LandingPage: React.FC = () => {
               <div className="flex items-start gap-3">
                 <Mail />
                 <div>
-                  <div className="text-sm text-gray-500">Email 2</div>
+                  <div className="text-sm text-black">Email 2</div>
                   <a
                     href="mailto:support@eminentnews.com"
                     className="text-gray-800 font-medium"
@@ -345,7 +345,7 @@ const LandingPage: React.FC = () => {
               <div className="flex items-start gap-3">
                 <MapPin />
                 <div>
-                  <div className="text-sm text-gray-500">Address</div>
+                  <div className="text-sm text-black">Address</div>
                   <div className="text-gray-800 font-medium">
                     Gorakhpur, UP, India 273413
                   </div>
@@ -358,7 +358,7 @@ const LandingPage: React.FC = () => {
 
       {/* Final Download */}
       <section className="flex flex-col items-center w-full max-w-7xl gap-6 pb-20 pt-8 md:pb-28 px-4 text-center">
-        <h3 className="text-lg font-bold text-gray-600">
+        <h3 className="text-lg font-bold text-black">
           Download the easiest way to stay informed
         </h3>
         <div className="flex gap-4 justify-center">

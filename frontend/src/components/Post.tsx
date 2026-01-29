@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 import api from "@/lib/axios";
 import { ImageCollage } from "./ImageCollage";
+import { htmlToPlainText } from "@/lib/htmlToText";
 
 const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
   const newsId = news._id
@@ -145,7 +146,7 @@ const Post = ({ news, fetchNews }: { news: News, fetchNews?:()=>void }) => {
 
         {/* Description */}
         <p className="text-gray-600 text-sm md:text-xs line-clamp-2 leading-[1.1]">
-          {news.description}
+           {htmlToPlainText(news.description)}
         </p>
 
         {/* Author + Follow */}

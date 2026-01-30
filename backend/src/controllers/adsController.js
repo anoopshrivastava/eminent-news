@@ -2,6 +2,7 @@ const Ads = require("../models/adsModel");
 const catchAsyncError = require("../middleware/catchAsyncErrors");
 const ApiFeatures = require("../utils/apiFeatures");
 const cloudinary = require("../config/cloudinary");
+const crypto = require("crypto");
 
 const uploadImage = (buffer) =>
   new Promise((resolve, reject) => {
@@ -12,39 +13,9 @@ const uploadImage = (buffer) =>
       .end(buffer);
   });
 
-const uploadVideo = (buffer) =>
-  new Promise((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream(
-        {
-          resource_type: "video",
-          folder: "news/videos",
-          transformation: [{ quality: "auto" }],
-          eager: [
-            {
-              width: 720,
-              height: 1280,
-              crop: "limit",
-              format: "mp4",
-              quality: "auto",
-            },
-            {
-              width: 480,
-              height: 854,
-              crop: "limit",
-              format: "mp4",
-              quality: "auto",
-            },
-          ],
-          eager_async: true,
-        },
-        (err, res) => (err ? reject(err) : resolve(res))
-      )
-      .end(buffer);
-  });
 
 exports.createAds = catchAsyncError(async (req, res) => {
-  const { title, description, category, url, videoUrl, videoPublicId } =
+  const { title, description, category, url, videoUrl, videoPublicId, ratio } =
     req.body;
 
   let imageUploads = [];
@@ -59,9 +30,17 @@ exports.createAds = catchAsyncError(async (req, res) => {
       });
     }
 
+    if (!["9:16", "16:9"].includes(ratio)) {
+      return res.status(400).json({
+        success: false,
+        message: "Video ratio must be either 9:16 or 16:9",
+      });
+    }
+
     video = {
       url: videoUrl,
       publicId: videoPublicId,
+      ratio
     };
   }
 
@@ -116,7 +95,7 @@ exports.getAllAds = catchAsyncError(async (req, res) => {
   });
 });
 
-// for getting all ads
+// for getting my ads
 exports.getMyAds = catchAsyncError(async (req, res) => {
   const resultPerPage = req?.query?.limit || 20;
   const currentPage = Number(req.query.page) || 1;
@@ -230,3 +209,33 @@ exports.toggleAdsApproval = async (req, res) => {
       : "Ad unapproved successfully",
   });
 };
+
+exports.getVideoDetailAd = async (req, res) => {
+  const { videoId } = req.params;
+
+  const ads = await Ads.find({
+    category: "Video",
+    "video.ratio": "16:9",
+    isApproved: true,
+  })
+    .sort({ createdAt: -1 }) // latest first
+    .limit(20); // window of latest ads
+
+  if (!ads.length) {
+    return res.json({ success: true, ad: null });
+  }
+
+  // deterministic index based on videoId
+  const hash = crypto
+    .createHash("md5")
+    .update(videoId + new Date().toDateString())
+    .digest("hex");
+
+  const index = parseInt(hash.slice(0, 8), 16) % ads.length;
+
+  return res.json({
+    success: true,
+    ad: ads[index],
+  });
+};
+

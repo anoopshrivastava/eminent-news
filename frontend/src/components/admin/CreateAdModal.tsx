@@ -16,7 +16,14 @@ const ADS_INFO: Record<
   string,
   {
     placement: string;
-    spec: string;
+    spec?: string;
+    ratios?: Record<
+      string,
+      {
+        placement: string;
+        spec: string;
+      }
+    >;
   }
 > = {
   Banner: {
@@ -27,16 +34,24 @@ const ADS_INFO: Record<
     placement: "Shown between news highlights on the homepage in desktop.",
     spec: "Recommended image ratio: 16:9 (e.g. 1200×675). Image only.",
   },
-  FullPageShorts:{
+  FullPageShorts: {
     placement: "Appears in shorts section as full page ad.",
     spec: "Recommended image ratio: 9:16 (vertical). Image only.",
   },
-  VideoShorts: {
-    placement: "Appears in shorts section.",
-    spec: "Video only. Recommended ratio: 9:16 (vertical). Max 3 minutes.",
+  Video: {
+    placement: "Appears in video placements.",
+    ratios: {
+      "9:16": {
+        placement: "Shown in Shorts feed.",
+        spec: "Vertical video (9:16). Optimized for Shorts. Max 3 minutes.",
+      },
+      "16:9": {
+        placement: "Shown on Video Detail Page.",
+        spec: "Horizontal video (16:9). Optimized for video detail view. Max 3 minutes.",
+      },
+    },
   },
 };
-
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUD_NAME;
 const ADS_VIDEO_PRESET = import.meta.env.VITE_UPLOAD_PRESET;
@@ -49,6 +64,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     description: "",
     url: "",
     category: "Banner",
+    ratio: "9:16", 
   });
   const [images, setImages] = useState<File[]>([]);
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -184,6 +200,10 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
     data.append("category", formData.category);
     data.append("url", formData.url);
 
+    if (formData.category === "Video") {
+      data.append("ratio", formData.ratio);
+    }
+
     if (videoUrl && videoPublicId) {
       data.append("videoUrl", videoUrl);
       data.append("videoPublicId", videoPublicId);
@@ -205,6 +225,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
       description: "",
       category: "Banner",
       url: "",
+      ratio: "9:16",
     });
     setImages([]);
     setVideoFile(null);
@@ -215,6 +236,15 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
   useEffect(() => {
     setImages([]);
     setVideoFile(null);
+  }, [formData.category]);
+
+  useEffect(() => {
+    setImages([]);
+    setVideoFile(null);
+
+    if (formData.category === "Video") {
+      setFormData((prev) => ({ ...prev, ratio: "9:16" }));
+    }
   }, [formData.category]);
 
   const currentAdInfo = ADS_INFO[formData.category];
@@ -275,16 +305,43 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
           </div>
         </div>
 
-        {currentAdInfo && (
-          <div className="mt-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
-            <p className="font-semibold mb-1">📍 Where this ad will appear</p>
-            <p className="mb-2">{currentAdInfo.placement}</p>
-
-            <p className="font-semibold mb-1">📐 Upload guidelines</p>
-            <p>{currentAdInfo.spec}</p>
+        {formData.category === "Video" && (
+          <div className="mt-2">
+            <label htmlFor="ratio">Video Ratio</label>
+            <select
+              name="ratio"
+              value={formData.ratio}
+              onChange={handleChange}
+              className="w-full p-2 mb-2 border rounded bg-white"
+              required
+            >
+              <option value="9:16">9:16 (Vertical)</option>
+              <option value="16:9">16:9 (Horizontal)</option>
+            </select>
           </div>
         )}
 
+        {currentAdInfo && (
+          <div className="mt-3 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+            <p className="font-semibold mb-1">📍 Where this ad will appear</p>
+
+            {formData.category === "Video" && currentAdInfo.ratios ? (
+              <p className="mb-2">
+                {currentAdInfo.ratios[formData.ratio].placement}
+              </p>
+            ) : (
+              <p className="mb-2">{currentAdInfo.placement}</p>
+            )}
+
+            <p className="font-semibold mb-1">📐 Upload guidelines</p>
+
+            {formData.category === "Video" && currentAdInfo.ratios ? (
+              <p>{currentAdInfo.ratios[formData.ratio].spec}</p>
+            ) : (
+              <p>{currentAdInfo.spec}</p>
+            )}
+          </div>
+        )}
 
         <label htmlFor="description">Description (optional)</label>
         <textarea
@@ -309,7 +366,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
           />
         </div>
 
-        {formData.category === "VideoShorts" ? (
+        {formData.category === "Video" ? (
           <>
             <label>Upload Video (≤ 3 min)</label>
             <Input

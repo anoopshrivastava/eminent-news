@@ -9,6 +9,7 @@
     video?:{
       url: string,
       publicId: string,
+      ratio:"9:16" | "16:9"
     }
     createdAt:string;
     isApproved:boolean;
@@ -17,12 +18,12 @@
       role:string
     }
   }
-  export type ICategory = "Banner" | "Highlights" | "FullPageShorts" | "VideoShorts"
+  export type ICategory = "Banner" | "Highlights" | "FullPageShorts" | "Video"
   export const categories = [
   "Banner",
   "Highlights",
   "FullPageShorts",
-  "VideoShorts",
+  "Video",
 ];
 
   

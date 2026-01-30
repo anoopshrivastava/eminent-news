@@ -2,7 +2,7 @@ const express = require('express');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const router = express.Router();
 const uploadBoth = require('../middleware/upload');
-const { createAds, getAllAds, deleteAds, getMyAds, toggleAdsApproval } = require('../controllers/adsController');
+const { createAds, getAllAds, deleteAds, getMyAds, toggleAdsApproval, getVideoDetailAd } = require('../controllers/adsController');
 
 // create product --> Admin access
 router.post('/ads/create',isAuthenticatedUser,authorizeRoles("user","editor","admin"),uploadBoth.fields([
@@ -14,6 +14,9 @@ router.get('/ads',getAllAds);
 
 // getting ads by role
 router.get('/my-ads',isAuthenticatedUser,authorizeRoles("user","editor","admin"),getMyAds);
+
+// get ad for video
+router.get('/ads/video/:id',getVideoDetailAd);
 
 // delete the product -- Admin
 router.delete('/ads/:id',isAuthenticatedUser,authorizeRoles("user","admin", "editor"),deleteAds);

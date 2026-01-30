@@ -61,7 +61,7 @@ const HomePage: React.FC = () => {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/ads?limit=100`);
+      const response = await api.get(`/ads`);
 
       const data = response?.data ?? {};
       if (data.success === true) {

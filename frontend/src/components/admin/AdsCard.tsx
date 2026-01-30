@@ -53,7 +53,7 @@ const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds, isAdmin = false }) => {
     }
   };
 
-  const isVideoAd = ads.category === "VideoShorts";
+  const isVideoAd = ads.category === "Video";
 
   return (
     <>

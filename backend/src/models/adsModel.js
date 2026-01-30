@@ -10,7 +10,7 @@ const adsSchema = new mongoose.Schema({
     },
     category:{
         type:String,
-        enum: ["Banner", "Highlights", "FullPageShorts", "VideoShorts"],
+        enum: ["Banner", "Highlights", "FullPageShorts", "Video"],
         required:true,
     },
     images:{
@@ -20,6 +20,10 @@ const adsSchema = new mongoose.Schema({
     video: {
       url: String,
       publicId: String,
+      ratio: {
+        type: String,
+        enum: ["9:16", "16:9"],
+      },
     },
     isApproved:{
         type:Boolean,

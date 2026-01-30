@@ -45,7 +45,7 @@ export default function ShortsReel() {
   }, []);
 
   const FullPageShorts = ads.filter((ad) => ad.category === "FullPageShorts");
-  const VideoShorts = ads.filter((ad) => ad.category === "VideoShorts");
+  const VideoShorts = ads.filter((ad) => ad.category === "Video" && ad.video?.ratio === "9:16");
 
   const feedItems = useMemo<FeedItem[]>(() => {
     const result: FeedItem[] = [];
@@ -59,7 +59,7 @@ export default function ShortsReel() {
 
       // after every 4 shorts
       if ((index + 1) % 4 === 0) {
-        // alternate ads (or change logic as you like)
+        // alternate ads
         if (fullAdIndex < FullPageShorts.length) {
           result.push({
             type: "fullAd",

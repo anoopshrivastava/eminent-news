@@ -69,7 +69,7 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
               alt={post.title || "News image"}
               className="w-full h-64 md:h-[64vh] object-contain"
             /> */}
-            <div className="relative w-full h-64 md:h-[64vh] overflow-hidden">
+            <div className="relative w-full h-56 md:h-[64vh] overflow-hidden">
               {/* 🔹 Blurred background */}
               <img
                 src={post?.images?.[0] || "/placeholder.jpg"}

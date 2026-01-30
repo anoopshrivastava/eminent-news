@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import profile from "@/assets/profile.webp";
 import api from "@/lib/axios";
+import type { Ads } from "@/types/ads";
 
 export default function VideoDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ export default function VideoDetail() {
   const [commentLoading, setCommentLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
+  const [videoAd, setVideoAd] = useState<Ads | null>(null);
 
   /* Fetch video */
   const fetchVideo = async () => {
@@ -39,7 +41,17 @@ export default function VideoDetail() {
     }
   };
 
+  const fetchVideoAd = async () => {
+    try {
+      const { data } = await api.get(`/ads/video/${id}`);
+      setVideoAd(data.ad);
+    } catch {
+      console.error("Failed to load ad");
+    }
+  };
+
   useEffect(() => {
+    fetchVideoAd();
     fetchVideo();
   }, [id]);
 
@@ -71,9 +83,7 @@ export default function VideoDetail() {
 
     // optimistic update
     setLiked(willLike);
-    setLikesCount((prev) =>
-      willLike ? prev + 1 : Math.max(0, prev - 1)
-    );
+    setLikesCount((prev) => (willLike ? prev + 1 : Math.max(0, prev - 1)));
 
     try {
       const res = await api.put(`/videos/${video?._id}/like`);
@@ -83,9 +93,7 @@ export default function VideoDetail() {
     } catch {
       // rollback
       setLiked(!willLike);
-      setLikesCount((prev) =>
-        willLike ? Math.max(0, prev - 1) : prev + 1
-      );
+      setLikesCount((prev) => (willLike ? Math.max(0, prev - 1) : prev + 1));
       toast.error("Failed to toggle like");
     } finally {
       setLoadingLike(false);
@@ -104,7 +112,7 @@ export default function VideoDetail() {
     }
   };
 
-    const handleAddComment = async () => {
+  const handleAddComment = async () => {
     if (!currentUser) {
       toast.error("Please Login First !!");
       return;
@@ -186,9 +194,7 @@ export default function VideoDetail() {
       <div className="px-4 pb-6 md:p-6 space-y-6">
         {/* Title */}
         <div>
-          <h1 className="text-2xl md:text-4xl font-bold mb-1">
-            {video.title}
-          </h1>
+          <h1 className="text-2xl md:text-4xl font-bold mb-1">{video.title}</h1>
           <Badge className="bg-[#f40607]">Video</Badge>
         </div>
 
@@ -221,9 +227,7 @@ export default function VideoDetail() {
 
           <div>
             <p className="font-semibold">
-              {typeof video.editor !== "string"
-                ? video.editor?.name
-                : "Editor"}
+              {typeof video.editor !== "string" ? video.editor?.name : "Editor"}
             </p>
             <p className="text-sm text-gray-500">
               {new Date(video.createdAt).toLocaleDateString()}
@@ -261,71 +265,95 @@ export default function VideoDetail() {
           </Button>
         </div>
 
-          {/* Add Comment */}
-          <div className="mt-6 space-y-2">
-            <h3 className="font-semibold">Comments</h3>
+        {/* Add Comment */}
+        <div className="mt-6 space-y-2">
+          <h3 className="font-semibold">Comments</h3>
 
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Write a comment..."
-              className="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#f40607] bg-white"
-              rows={3}
-            />
+          <textarea
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            placeholder="Write a comment..."
+            className="w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#f40607] bg-white"
+            rows={3}
+          />
 
-            <Button
-              onClick={handleAddComment}
-              disabled={commentLoading}
-              className="bg-[#f40607] hover:bg-red-600"
-            >
-              {commentLoading ? "Posting..." : "Post Comment"}
-            </Button>
-          </div>
+          <Button
+            onClick={handleAddComment}
+            disabled={commentLoading}
+            className="bg-[#f40607] hover:bg-red-600"
+          >
+            {commentLoading ? "Posting..." : "Post Comment"}
+          </Button>
+        </div>
 
-          {/* Comments List */}
-          <div className="mt-4 space-y-4">
-            {video.comments && video.comments.length > 0 ? (
-              video.comments.map((c: any) => (
-                <div
-                  key={c._id}
-                  className="flex gap-3 p-3 border rounded-md"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>
-                      {c.user?.name?.charAt(0)?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
+        {/* Comments List */}
+        <div className="mt-4 space-y-4">
+          {video.comments && video.comments.length > 0 ? (
+            video.comments.map((c: any) => (
+              <div key={c._id} className="flex gap-3 p-3 border rounded-md">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>
+                    {c.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
 
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold">
-                        {c.user?.name || "User"} {currentUser?._id === c.user?._id && <span>(You)</span>}
-                      </p>
-
-                      {/* Delete only own comment */}
-                      {currentUser?._id === c.user?._id && (
-                        <button
-                          onClick={() => handleDeleteComment(c._id)}
-                          className="flex items-center gap-1 text-xs text-red-500 hover:underline"
-                          disabled={deleteLoading === c._id}
-                        >
-                          {deleteLoading === c._id ? "Deleting..." : ""}
-                          <Trash2 size={13}/>
-                        </button>
-                      )}
-                    </div>
-
-                    <p className="text-sm text-gray-700">{c.comment}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(c.createdAt).toLocaleString()}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold">
+                      {c.user?.name || "User"}{" "}
+                      {currentUser?._id === c.user?._id && <span>(You)</span>}
                     </p>
+
+                    {/* Delete only own comment */}
+                    {currentUser?._id === c.user?._id && (
+                      <button
+                        onClick={() => handleDeleteComment(c._id)}
+                        className="flex items-center gap-1 text-xs text-red-500 hover:underline"
+                        disabled={deleteLoading === c._id}
+                      >
+                        {deleteLoading === c._id ? "Deleting..." : ""}
+                        <Trash2 size={13} />
+                      </button>
+                    )}
                   </div>
+
+                  <p className="text-sm text-gray-700">{c.comment}</p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(c.createdAt).toLocaleString()}
+                  </p>
                 </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-500">No comments yet.</p>
-            )}
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-gray-500">No comments yet.</p>
+          )}
+        </div>
+
+        {videoAd && (
+          <div className="w-full space-y-1">
+            {/* Ads label */}
+            <span className="text-xs text-gray-500 uppercase tracking-wide">
+              Sponsored
+            </span>
+
+            <div className="w-full aspect-video rounded-lg overflow-hidden bg-black relative">
+              <video
+                src={videoAd.video?.url}
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls={false}
+                className="w-full h-full object-contain cursor-pointer"
+                onClick={() => {
+                  if (videoAd.url) {
+                    window.open(videoAd.url, "_blank");
+                  }
+                }}
+              />
+            </div>
           </div>
+        )}
       </div>
     </div>
   );

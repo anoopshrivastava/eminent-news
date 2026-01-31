@@ -19,24 +19,61 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const [editors, setEditors] = useState<Editor[]>([]);
-  const [editorsLoading, setEditorsLoading] = useState<boolean>(false);
   const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
 
-  const [groupedNews, setGroupedNews] = useState<{
-    national: News[];
-    world: News[];
-    trending: News[];
-    sports: News[];
-    entertainment: News[]
-    // examupdates: News[]
-  }>({
-    national: [],
-    world: [],
-    trending: [],
-    sports: [],
-    entertainment: []
-    // examupdates: []
-  });
+  const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
+  const [mobileNews, setMobileNews] = useState<News[]>([]);
+  const [mobileLoading, setMobileLoading] = useState<boolean>(false);
+  const [nationalNews, setNationalNews] = useState<News[]>([]);
+
+  const fetchInitialData = async () => {
+    setLoading(true);
+    try {
+      const [
+        newsRes,
+        adsRes,
+        editorsRes,
+        nationalRes,
+      ] = await Promise.all([
+        api.get("/news"),
+        api.get("/ads"),
+        api.get("/editors/suggestion?limit=10&verified=true"),
+        api.get("/news?category=National&limit=10"),
+      ]);
+
+      // NEWS
+      if (newsRes.data?.success) {
+        setNews(newsRes.data.news ?? newsRes.data.data ?? []);
+      } else {
+        setNews([]);
+      }
+
+      // ADS
+      if (adsRes.data?.success) {
+        setAds(adsRes.data.ads ?? adsRes.data.data ?? []);
+      } else {
+        setAds([]);
+      }
+
+      // EDITORS
+      const editorsList =
+        editorsRes.data?.users ??
+        editorsRes.data?.editors ??
+        [];
+      setEditors(editorsList.slice(0, 5));
+
+      // NATIONAL NEWS
+      setNationalNews(nationalRes.data?.news ?? []);
+    } catch (err) {
+      console.error("Initial data load failed", err);
+      setNews([]);
+      setAds([]);
+      setEditors([]);
+      setNationalNews([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchNews = async () => {
     setLoading(true);
@@ -58,68 +95,39 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const fetchAds = async () => {
-    setLoading(true);
+  const fetchNewsByCategory = async (category: string) => {
+    setMobileLoading(true);
     try {
-      const response = await api.get(`/ads`);
+      const response = await api.get(`/news?category=${category}&limit=30`);
 
       const data = response?.data ?? {};
-      if (data.success === true) {
-        const list: Ads[] = data.ads ?? data.data ?? [];
-        setAds(list);
+      if (data.success) {
+        setMobileNews(data.news ?? data.data ?? []);
       } else {
-        setAds([]);
+        setMobileNews([]);
       }
-    } catch (error) {
-      console.error("Error fetching ads:", error);
-      setAds([]);
+    } catch (err) {
+      console.error("Error fetching category news", err);
+      setMobileNews([]);
     } finally {
-      setLoading(false);
+      setMobileLoading(false);
     }
   };
 
-  // Fetch editors for "Whom to follow". We request a small set and keep only 5 newest.
-  const fetchEditors = async () => {
-    setEditorsLoading(true);
-    try {
-      // if your backend supports a `limit` or `sort` param, you can add them.
-      const response = await api.get(`/editors/suggestion?limit=10&verified=true`);
-
-      const data = response?.data ?? {};
-      const list: Editor[] = data.users ?? data.editors ?? [];
-
-      // sort by createdAt descending and take top 5
-      const newest5 = list.slice().slice(0, 5);
-
-      setEditors(newest5);
-    } catch (error) {
-      console.error("Error fetching editors:", error);
-      setEditors([]);
-    } finally {
-      setEditorsLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchNews();
-    fetchAds();
-    fetchEditors();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchInitialData();
   }, []);
 
   useEffect(() => {
-    if (news.length > 0) {
-      const grouped = {
-        national: news.filter((n) => n.category === "National"),
-        world: news.filter((n) => n.category === "World"),
-        trending: news.filter((n) => n.category === "Trending"),
-        sports: news.filter((n) => n.category === "Sports"),
-        entertainment: news.filter((n) => n.category === "Entertainment"),
-        // examUpdates: news.filter((n) => n.category === "Exam Updates"),
-      };
-      setGroupedNews(grouped);
-    }
-  }, [news]);
+    fetchNewsByCategory(activeCategory);
+  }, [activeCategory]);
+
+  useEffect(() => {
+    api.get("/news?category=National&limit=10")
+      .then(res => setNationalNews(res.data.news ?? []));
+  }, []);
+
 
   if (loading)
     return (
@@ -149,7 +157,11 @@ const HomePage: React.FC = () => {
     return initials.toUpperCase();
   };
 
-  const featured = groupedNews["trending"][0] ?? groupedNews["national"][0] ?? groupedNews["sports"][0] ?? groupedNews["entertainment"][0]
+  const featured =
+  news.find(n => n.category === "Trending") ??
+  news.find(n => n.category === "National") ??
+  news.find(n => n.category === "Sports") ??
+  news.find(n => n.category === "Entertainment");
 
   return (
     <div className="min-h-screen md:py-2">
@@ -165,7 +177,10 @@ const HomePage: React.FC = () => {
           </div>
 
           {/* Tabs Component */}
-          <Tabs defaultValue={categories[0]}>
+          <Tabs  
+            value={activeCategory}
+            onValueChange={(val) => setActiveCategory(val)
+          }>
             <TabsList className="w-full overflow-x-scroll bg-white h-12 border-y-2 border-red-500 rounded-none">
               {categories.map((category, index) => (
                 <TabsTrigger
@@ -180,34 +195,26 @@ const HomePage: React.FC = () => {
               ))}
             </TabsList>
 
-            {categories.map((category) => {
-              const key = category.toLowerCase();
-              return (
-                <TabsContent
-                  key={category}
-                  value={category}
-                  className="mt-6 p-0"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {groupedNews[key as keyof typeof groupedNews]?.length ? (
-                      groupedNews[key as keyof typeof groupedNews].map(
-                        (item: News) => (
-                          <PostX
-                            key={item._id}
-                            news={item}
-                            fetchNews={fetchNews}
-                          />
-                        )
-                      )
-                    ) : (
-                      <p className="col-span-4 text-center text-gray-500 p-10">
-                        No posts found for this category.
-                      </p>
-                    )}
-                  </div>
-                </TabsContent>
-              );
-            })}
+            <TabsContent value={activeCategory} className="mt-6 p-0">
+              {mobileLoading ? (
+                <Loading />
+              ) : mobileNews.length ? (
+                <div className="grid grid-cols-1 gap-6">
+                  {mobileNews.map((item) => (
+                    <PostX
+                      key={item._id}
+                      news={item}
+                      fetchNews={() => fetchNewsByCategory(activeCategory)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 p-10">
+                  No posts found for this category.
+                </p>
+              )}
+            </TabsContent>
+
           </Tabs>
         </section>
 
@@ -291,7 +298,7 @@ const HomePage: React.FC = () => {
 
               {/* 📰 OTHER SMALL NEWS LIST */}
               <div className="space-y-7">
-                {groupedNews.national.map((item: News) => (
+                {nationalNews.map((item: News) => (
                   <div
                     key={item._id}
                     className="flex items-start gap-3 border-b pb-3 last:border-none"
@@ -331,9 +338,7 @@ const HomePage: React.FC = () => {
                   <h4 className="text-lg font-semibold">Follow Suggestions</h4>
                 </div>
 
-                {editorsLoading ? (
-                  <p className="text-sm text-gray-500">Loading...</p>
-                ) : editors.length === 0 ? (
+                {editors.length === 0 ? (
                   <p className="text-sm text-gray-500">No suggestions found.</p>
                 ) : (
                   <div className="space-y-3">

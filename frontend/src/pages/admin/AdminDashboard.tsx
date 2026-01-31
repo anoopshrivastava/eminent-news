@@ -83,7 +83,7 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         <button
-          className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-2 rounded-lg hover:opacity-90 cursor-pointer"
+          className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-2 rounded-lg hover:opacity-90 cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
           Add News

@@ -85,7 +85,7 @@ export default function HeroCarousel({ ads, intervalMs = 5000 }: Props) {
               <img
                 src={post?.images?.[0] || "/placeholder.jpg"}
                 alt={post.title || "News image"}
-                className="relative z-10 mx-auto w-full h-full object-contain"
+                className="relative z-10 mx-auto w-full h-full object-fill md:object-contain"
               />
             </div>
 

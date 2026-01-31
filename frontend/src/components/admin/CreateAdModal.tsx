@@ -81,7 +81,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (formData.category === "VideoShorts") return;
+    if (formData.category === "Video") return;
 
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -118,7 +118,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
   };
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (formData.category !== "VideoShorts") return;
+    if (formData.category !== "Video") return;
     const MAX_SIZE_MB = 150;
 
     const file = e.target.files?.[0];
@@ -147,7 +147,7 @@ function CreateAdModal({ setIsOpen, fetchAds, setAds }: props) {
       let videoPublicId = "";
 
       // 🔹 VIDEO SHORTS → Cloudinary
-      if (formData.category === "VideoShorts") {
+      if (formData.category === "Video") {
         if (!videoFile) {
           toast.error("Please select a video");
           return;

@@ -16,7 +16,7 @@ router.get('/ads',getAllAds);
 router.get('/my-ads',isAuthenticatedUser,authorizeRoles("user","editor","admin"),getMyAds);
 
 // get ad for video
-router.get('/ads/video/:id',getVideoDetailAd);
+router.get('/ads/video/:videoId',getVideoDetailAd);
 
 // delete the product -- Admin
 router.delete('/ads/:id',isAuthenticatedUser,authorizeRoles("user","admin", "editor"),deleteAds);

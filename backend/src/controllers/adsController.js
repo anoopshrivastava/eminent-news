@@ -22,7 +22,7 @@ exports.createAds = catchAsyncError(async (req, res) => {
   let video = null;
 
   // 🔹 VIDEO ADS (metadata only)
-  if (category === "VideoShorts") {
+  if (category === "Video") {
     if (!videoUrl || !videoPublicId) {
       return res.status(400).json({
         success: false,
@@ -102,7 +102,7 @@ exports.getMyAds = catchAsyncError(async (req, res) => {
 
   if (req?.query?.category === "all") {
     req.query.category = {
-      $in: ["Banner", "Highlights", "FullPageShorts", "VideoShorts"],
+      $in: ["Banner", "Highlights", "FullPageShorts", "Video"],
     };
   }
 
@@ -226,12 +226,13 @@ exports.getVideoDetailAd = async (req, res) => {
   }
 
   // deterministic index based on videoId
+  const day = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
   const hash = crypto
     .createHash("md5")
-    .update(videoId + new Date().toDateString())
+    .update(`${videoId}-${day}`)
     .digest("hex");
 
-  const index = parseInt(hash.slice(0, 8), 16) % ads.length;
+  const index = parseInt(hash.slice(-8), 16) % ads.length;
 
   return res.json({
     success: true,

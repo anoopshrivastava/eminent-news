@@ -132,7 +132,7 @@ const AdsCard: React.FC<AdsCardProps> = ({ ads, setAds, isAdmin = false }) => {
           </p>
 
           <div className="pt-1 text-xs font-medium text-gray-700">
-            <span className="mr-3">Category : {ads.category ?? "Other"}</span>
+            <span className="mr-3">Category : {ads.category ?? "Other"} {isVideoAd && ( '(' + ads.video?.ratio + ')' )}</span>
           </div>
 
           {isAdmin && <div className="pt-1 text-xs font-medium text-gray-700">

@@ -28,13 +28,15 @@ import EditProfile from "./pages/profile/EditProfile";
 import ChangePassword from "./pages/profile/ChangePassword";
 import VideosManager from "./pages/admin/videos";
 import UserAds from "./pages/user-ads/UserAds";
-import VideosPage from "./pages/videos/videos";
 import VideoDetail from "./pages/videos/VideoDetailPage";
 import Disclaimer from "./pages/disclaimer/Disclaimer";
 import PrivacyPolicy from "./pages/privacy-policy/PrivacyPolicy";
 import TermsAndConditions from "./pages/terms-condition/TermsAndCondition";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import ResetPassword from "./pages/forgot-password/ResetPassword";
+import UserSearch from "./pages/users-search/UserSearch";
+import VideosPage from "./pages/videos/VideosPage";
+import UserProfile from "./pages/profile/UserProfile";
 
 function App() {
   return (
@@ -62,6 +64,8 @@ function App() {
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-condition" element={<TermsAndConditions />} />
+            <Route path="/users" element={<UserSearch />} />
+            <Route path="/profile/:id" element={<UserProfile />} />
 
             <Route element={<PrivateRoute />}>
               <Route path="/profile" element={<ProfilePage />} />

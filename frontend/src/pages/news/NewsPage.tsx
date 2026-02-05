@@ -35,6 +35,7 @@ const NewsPage: React.FC = () => {
       const response = await api.get(`/news`, {
         params: {
           category: category ?? undefined,
+          subCategories: subCategory ?? undefined,
           searchKey: search ?? undefined,
           page: pageNo,
           limit: LIMIT,

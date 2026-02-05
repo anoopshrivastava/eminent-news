@@ -8,6 +8,7 @@ const sendMail = require("../utils/sendMail.js");
 const crypto = require("crypto");
 const ApiFeatures = require("../utils/apiFeatures.js");
 const cloudinary = require('../config/cloudinary')
+const News = require('../models/newsModel')
 
 // creating a user --> Register
 exports.registerUser = catchAsyncError(async (req, res, next) => {
@@ -284,13 +285,42 @@ exports.updateProfile = catchAsyncError(async (req, res, next) => {
   });
 });
 
-// Admin routes below --->>
+exports.searchUsers = catchAsyncError(async (req, res, next) => {
+  const resultPerPage = req?.query?.limit || 200;
+  const currentPage = Number(req.query.page) || 1;
+  
+  const apiFeaturesForCount = new ApiFeatures(
+    User.find(),req.query)
+    .search()
+    .filter()
+    
+    const totalCount = await apiFeaturesForCount.query.clone().countDocuments();
+    
+    const apiFeatures = new ApiFeatures(User.find(), req.query)
+    .search()
+    .filter()
+    .sort() 
+    .pagination(resultPerPage);
+    
+    const users = await apiFeatures.query;
+    const totalPages = Math.ceil(totalCount / resultPerPage);
 
+  res.status(200).json({
+    success: true,
+    totalResult: totalCount,
+    users,
+    totalPages,
+    currentPage,
+    hasMore: currentPage < totalPages,
+  });
+});
+
+// Admin routes below --->>
 // get all users (admin) -->
 exports.getAllUser = catchAsyncError(async (req, res, next) => {
-  const resultPerPage = req?.query?.limit || 20;
+  const resultPerPage = req?.query?.limit || 50;
   const currentPage = Number(req.query.page) || 1;
-
+  
   const apiFeaturesForCount = new ApiFeatures(
     User.find({ role: "user" }),
     req.query
@@ -361,9 +391,14 @@ exports.getSingleUser = catchAsyncError(async (req, res, next) => {
       new Errorhandler(`User does not exists with id ${req.params.id}`, 404)
     );
   }
+
+  const news = await News.find({ editor: user._id })
+    .sort({ createdAt: -1 });
+
   res.status(200).json({
     success: true,
     user,
+    news
   });
 });
 

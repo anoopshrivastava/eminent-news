@@ -347,7 +347,7 @@ const HomePage: React.FC = () => {
                         key={ed._id}
                         className="flex items-center justify-between gap-3"
                       >
-                        <div className="flex items-center gap-3">
+                        <Link to={`/profile/${ed._id}`} className="flex items-center gap-3">
                           {ed.avatar ? 
                             <Avatar className="w-10 h-10">
                               <img src={ed.avatar} alt="" />
@@ -364,7 +364,7 @@ const HomePage: React.FC = () => {
                               @{ed.username}
                             </div>
                           </div>
-                        </div>
+                        </Link>
 
                         <div className="flex items-center gap-2">
                           <button

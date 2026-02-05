@@ -50,16 +50,31 @@ const Header = () => {
     }
   };
   
-const handleSearch = () => {
-  const value = search.trim();
 
-  if (!value) {
-    navigate("/news"); // remove search param → show all news
-    return;
-  }
+  const handleSearch = () => {
+    const value = search.trim();
 
-  navigate(`/news?search=${encodeURIComponent(value)}`);
-};
+    if (!value) {
+      navigate("/news"); // no search → all news
+      return;
+    }
+
+    if (value.startsWith("@")) {
+      const username = value.slice(1); // remove @
+
+      if (!username) {
+        toast.error("Value cannot be empty!!")
+        return;
+      }
+
+      navigate(`/users?search=${encodeURIComponent(username)}`);
+      return;
+    }
+
+    // default → news search
+    navigate(`/news?search=${encodeURIComponent(value)}`);
+  };
+
 
 
   useEffect(() => {
@@ -133,7 +148,7 @@ const handleSearch = () => {
                 }
               }}
               type="text"
-              placeholder="Search news..."
+              placeholder="Search news or @users"
               className="rounded-lg pl-3 pr-10 py-1.5 w-full bg-white border-none text-red-600"
             />
 
@@ -188,7 +203,7 @@ const handleSearch = () => {
                     setMobileSearchOpen(false);
                   }
                 }}
-                placeholder="Search news..."
+                placeholder="Search news or @users"
                 className="flex-1"
               />
 

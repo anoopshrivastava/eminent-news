@@ -12,6 +12,7 @@ export interface User {
   _id: string;
   name: string;
   username: string;
+  avatar: string;
   email: string;
   phone: string;
   followers: string[];
@@ -19,7 +20,7 @@ export interface User {
   createdAt: string;
 }
 
-interface FetchUsersResponse {
+export interface FetchUsersResponse {
   success: boolean;
   users: User[];
   totalResult: number;

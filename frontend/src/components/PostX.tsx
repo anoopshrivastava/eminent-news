@@ -12,7 +12,7 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import profile from "@/assets/profile.webp"
 import { htmlToPlainText } from "@/lib/htmlToText";
 
-const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
+const PostX = ({ news, fetchNews, hideHeader = false }: { news: News; fetchNews?: () => void, hideHeader? : boolean }) => {
   const newsId = news._id;
   const editorId = news.editor?._id;
 
@@ -132,7 +132,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
       {/* Content */}
       <div className="px-3 pb-3 pt-1">
         {/* Author + Follow */}
-        <div className="flex items-center justify-between pb-2 pt-1">
+        {!hideHeader && <div className="flex items-center justify-between pb-2 pt-1">
           <div className="flex gap-1 items-center text-base text-gray-500">
             <Avatar className="h-6 w-6 ">
               <AvatarImage src={news.editor?.avatar || profile } alt={news.editor?.name} className=""/>
@@ -165,7 +165,7 @@ const PostX = ({ news, fetchNews }: { news: News; fetchNews?: () => void }) => {
               </>
             )}
           </button>
-        </div>
+        </div>}
 
         {/* Title */}
         <h2 className="text-base md:text-sm font-medium line-clamp-2 md:line-clamp-1 text-gray-900 leading-[1.1] mb-2 md:mb-0">

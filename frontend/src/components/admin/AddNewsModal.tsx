@@ -319,10 +319,17 @@ function AddNewsModal({
           required
         /> */}
         <label>Description</label>
-        <div className="border rounded-lg bg-white">
+        <div
+          className="
+            border rounded-lg bg-white
+            resize-y overflow-auto
+            min-h-[160px]
+            max-h-[2000px]
+          "
+        >
           <EditorContent
             editor={editor}
-            className="min-h-[160px] p-2"
+            className="p-2 focus:outline-none w-full h-full"
           />
         </div>
 

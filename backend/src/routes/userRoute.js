@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser, deleteMyProfile } = require('../controllers/userController');
+const { registerUser, loginUser, logout, forgotPassword, resetPassword, getUserDetails, updatePassword, updateProfile, getAllUser, getSingleUser, updateUserRole, deleteUser, getAllEditor, followUser, deleteMyProfile, searchUsers } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middleware/auth');
 const rateLimiter = require('../utils/rateLimit');
 const upload = require('../middleware/fileUpload');
@@ -37,10 +37,12 @@ router.delete('/me',isAuthenticatedUser,deleteMyProfile)
 router.put('/user/:id/follow', isAuthenticatedUser, followUser);
 
 // for getting all users -->
+router.get('/users',searchUsers) // for searching users
 router.get('/admin/users',isAuthenticatedUser,authorizeRoles("admin"),getAllUser)
 router.get('/admin/editors',isAuthenticatedUser,authorizeRoles("admin"),getAllEditor)
 
 router.get('/editors/suggestion',getAllEditor)
+router.get('/users/:id',getSingleUser)
 
 // for getting single user,updating role & deleting user by admin -->
 router.route('/admin/user/:id')

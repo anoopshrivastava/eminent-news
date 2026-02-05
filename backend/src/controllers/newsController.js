@@ -1,8 +1,10 @@
 const News = require('../models/newsModel')
+const Ads = require('../models/adsModel')
 const Errorhandler = require('../utils/errorhander')
 const catchAsyncError = require('../middleware/catchAsyncErrors')
 const ApiFeatures = require('../utils/apiFeatures')
 const cloudinary = require('../config/cloudinary')
+const crypto = require("crypto");
 
 const uploadImage = (buffer) =>
   new Promise((resolve, reject) => {
@@ -271,14 +273,50 @@ exports.getEditorNews = catchAsyncError(async (req, res, next) => {
 
 // Get news details
 exports.getNewsDetails=catchAsyncError(async(req,res,next)=>{
+
     let news = await News.findById(req.params.id).populate('editor').populate("comments.user", "name avatar");
     
     if(!news){
         return next(new Errorhandler("News Not Found",404));
     }
+    const ads = await Ads.find({
+      isApproved: true,
+      $or: [
+        { category: "Highlights" },
+        {
+          category: "Video",
+          "video.ratio": "16:9",
+        },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .limit(20);
+  
+    if (!ads.length) {
+      return res.json({ success: true, ad: null });
+    }
+  
+    const day = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+
+    const hash = crypto
+      .createHash("md5")
+      .update(`${req.params.id}-${day}`)
+      .digest("hex");
+
+    // take 64 bits instead of 32
+    const num = BigInt("0x" + hash.slice(0, 16));
+    const index = Number(num % BigInt(ads.length));
+    console.log({
+      newsId: req.params.id,
+      last8: hash.slice(-8),
+      number: parseInt(hash.slice(-8), 16),
+      mod: parseInt(hash.slice(-8), 16) % ads.length,
+    });
+
     res.status(200).json({
         success:true,
         news,
+        ad: ads[index]
     })
 })
 

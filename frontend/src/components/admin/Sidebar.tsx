@@ -36,6 +36,11 @@ const Sidebar = () => {
       label: 'Advertisement',
       href: '/admin/ads',
     },
+    {
+      icon: "#",
+      label: 'Profile',
+      href: '/profile',
+    },
   ];
 
   const navigate = useNavigate();

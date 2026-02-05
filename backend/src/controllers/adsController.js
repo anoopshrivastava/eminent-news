@@ -231,8 +231,11 @@ exports.getVideoDetailAd = async (req, res) => {
     .createHash("md5")
     .update(`${videoId}-${day}`)
     .digest("hex");
+    console.log("ads.length",ads.length);
+    console.log("hash",hash);
 
   const index = parseInt(hash.slice(-8), 16) % ads.length;
+  console.log("idx",index);
 
   return res.json({
     success: true,

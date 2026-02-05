@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Mail, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import profile from "@/assets/profile.webp";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "@/lib/axios";
@@ -22,12 +22,6 @@ type User = {
   followers?: Array<any>;
   following?: Array<any>;
   createdAt?: string;
-};
-
-const formatDate = (iso?: string) => {
-  if (!iso) return "-";
-  const d = new Date(iso);
-  return d.toLocaleDateString(undefined, { month: "short", year: "numeric" });
 };
 
 const UserProfile: React.FC = () => {
@@ -175,61 +169,29 @@ const UserProfile: React.FC = () => {
           </div>
 
           {/* bio desktop */}
-          <div className="hidden md:block mt-4 text-gray-700">
-            <p className="font-medium">
-              {user.name} • {user.role}
-            </p>
-            <p className="text-sm text-gray-600">
-              Joined {formatDate(user.createdAt)}
-            </p>
-            <p className="mt-6 text-gray-600">
+          <div className="hidden md:block text-gray-700">
+            <p className="mt-2 text-gray-600">
               {user.bio ??
                 "This is a short bio. Add your location, interests or a short description here."}
             </p>
-
-            <div className="mt-6 flex items-center gap-3 text-sm text-gray-600">
-              {user.phone && (
-                <div className="flex items-center gap-1">
-                  <Mail size={14} />
-                  <span>{user.phone}</span>
-                </div>
-              )}
-
-              <div className="flex items-center gap-1">
-                <MapPin size={14} />
-                <span>{user.address}</span>
-              </div>
+            <div className="flex items-center gap-1">
+              <MapPin size={14} />
+              <span>{user.address}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* bio - mobile view */}
-      <div className="block md:hidden mt-4 text-gray-700">
-        <p className="font-medium text-lg">
-          {user.name} • {user.role}
-        </p>
-        <p className="text-sm text-gray-600">
-          Joined {formatDate(user.createdAt)}
-        </p>
+      <div className="block md:hidden text-gray-700">
         <p className="mt-5 text-gray-600 text-sm">
           {user.bio ??
             "This is a short bio. Add your location, interests or a short description here."}
         </p>
-
-        <div className="mt-5 flex items-center gap-3 text-gray-600">
-          {user.phone && (
-            <div className="flex items-center gap-1">
-              <Mail size={14} />
-              <span>{user.phone}</span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 mt-1">
             <MapPin size={14} />
             <span>{user.address}</span>
           </div>
-        </div>
       </div>
       
 

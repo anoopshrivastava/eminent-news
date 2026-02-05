@@ -31,7 +31,7 @@ const ADS_INFO: Record<
     spec: "Recommended image ratio: 16:9 (e.g. 1200×675). Image only.",
   },
   Highlights: {
-    placement: "Shown between news highlights on the homepage in desktop.",
+    placement: "etween news highlights on the homepage in desktop, category news in mobile and news detail page.",
     spec: "Recommended image ratio: 16:9 (e.g. 1200×675). Image only.",
   },
   FullPageShorts: {
@@ -42,11 +42,11 @@ const ADS_INFO: Record<
     placement: "Appears in video placements.",
     ratios: {
       "9:16": {
-        placement: "Shown in Shorts feed.",
+        placement: "Shown in Shorts feed and desktop highlights.",
         spec: "Vertical video (9:16). Optimized for Shorts. Max 3 minutes.",
       },
       "16:9": {
-        placement: "Shown on Video Detail Page.",
+        placement: "Shown on Video Detail, desktop highlights and News Detail Page.",
         spec: "Horizontal video (16:9). Optimized for video detail view. Max 3 minutes.",
       },
     },

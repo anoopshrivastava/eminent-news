@@ -12,10 +12,13 @@ import type { Ads } from "@/types/ads";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/avatar";
+import { HighlightImageSlider, VideoAdSlider } from "./components/sliders";
 
 const HomePage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
-  const [ads, setAds] = useState<Ads[]>([]);
+  const [bannerAds, setBannerAds] = useState<Ads[]>([]);
+  const [highlightImageAds, setHighlightImageAds] = useState<Ads[]>([]);
+  const [videoAds16by9, setVideoAds16by9] = useState<Ads[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [editors, setEditors] = useState<Editor[]>([]);
@@ -31,14 +34,18 @@ const HomePage: React.FC = () => {
     try {
       const [
         newsRes,
-        adsRes,
         editorsRes,
         nationalRes,
+        bannerRes,
+        highlightRes,
+        videoRes,
       ] = await Promise.all([
         api.get("/news"),
-        api.get("/ads"),
-        api.get("/editors/suggestion?limit=10&verified=true"),
+        api.get("/editors/suggestion?limit=5&verified=true"),
         api.get("/news?category=National&limit=10"),
+        api.get("/ads?category=Banner&limit=10"),
+        api.get("/ads?category=Highlights&limit=10"),
+        api.get("/ads?category=Video&limit=10"),
       ]);
 
       // NEWS
@@ -48,26 +55,32 @@ const HomePage: React.FC = () => {
         setNews([]);
       }
 
-      // ADS
-      if (adsRes.data?.success) {
-        setAds(adsRes.data.ads ?? adsRes.data.data ?? []);
-      } else {
-        setAds([]);
-      }
+      // BANNER ADS (hero)
+      const banners = bannerRes.data?.ads ?? bannerRes.data?.data ?? [];
+      setBannerAds(banners);
+
+      // HIGHLIGHT IMAGE ADS (for top slider + image slots)
+      const highlights =
+        highlightRes.data?.ads ?? highlightRes.data?.data ?? [];
+      setHighlightImageAds(highlights);
+
+      // VIDEO ADS (16:9) for in-feed video slider
+      const videos = videoRes.data?.ads ?? videoRes.data?.data ?? [];
+      setVideoAds16by9(videos);
 
       // EDITORS
       const editorsList =
-        editorsRes.data?.users ??
-        editorsRes.data?.editors ??
-        [];
-      setEditors(editorsList.slice(0, 5));
+        editorsRes.data?.users ?? editorsRes.data?.editors ?? [];
+      setEditors(editorsList);
 
       // NATIONAL NEWS
       setNationalNews(nationalRes.data?.news ?? []);
     } catch (err) {
       console.error("Initial data load failed", err);
       setNews([]);
-      setAds([]);
+      setBannerAds([]);
+      setHighlightImageAds([]);
+      setVideoAds16by9([]);
       setEditors([]);
       setNationalNews([]);
     } finally {
@@ -114,7 +127,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -123,24 +135,12 @@ const HomePage: React.FC = () => {
     fetchNewsByCategory(activeCategory);
   }, [activeCategory]);
 
-  useEffect(() => {
-    api.get("/news?category=National&limit=10")
-      .then(res => setNationalNews(res.data.news ?? []));
-  }, []);
-
-
   if (loading)
     return (
       <div className="min-h-[100vh]">
         <Loading />
       </div>
     );
-
-  const bannerAds = ads.filter((ad) => ad.category === "Banner");
-  const highlightAds = ads.filter((ad) => ad.category === "Highlights");
-
-  const getHighlightAd = (position: number) =>
-    highlightAds[position % highlightAds.length];
 
   const toggleFollow = (editorId: string) => {
     setFollowingIds((prev) => {
@@ -158,10 +158,10 @@ const HomePage: React.FC = () => {
   };
 
   const featured =
-  news.find(n => n.category === "Trending") ??
-  news.find(n => n.category === "National") ??
-  news.find(n => n.category === "Sports") ??
-  news.find(n => n.category === "Entertainment");
+    news.find((n) => n.category === "Trending") ??
+    news.find((n) => n.category === "National") ??
+    news.find((n) => n.category === "Sports") ??
+    news.find((n) => n.category === "Entertainment");
 
   return (
     <div className="min-h-screen md:py-2">
@@ -177,10 +177,10 @@ const HomePage: React.FC = () => {
           </div>
 
           {/* Tabs Component */}
-          <Tabs  
+          <Tabs
             value={activeCategory}
-            onValueChange={(val) => setActiveCategory(val)
-          }>
+            onValueChange={(val) => setActiveCategory(val)}
+          >
             <TabsList className="w-full overflow-x-scroll bg-white h-12 border-y-2 border-red-500 rounded-none">
               {categories.map((category, index) => (
                 <TabsTrigger
@@ -200,13 +200,46 @@ const HomePage: React.FC = () => {
                 <Loading />
               ) : mobileNews.length ? (
                 <div className="grid grid-cols-1 gap-6">
-                  {mobileNews.map((item) => (
-                    <PostX
-                      key={item._id}
-                      news={item}
-                      fetchNews={() => fetchNewsByCategory(activeCategory)}
-                    />
-                  ))}
+                  {mobileNews.map((item, index) => {
+                    const showAd =
+                      (index + 1) % 5 === 0 && highlightImageAds.length > 0;
+
+                    const adIndex =
+                      Math.floor(index / 5) % highlightImageAds.length;
+                    const ad = highlightImageAds[adIndex];
+
+                    return (
+                      <React.Fragment key={item._id}>
+                        <PostX
+                          news={item}
+                          fetchNews={() => fetchNewsByCategory(activeCategory)}
+                        />
+
+                        {/* Static Highlight Ad (mobile only) */}
+                        {showAd && ad?.images?.[0] && (
+                          <div className="my-4 rounded-lg overflow-hidden border">
+                            <a
+                              href={ad.url || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <img
+                                src={ad.images[0]}
+                                alt={ad.title || "Sponsored"}
+                                className="w-full h-48 object-cover"
+                              />
+                            </a>
+
+                            {ad.title && (
+                              <div className="px-2 py-1 text-xs text-gray-700">
+                                Sponsored (Ads)
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-center text-gray-500 p-10">
@@ -214,7 +247,6 @@ const HomePage: React.FC = () => {
                 </p>
               )}
             </TabsContent>
-
           </Tabs>
         </section>
 
@@ -233,37 +265,36 @@ const HomePage: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-3 border-gray-500 border-b py-8 px-4 last:border-none">
-                    {[...news]
-                      .sort(
-                        (a, b) =>
-                          new Date(b.createdAt).getTime() -
-                          new Date(a.createdAt).getTime()
-                      )
-                      .map((item, index) => (
-                        <>
-                          <Post3
-                            key={item._id}
-                            news={item}
-                            fetchNews={fetchNews}
-                          />
-                          {(index === 4 || index === 9) &&
-                            (() => {
-                              const ad = getHighlightAd(index);
-                              if (!ad || !ad.images || ad.images.length === 0)
-                                return null;
+                    {news.map((item, index) => (
+                      <>
+                        <Post3
+                          key={item._id}
+                          news={item}
+                          fetchNews={fetchNews}
+                        />
+                        {
+                          index === 4 && (
+                            <HighlightImageSlider ads={highlightImageAds} />
+                          )
+                          // (() => {
+                          //   const ad = getHighlightAd(index);
+                          //   if (!ad || !ad.images || ad.images.length === 0)
+                          //     return null;
 
-                              return (
-                                <div className="my-6 rounded-lg overflow-hidden border">
-                                  <img
-                                    src={ad.images[0]}
-                                    alt="Advertisement"
-                                    className="w-full h-64 object-cover"
-                                  />
-                                </div>
-                              );
-                            })()}
-                        </>
-                      ))}
+                          //   return (
+                          //     <div className="my-6 rounded-lg overflow-hidden border">
+                          //       <img
+                          //         src={ad.images[0]}
+                          //         alt="Advertisement"
+                          //         className="w-full h-64 object-cover"
+                          //       />
+                          //     </div>
+                          //   );
+                          // })()}
+                        }
+                        {index === 9 && <VideoAdSlider ads={videoAds16by9} />}
+                      </>
+                    ))}
                   </div>
                 </div>
               )}
@@ -287,7 +318,9 @@ const HomePage: React.FC = () => {
 
                     {/* Overlay Date + Title */}
                     <div className="absolute bottom-0 w-full p-4 bg-gradient-to-t from-black/70 to-transparent">
-                      <p className="text-white text-xs mb-1">{featured.createdAt.split("T")[0]}</p>
+                      <p className="text-white text-xs mb-1">
+                        {featured.createdAt.split("T")[0]}
+                      </p>
                       <h2 className="text-lg font-semibold text-white leading-snug">
                         {featured.title}
                       </h2>
@@ -347,15 +380,19 @@ const HomePage: React.FC = () => {
                         key={ed._id}
                         className="flex items-center justify-between gap-3"
                       >
-                        <Link to={`/profile/${ed._id}`} className="flex items-center gap-3">
-                          {ed.avatar ? 
+                        <Link
+                          to={`/profile/${ed._id}`}
+                          className="flex items-center gap-3"
+                        >
+                          {ed.avatar ? (
                             <Avatar className="w-10 h-10">
                               <img src={ed.avatar} alt="" />
-                            </Avatar> : 
-                              <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold">
-                                {renderInitials(ed.name)}
-                              </div>
-                          }
+                            </Avatar>
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold">
+                              {renderInitials(ed.name)}
+                            </div>
+                          )}
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {ed.name}

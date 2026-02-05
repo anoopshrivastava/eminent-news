@@ -10,11 +10,13 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import profile from "@/assets/profile.webp"
 import { ImageSwiper } from "./ImageSwiper";
+import type { Ads } from "@/types/ads";
 
 
 export default function NewsDetail() {
   const { id } = useParams();
   const [news, setNews] = useState<News | null>(null);
+  const [ad, setAd] = useState<Ads | null>(null);
   const [loading, setLoading] = useState(true);
 
   const { currentUser } = useSelector((state: any) => state.user);
@@ -33,6 +35,7 @@ export default function NewsDetail() {
     try {
       const {data} = await api.get(`news/${id}`);
       setNews(data.news);
+      setAd(data.ad);
     } catch (error) {
       console.log("Error fetching news:", error);
     } finally {
@@ -364,6 +367,45 @@ export default function NewsDetail() {
               <p className="text-sm text-gray-500">No comments yet.</p>
             )}
           </div>
+
+          {/* Advertisement */}
+          {ad && (
+            <div className="mt-8 border rounded-lg p-3 bg-gray-50">
+              <p className="text-xs text-gray-500 mb-2">Sponsored (Ads)</p>
+
+              {/* Video Ad */}
+              {ad.category === "Video" && ad.video?.url && (
+                <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black">
+                  <video
+                    src={ad.video.url}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    controls
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+
+              {/* Highlights Ad (image-based) */}
+              {ad.category === "Highlights" && ad.images && ad.images?.length > 0 && (
+                <a href={ad.url} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={ad.images[0]}
+                    alt={ad.title}
+                    className="w-full rounded-lg object-cover"
+                  />
+                </a>
+              )}
+
+              {/* Title / CTA */}
+              {ad.title && (
+                <p className="mt-2 text-sm font-semibold">{ad.title}</p>
+              )}
+            </div>
+          )}
+
         </div>
       </div>
     </div>

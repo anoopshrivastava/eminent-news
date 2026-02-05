@@ -47,6 +47,7 @@ const ProfilePage: React.FC = () => {
   const [editors, setEditors] = useState<Editor[]>([]);
   const [editorsLoading, setEditorsLoading] = useState(false);
   const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
+  const [loadingFollow, setLoadingFollow] = useState<Record<string, boolean>>({});
 
   const handleLogout = async () => {
     try {
@@ -80,23 +81,46 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-   const fetchEditors = async () => {
+  const fetchEditors = async () => {
     setEditorsLoading(true);
     try {
       // Request a small set; change query params as your API supports.
-      const res = await api.get("/editors/suggestion?limit=5&verified=true");
+      const res = await api.get("/editors/suggestion?limit=6&verified=true");
       const data = res?.data ?? {};
       const list: Editor[] = data.users ?? data.editors ?? [];
 
-      // If backend already limits/sorts, we'll just take first 5; otherwise sort by createdAt desc
-      const top5 = list.slice().slice(0, 5);
+       const filtered = user?._id
+      ? list.filter((ed) => ed._id !== user._id)
+      : list;
 
-      setEditors(top5);
+      setEditors(filtered);
     } catch (err) {
       console.error("Error fetching editors:", err);
       setEditors([]);
     } finally {
       setEditorsLoading(false);
+    }
+  };
+
+  const handleFollowSuggestion = async (editorId: string) => {
+    if (loadingFollow[editorId]) return;
+
+    try {
+      setLoadingFollow((p) => ({ ...p, [editorId]: true }));
+
+      const willFollow = !followingIds[editorId];
+      setFollowingIds((p) => ({ ...p, [editorId]: willFollow }));
+
+      const res = await api.put(`/user/${editorId}/follow`);
+      toast.success(
+        res?.data?.message || (willFollow ? "Following" : "Unfollowed")
+      );
+    } catch (err: any) {
+      // rollback
+      setFollowingIds((p) => ({ ...p, [editorId]: !p[editorId] }));
+      toast.error(err?.response?.data?.message || "Failed to toggle follow");
+    } finally {
+      setLoadingFollow((p) => ({ ...p, [editorId]: false }));
     }
   };
 
@@ -129,19 +153,30 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchMe();
-    fetchEditors();
   }, []);
 
-  const followersCount = (user?.followers && user.followers.length) || 0;
-  const followingCount = (user?.following && user.following.length) || 0;
+  useEffect(() => {
+    if (user?._id) {
+      fetchEditors();
+    }
+  }, [user?._id]);
 
-  const toggleFollow = (editorId: string) => {
-    setFollowingIds((prev) => {
-      const next = { ...prev, [editorId]: !prev[editorId] };
-      toast.success(next[editorId] ? "Followed" : "Unfollowed");
-      return next;
+  useEffect(() => {
+    if (!user || editors.length === 0) return;
+
+    const map: Record<string, boolean> = {};
+
+    editors.forEach((ed) => {
+      map[ed._id] =
+        Array.isArray(user.following) &&
+        user.following.some((f: any) => String(f.user) === String(ed._id));
     });
-  };
+
+    setFollowingIds(map);
+  }, [editors, user]);
+
+  const followersCount = user?.followers?.length ?? 0;
+  const followingCount = user?.following?.length ?? 0;
 
   const renderInitials = (name?: string) => {
     if (!name) return "?";
@@ -402,14 +437,19 @@ const ProfilePage: React.FC = () => {
 
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => toggleFollow(ed._id)}
-                          className={`px-3 py-1 text-sm rounded-full border font-medium ${
+                          onClick={() => handleFollowSuggestion(ed._id)}
+                          disabled={loadingFollow[ed._id]}
+                          className={`px-3 py-1 text-sm rounded-full border font-medium transition ${
                             followingIds[ed._id]
                               ? "bg-[#f40607] text-white border-[#f40607]"
                               : "text-[#f40607] border-[#f40607] bg-white"
-                          }`}
+                          } ${loadingFollow[ed._id] ? "opacity-60 cursor-not-allowed" : ""}`}
                         >
-                          {followingIds[ed._id] ? "Following" : "Follow"}
+                          {loadingFollow[ed._id]
+                            ? "..."
+                            : followingIds[ed._id]
+                            ? "Following"
+                            : "Follow"}
                         </button>
                       </div>
                     </div>

@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/avatar";
 import { HighlightImageSlider, VideoAdSlider } from "./components/sliders";
+import { useSelector } from "react-redux";
 
 const HomePage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -21,8 +22,11 @@ const HomePage: React.FC = () => {
   const [videoAds16by9, setVideoAds16by9] = useState<Ads[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { currentUser } = useSelector((s: any) => s.user);
+
   const [editors, setEditors] = useState<Editor[]>([]);
   const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
+  const [loadingFollow, setLoadingFollow] = useState<Record<string, boolean>>({});
 
   const [activeCategory, setActiveCategory] = useState<string>(categories[0]);
   const [mobileNews, setMobileNews] = useState<News[]>([]);
@@ -127,6 +131,27 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const handleFollowSuggestion = async (editorId: string) => {
+    if (loadingFollow[editorId]) return;
+
+    try {
+      setLoadingFollow((p) => ({ ...p, [editorId]: true }));
+
+      const willFollow = !followingIds[editorId];
+      setFollowingIds((p) => ({ ...p, [editorId]: willFollow }));
+
+      const res = await api.put(`/user/${editorId}/follow`);
+      toast.success(
+        res?.data?.message || (willFollow ? "Following" : "Unfollowed")
+      );
+    } catch (err: any) {
+      setFollowingIds((p) => ({ ...p, [editorId]: !p[editorId] }));
+      toast.error(err?.response?.data?.message || "Failed to toggle follow");
+    } finally {
+      setLoadingFollow((p) => ({ ...p, [editorId]: false }));
+    }
+  };
+
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -135,20 +160,26 @@ const HomePage: React.FC = () => {
     fetchNewsByCategory(activeCategory);
   }, [activeCategory]);
 
+  useEffect(() => {
+    if (!editors.length) return;
+
+    const map: Record<string, boolean> = {};
+
+    editors.forEach((ed) => {
+      map[ed._id] =
+        Array.isArray(ed.followers) &&
+        ed.followers.some((f: any) => f.user === ed._id);
+    });
+
+    setFollowingIds(map);
+  }, [editors]);
+
   if (loading)
     return (
       <div className="min-h-[100vh]">
         <Loading />
       </div>
     );
-
-  const toggleFollow = (editorId: string) => {
-    setFollowingIds((prev) => {
-      const next = { ...prev, [editorId]: !prev[editorId] };
-      toast.success(next[editorId] ? "Followed" : "Unfollowed");
-      return next;
-    });
-  };
 
   const renderInitials = (name?: string) => {
     if (!name) return "?";
@@ -375,7 +406,9 @@ const HomePage: React.FC = () => {
                   <p className="text-sm text-gray-500">No suggestions found.</p>
                 ) : (
                   <div className="space-y-3">
-                    {editors.map((ed) => (
+                    {editors
+                    .filter((ed) => ed._id !== currentUser?._id)
+                    .map((ed) => (
                       <div
                         key={ed._id}
                         className="flex items-center justify-between gap-3"
@@ -405,14 +438,19 @@ const HomePage: React.FC = () => {
 
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => toggleFollow(ed._id)}
-                            className={`px-3 py-1 text-sm rounded-full border font-medium ${
+                            onClick={() => handleFollowSuggestion(ed._id)}
+                            disabled={loadingFollow[ed._id]}
+                            className={`px-3 py-1 text-sm rounded-full border font-medium transition ${
                               followingIds[ed._id]
                                 ? "bg-[#f40607] text-white border-[#f40607]"
                                 : "text-[#f40607] border-[#f40607] bg-white"
-                            }`}
+                            } ${loadingFollow[ed._id] ? "opacity-60 cursor-not-allowed" : ""}`}
                           >
-                            {followingIds[ed._id] ? "Following" : "Follow"}
+                            {loadingFollow[ed._id]
+                              ? "..."
+                              : followingIds[ed._id]
+                              ? "Following"
+                              : "Follow"}
                           </button>
                         </div>
                       </div>

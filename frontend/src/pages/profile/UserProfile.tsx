@@ -8,6 +8,7 @@ import { FiLoader } from "react-icons/fi";
 import { Avatar } from "@/components/ui/avatar";
 import type { Editor, News } from "@/types/news";
 import PostX from "@/components/PostX";
+import { useSelector } from "react-redux";
 
 type User = {
   _id?: string;
@@ -30,24 +31,31 @@ const UserProfile: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const { currentUser } = useSelector((state: any) => state.user);
+
+  const [isProfileFollowed, setIsProfileFollowed] = useState(false);
+  const [loadingProfileFollow, setLoadingProfileFollow] = useState(false);
+
+  const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
+  const [loadingFollow, setLoadingFollow] = useState<Record<string, boolean>>({});
+
   const navigate = useNavigate();
 
   const [editors, setEditors] = useState<Editor[]>([]);
   const [editorsLoading, setEditorsLoading] = useState(false);
-  const [followingIds, setFollowingIds] = useState<Record<string, boolean>>({});
 
   const fetchEditors = async () => {
     setEditorsLoading(true);
     try {
       // Request a small set; change query params as your API supports.
-      const res = await api.get("/editors/suggestion?limit=5&verified=true");
+      const res = await api.get("/editors/suggestion?limit=7&verified=true");
       const data = res?.data ?? {};
       const list: Editor[] = data.users ?? data.editors ?? [];
 
       // If backend already limits/sorts, we'll just take first 5; otherwise sort by createdAt desc
-      const top5 = list.slice().slice(0, 5);
+      const filtered = list.filter((ed) => ed._id !== id);
+      setEditors(filtered.slice(0, 5));
 
-      setEditors(top5);
     } catch (err) {
       console.error("Error fetching editors:", err);
       setEditors([]);
@@ -55,6 +63,74 @@ const UserProfile: React.FC = () => {
       setEditorsLoading(false);
     }
   };
+
+  const handleFollow = async (
+    userId: string,
+    type: "profile" | "suggestion"
+  ) => {
+    if (!currentUser) {
+      toast.error("Please Login First !!");
+      navigate("/login");
+      return;
+    }
+
+    // ---- PROFILE FOLLOW ----
+    if (type === "profile") {
+      if (loadingProfileFollow || !user || currentUser._id === user._id) return;
+
+      const willFollow = !isProfileFollowed;
+      setLoadingProfileFollow(true);
+      setIsProfileFollowed(willFollow);
+
+      try {
+        const res = await api.put(`/user/${userId}/follow`);
+        toast.success(
+          res?.data?.message || (willFollow ? "Following" : "Unfollowed")
+        );
+
+        // update followers count
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                followers: willFollow
+                  ? [...(prev.followers || []), { user: currentUser._id }]
+                  : (prev.followers || []).filter(
+                      (f: any) => String(f.user) !== String(currentUser._id)
+                    ),
+              }
+            : prev
+        );
+      } catch (err: any) {
+        setIsProfileFollowed(!willFollow);
+        toast.error(err?.response?.data?.message || "Failed to toggle follow");
+      } finally {
+        setLoadingProfileFollow(false);
+      }
+
+      return;
+    }
+
+    // ---- SUGGESTION FOLLOW ----
+    if (loadingFollow[userId]) return;
+
+    const willFollow = !followingIds[userId];
+    setLoadingFollow((p) => ({ ...p, [userId]: true }));
+    setFollowingIds((p) => ({ ...p, [userId]: willFollow }));
+
+    try {
+      const res = await api.put(`/user/${userId}/follow`);
+      toast.success(
+        res?.data?.message || (willFollow ? "Following" : "Unfollowed")
+      );
+    } catch (err: any) {
+      setFollowingIds((p) => ({ ...p, [userId]: !willFollow }));
+      toast.error(err?.response?.data?.message || "Failed to toggle follow");
+    } finally {
+      setLoadingFollow((p) => ({ ...p, [userId]: false }));
+    }
+  };
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -89,16 +165,36 @@ const UserProfile: React.FC = () => {
     fetchEditors();
   }, [id]);
 
-  const followersCount = (user?.followers && user.followers.length) || 0;
-  const followingCount = (user?.following && user.following.length) || 0;
+  useEffect(() => {
+    if (!currentUser || !user) return;
 
-  const toggleFollow = (editorId: string) => {
-    setFollowingIds((prev) => {
-      const next = { ...prev, [editorId]: !prev[editorId] };
-      toast.success(next[editorId] ? "Followed" : "Unfollowed");
-      return next;
-    });
-  };
+    const myId = currentUser._id;
+
+    const isFollowing =
+      Array.isArray(user.followers) &&
+      user.followers.some((f: any) => String(f.user) === String(myId));
+
+    setIsProfileFollowed(isFollowing);
+  }, [currentUser, user]);
+
+  useEffect(() => {
+    if (!currentUser?._id || editors.length === 0) return;
+
+    const map: Record<string, boolean> = {};
+    const myId = currentUser._id;
+
+    for (const ed of editors) {
+      map[ed._id] =
+        Array.isArray(ed.followers) &&
+        ed.followers.some((f: any) => String(f.user) === String(myId));
+    }
+
+    setFollowingIds(map);
+  }, [currentUser?._id, editors]);
+
+
+  const followersCount = user?.followers?.length ?? 0;
+  const followingCount = user?.following?.length ?? 0;
 
   const renderInitials = (name?: string) => {
     if (!name) return "?";
@@ -145,10 +241,31 @@ const UserProfile: React.FC = () => {
         <div className="flex-1">
           <div className="flex items-center gap-4 flex-wrap">
             <div>
-              <h1 className="text-2xl md:text-3xl font-semibold">
+              <div className="flex gap-3 items-center">
+                <h1 className="text-2xl md:text-3xl font-semibold">
                 {user.name}
               </h1>
+                {currentUser?._id !== user._id && (
+                <button
+                  onClick={()=>handleFollow(user._id!, "profile")}
+                  disabled={loadingProfileFollow}
+                  className={`hidden md:block px-4 py-1.5 text-sm rounded-full border font-medium transition ${
+                    isProfileFollowed
+                      ? "bg-[#f40607] text-white border-[#f40607]"
+                      : "text-[#f40607] border-[#f40607] bg-white"
+                  }`}
+                >
+                  {loadingProfileFollow
+                    ? "..."
+                    : isProfileFollowed
+                    ? "Following"
+                    : "Follow"}
+                </button>
+              )}
+              </div>
+              
               <h3 className="text-gray-500 text-sm">{user?.username ?? "-"}</h3>
+
             </div>
           </div>
 
@@ -167,6 +284,24 @@ const UserProfile: React.FC = () => {
               <div className="text-gray-500">Following</div>
             </div>
           </div>
+
+          {currentUser?._id !== user._id && (
+            <button
+              onClick={()=>handleFollow(user._id!, "profile")}
+              disabled={loadingProfileFollow}
+              className={`block md:hidden w-full px-4 py-1.5 text-sm rounded-lg border font-medium transition ${
+                isProfileFollowed
+                  ? "bg-[#f40607] text-white border-[#f40607]"
+                  : "text-[#f40607] border-[#f40607] bg-white"
+              }`}
+            >
+              {loadingProfileFollow
+                ? "..."
+                : isProfileFollowed
+                ? "Following"
+                : "Follow"}
+            </button>
+          )}
 
           {/* bio desktop */}
           <div className="hidden md:block text-gray-700">
@@ -246,7 +381,8 @@ const UserProfile: React.FC = () => {
 
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => toggleFollow(ed._id)}
+                          onClick={() => handleFollow(ed._id, "suggestion")}
+                          disabled={loadingFollow[ed._id]}
                           className={`px-3 py-1 text-sm rounded-full border font-medium ${
                             followingIds[ed._id]
                               ? "bg-[#f40607] text-white border-[#f40607]"

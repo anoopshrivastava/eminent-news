@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -225,7 +225,7 @@ export default function NewsDetail() {
           )}
 
           {/* Editor Info */}
-          <div className="flex items-center gap-4 mt-4">
+          <Link to={`/profile/${news.editor?._id}`} className="flex items-center gap-4 mt-4">
             <Avatar className="h-12 w-12 ">
               <AvatarImage src={news.editor?.avatar || profile } alt={news.editor?.name} className=""/>
               <AvatarFallback className="bg-gray-300">
@@ -236,7 +236,7 @@ export default function NewsDetail() {
               <p className="font-semibold">{news.editor?.name}</p>
               <p className="text-sm text-gray-500">@{news.editor?.username}</p>
             </div>
-          </div>
+          </Link>
 
           {/* Description */}
           {/* <p className="text-gray-700 leading-relaxed text-sm">

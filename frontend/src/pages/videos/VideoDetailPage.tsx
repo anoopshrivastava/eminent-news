@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -181,6 +181,8 @@ export default function VideoDetail() {
     );
   }
 
+  const editorId = typeof video.editor === "string" ? video.editor : video.editor?._id;
+
   return (
     <div className="max-w-6xl mx-auto md:px-4 pt-6">
       {/* Back */}
@@ -209,7 +211,7 @@ export default function VideoDetail() {
         </div>
 
         {/* Editor */}
-        <div className="flex items-center gap-4">
+        <Link to={`/profile/${editorId}`} className="flex items-center gap-4">
           <Avatar className="h-12 w-12">
             <AvatarImage
               src={
@@ -233,7 +235,7 @@ export default function VideoDetail() {
               {new Date(video.createdAt).toLocaleDateString()}
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Description */}
         {video.description && (

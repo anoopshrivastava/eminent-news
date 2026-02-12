@@ -4,7 +4,6 @@ const ConnectToMongo = require('./config/db.js')
 
 // handling uncaught exception
 process.on("uncaughtException",()=>{
-    console.log(`Error : ${err.message}`)
     console.log("Shutting down the server due to uncaught exception")
 
     server.close(()=>{

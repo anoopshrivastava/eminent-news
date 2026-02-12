@@ -48,7 +48,7 @@ function AllEditors() {
     setLoading(true);
     try {
       const response = await api.get<FetchEditorsResponse>(
-        `/admin/editors?searchKey=${search}&page=${page}&limit=${limit}`
+        `/admin/editors?searchKey=${encodeURIComponent(debouncedSearch)}&page=${page}&limit=${limit}`
       );
 
       if (response.data?.success) {
@@ -103,6 +103,10 @@ function AllEditors() {
       toast.error("Failed to update status");
     }
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, limit]);
 
   useEffect(() => {
     fetchEditors();

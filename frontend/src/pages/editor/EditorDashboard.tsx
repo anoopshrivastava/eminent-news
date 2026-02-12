@@ -27,7 +27,6 @@ const EditorDashboard = () => {
 
   const currentUser = useSelector((state: any) => state.user.currentUser);
 
-  // 🔥 Fix redirect logic (never redirect inside render)
   useEffect(() => {
     if (!currentUser || currentUser.role !== "editor") {
       navigate("/login");
@@ -42,7 +41,7 @@ const EditorDashboard = () => {
     setLoading(true);
     try {
       const response = await api.get(
-        `/editor/news/${editorId}?searchKey=${debouncedSearch}&category=${category}&page=${page}&limit=${limit}`
+        `/editor/news/${editorId}?searchKey=${encodeURIComponent(debouncedSearch)}&category=${encodeURIComponent(category)}&page=${page}&limit=${limit}`
       );
 
       const data = response?.data ?? {};
@@ -50,7 +49,7 @@ const EditorDashboard = () => {
         const list: News[] = data.news ?? data.data ?? [];
         setNews(list);
         setTotal(data.totalCount);
-        setTotalPages(data.totalPages);
+        setTotalPages(data.totalPages || 1);
       } else {
         setNews([]);
       }
@@ -62,10 +61,14 @@ const EditorDashboard = () => {
   };
 
   useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, category, limit]);
+
+  useEffect(() => {
     if (editorId) {
       fetchNews();
     }
-  }, [debouncedSearch, category, editorId]);
+  }, [debouncedSearch, category, page, limit, editorId]);
 
   return (
     <div className="flex-1 flex-col px-4 min-h-screen">

@@ -46,7 +46,7 @@ function AllUsers() {
     setLoading(true);
     try {
       const response = await api.get<FetchUsersResponse>(
-        `/admin/users?searchKey=${search}&page=${page}&limit=${limit}`
+        `/admin/users?searchKey=${encodeURIComponent(debouncedSearch)}&page=${page}&limit=${limit}`
       );
 
       if (response.data?.success) {
@@ -81,6 +81,10 @@ function AllUsers() {
       setDeleting(null);
     }
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, limit]);
 
   useEffect(() => {
     fetchUsers();

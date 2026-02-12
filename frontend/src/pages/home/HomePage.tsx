@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { Avatar } from "@/components/ui/avatar";
 import { HighlightImageSlider, VideoAdSlider } from "./components/sliders";
 import { useSelector } from "react-redux";
+import { htmlToPlainText } from "@/lib/htmlToText";
 
 const HomePage: React.FC = () => {
   const [news, setNews] = useState<News[]>([]);
@@ -115,7 +116,7 @@ const HomePage: React.FC = () => {
   const fetchNewsByCategory = async (category: string) => {
     setMobileLoading(true);
     try {
-      const response = await api.get(`/news?category=${category}&limit=30`);
+      const response = await api.get(`/news?category=${encodeURIComponent(category)}&limit=30`);
 
       const data = response?.data ?? {};
       if (data.success) {
@@ -383,7 +384,7 @@ const HomePage: React.FC = () => {
                         By {item.editor?.name} / {item.createdAt.split("T")[0]}
                       </p>
                       <p className="text-[10px] line-clamp-2">
-                        {item.description}
+                        {htmlToPlainText(item.description)}
                       </p>
                       <Link
                         to={`/news/${item._id}`}

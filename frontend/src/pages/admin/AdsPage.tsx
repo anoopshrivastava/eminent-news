@@ -46,6 +46,10 @@ const AdsPage: React.FC = () => {
   };
 
   useEffect(() => {
+    setPage(1);
+  }, [category, limit]);
+
+  useEffect(() => {
     fetchAds();
   }, [category, page, limit]);
 

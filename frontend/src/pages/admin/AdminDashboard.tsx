@@ -46,6 +46,10 @@ const AdminDashboard: React.FC = () => {
   };
 
   useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, category, limit]);
+
+  useEffect(() => {
     fetchNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch, category, page, limit]);

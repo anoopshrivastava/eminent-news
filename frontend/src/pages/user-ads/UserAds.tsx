@@ -18,7 +18,7 @@ const UserAds: React.FC = () => {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      const res = await api.get(`/my-ads?category=${category}`);
+      const res = await api.get(`/my-ads?category=${encodeURIComponent(category)}`);
       if (res.data?.success) {
         setAds(res.data.ads || []);
       } else {

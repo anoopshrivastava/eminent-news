@@ -21,16 +21,16 @@ router.put('/password/reset/:token',rateLimiter,resetPassword)
 // for user logout -->
 router.post('/logout',logout)
 
-// for user details -->
+// for my profile -->
 router.get('/me',isAuthenticatedUser,getUserDetails)
 
 // for changing password -->
 router.put('/password/update',isAuthenticatedUser,updatePassword)
 
-// for updating user profile -->
+// for updating my profile -->
 router.put('/me/update',isAuthenticatedUser,upload.array("images", 10),updateProfile)
 
-// for updating user profile -->
+// for deleting my profile -->
 router.delete('/me',isAuthenticatedUser,deleteMyProfile)
 
 // follow / unfollow a user (toggle)

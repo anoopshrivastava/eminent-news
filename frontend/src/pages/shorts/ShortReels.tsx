@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import type { Ads } from "@/types/ads";
 import { useMemo } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 
 type FeedItem =
   | { type: "short"; data: Short }
@@ -23,6 +24,10 @@ export default function ShortsReel() {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const { currentUser } = useSelector((state: any) => state.user);
   const [ads, setAds] = useState<Ads[]>([]);
+
+  const [searchParams] = useSearchParams();
+  const shortIdFromQuery = searchParams.get("id");
+  const navigate = useNavigate();
 
   const fetchShorts = useCallback(async () => {
     setShortsLoading(true);
@@ -129,6 +134,46 @@ export default function ShortsReel() {
   const handleVideoTap = (id: string) => {
     setActiveVideoId((prev) => (prev === id ? null : id));
   };
+
+  // useEffect(() => {
+  //   if (!shortIdFromQuery || !containerRef.current) return;
+
+  //   const element = containerRef.current.querySelector(
+  //     `[data-short-id="${shortIdFromQuery}"]`
+  //   );
+
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: "auto" });
+  //     navigate("/shorts", { replace: true });
+  //   }
+  // }, [shortIdFromQuery, feedItems]);
+
+  const hasHandledDeepLink = useRef(false);
+
+  useEffect(() => {
+    if (
+      !shortIdFromQuery ||
+      !containerRef.current ||
+      hasHandledDeepLink.current
+    )
+      return;
+
+    const element = containerRef.current.querySelector(
+      `[data-short-id="${shortIdFromQuery}"]`
+    );
+
+    if (element) {
+      hasHandledDeepLink.current = true;
+
+      // Scroll instantly
+      element.scrollIntoView({ behavior: "auto" });
+
+      // Let IntersectionObserver trigger play
+      setTimeout(() => {
+        navigate("/shorts", { replace: true });
+      }, 700);
+    }
+  }, [shortIdFromQuery, feedItems]);
 
   const loading = shortsLoading || adsLoading;
 
